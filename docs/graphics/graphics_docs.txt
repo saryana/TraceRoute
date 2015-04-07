@@ -1,1 +1,63 @@
-graphics notes
+///////////////////////
+// OVERVIEW
+///////////////////////
+
+This document will outline my endeavor to figure out a few things. 
+First off, I need to learn how to program in openGL. Secondly, I need to learn how to
+port this knowledge over to OpenGL ES, and use it to render a 3d space with coordinate information 
+supplied by the sonar system.
+
+////////////////////////
+// RESOURCES
+////////////////////////
+
+https://www.opengl.org/wiki/Getting_Started
+
+developer.android.com/guide/topics/graphics/opengl.html
+
+JOGL for Andriod
+
+http://jogamp.org/wiki/index.php/Android_Packages
+
+JOGL for windows
+
+
+
+////////////////////////
+// NOTES
+////////////////////////
+
+////////////////////////
+// OPENGL
+////////////////////////
+It seems as though you can harness openGL through a variety of languages. There's
+libraries written for every language imaginable, C, C++, Java, Python. The particular 
+flavor of OpenGL that's used by Andriod is OpenGL ES.
+
+////////////////////////
+// OPENGL ES
+////////////////////////
+
+If we follow the reasoning behind the previous paragraph and what I know 
+so far, this means that OpenGL ES for Andriod will use a Java-based API
+for drawing things. I think this means that there shouldn't be any extra frameworks
+that I have to install. There's a whole package known as android.opengl devoted 
+to open GL rendering.
+
+// VERSION CONFUSION
+It seems as though OpenGL ES 3.0 is the most recent version of OGL - however there's some devices 
+that don't support it. We may have to use the archaic OpenGL ES 2.0...
+
+Either way, in order to pick a version, we have to add this line to our AndroidManifest.xml file:
+
+<uses-feature android:glEsVersion="0x00030000" android:required="true" />
+[this is for version 3.0]
+
+// THE API
+
+At this point, most of the API documentation is gibberish to me. I need some
+foundational OpenGL knowledge before the API makes sense. I'll devote the next section to learning some basic OpenGL.
+
+///////////////////////////
+// LEARNING OPENGL
+///////////////////////////
