@@ -1,20 +1,57 @@
 package com.gps.capstone.traceroute;
 
+import android.annotation.TargetApi;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.Arrays;
 
-public class MainActivity extends ActionBarActivity {
 
+public class MainActivity extends ActionBarActivity implements SensorEventListener {
+    // Tag used for logging
+    private final String TAG = this.getClass().getSimpleName();
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        verifyAllSensors();
+
+        SensorManager sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        Sensor stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        Sensor stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        sensorManager.registerListener(this, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, stepDetector, SensorManager.SENSOR_DELAY_NORMAL, Sensor.REPORTING_MODE_SPECIAL_TRIGGER);
+
         Toast.makeText(this, "This is our trace route application", Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Prints all the sensors that it has on device
+     */
+    private void verifyAllSensors() {
+        // Grab the sensor manager
+        SensorManager sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+
+        // Go through all the sensors on the device and log them
+        for (Sensor s : sensorManager.getSensorList(Sensor.TYPE_ALL)) {
+            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+                Log.i(TAG, "Sensor: " + s.getName() + "\nIs wake up?: " + s.isWakeUpSensor());
+            } else {
+                Log.i(TAG, "Sensor: " + s.getName());
+            }
+        }
     }
 
 
@@ -38,5 +75,18 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getName().equals("SAMSUNG Step Counter Sensor")) {
+            Toast.makeText(MainActivity.this, String.valueOf(event.values[0]), Toast.LENGTH_LONG).show();
+        }
+        Log.i(TAG, event.sensor.getName() + " onSensorChange " + Arrays.toString(event.values));
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        Log.i(TAG, sensor.getName() + " onAccuracyChanged " + accuracy);
     }
 }

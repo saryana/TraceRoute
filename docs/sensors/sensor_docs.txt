@@ -1,1 +1,44 @@
-sensor notes
+Android doc that covers a lot of information about sensors: http://developer.android.com/guide/topics/sensors/sensors_motion.html
+
+The data is received in multi-dimensional arrays of sensor data and correspond to a SensorEvent (http://developer.android.com/reference/android/hardware/SensorEvent.html).
+
+Sensor Overview (http://developer.android.com/guide/topics/sensors/sensors_overview.html)
+
+Hardware sensors
+Accelerometer
+Gravity(?)
+Gyroscope
+Magnetic Field
+Linear Acceleration(?)
+Rotation Vector(?)
+Pressure
+
+Software sensors
+Gravity(?)
+Linear Acceleration(?)
+Rotation Vector(?)
+
+?- harware or software potentially
+
+The orientation of the axis is y points to the sky and floor, x points to the left and right of the phone, and z points to you and where you are facing. This is the same way OpenGL coordinate system works. With the phone changing orientation, the coordinate system does not move. The docs make distinctions between the world's fram and the device's frame, so be on the look out for that.
+
+Wake up Sensors (can only detect on API 21+)
+Apllications run on the Application Proccesor (AP) so when the user is not using the application, it can go into suspend mode to reduce power consumption.
+Non-wake up sensors are sensors that don't wake up the AP out of suspend mode to report data. When it is in suspend mode it will put the data FIFO queue and when it hits the limit it will start removing older data for newer data. Don't forget to unregister in onPause.
+Wake up sensors ensure data is delivered and will wake up the AP.
+
+Getting movement:
+http://www.sfonge.com/forum/topic/example-application-accelerometergyroscope-processing-android
+http://www.slideshare.net/paller/better-motion-control-using-accelerometergyroscope-sensor-fusion
+
+Measuring displacement (location change) is very hard using the accelerometer+gyroscope. The main difficulty is drift: accelerometer measures acceleration and you have to integrate twice to get displacement. Any error in the accelerometer output is magnified enormously by the double integral. If you have a reliable distance input (e.g. step counter) then you can navigate with the compass and the distance input for a while using dead reckoning.
+
+In short: if you want to measure distance, it is better to exploit a known property of the movement, e.g. step counting in case of walking. In case of vehicles, you can try to obtain velocity/displacement data from the vehicle 	
+
+https://www.youtube.com/watch?v=C7JQ7Rpwn2k
+To avoid double integration which gets noisy data
+kalman filter for cars
+pedometer algorithm for cars
+6 degrees of freedom - x, y, z, roll, pitch, yaw
+
+Overview of what we might have to do. Linear acceleratino is very difficult. We can get a lot of infromation from all of the phone sensors but have to be picky on what we actually use. For example, if we use the the accelerometer and gyroscope we can detect the basic position and movement of the phone; however, when combining that with the compass and the step tracker we can get an understanding of distance and direciton.

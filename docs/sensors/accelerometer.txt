@@ -1,0 +1,9 @@
+The accelerometer is a hardware component on the phone that measures acceleration applied to the device which also includes gravity in its values. This data can be noisy due to gravity and will need to do a low-pass and high-pass filter which only sometimes prove to be useful.
+
+When in free fall all points will read 0.
+
+When flat pushed to right, the x acceleration is positive.
+When flat the z will be ~9.81 since we have device acceleration (0 m/s^2) minus the force of gravity (9.81 m/s^2).
+When flat and lifted towards ceiling, the z will read +9.81.
+
+Again gravity affects all the results here so we need to factor that out.

@@ -1,0 +1,1 @@
+The gryoscope is a hardware component that measures the rate of rotation in x, y, z in terms of rad/s. Values are positive in the counterclowise direction (right-hand rule)
