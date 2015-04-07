@@ -1,1 +1,12 @@
-sonar docs
+Research Article that uses sonar to map the shape of a room:
+http://www.pnas.org/content/110/30/12186.full
+
+This approach requires 4 microphones to work.
+Currently, it does not seem as if room mapping has been done with just two microphones on a smartphone.
+
+There is a research paper in the same folder that documents range sensing with a single microphone.
+This approach uses a pulse encoded with a specific signature and by measuring the time lapse between pulse generation the collection of the echo it can determine the distance.
+
+With two microphones we can get information about the direction but only on a 2D plane.
+
+At this point it does not seem feasible to create a 3D mapping with sonar on a smartphone.
