@@ -31,6 +31,9 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
         SensorManager sensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
         Sensor stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         Sensor stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        Sensor barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+
+        sensorManager.registerListener(this, barometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this, stepDetector, SensorManager.SENSOR_DELAY_NORMAL, Sensor.REPORTING_MODE_SPECIAL_TRIGGER);
 
@@ -76,13 +79,19 @@ public class MainActivity extends ActionBarActivity implements SensorEventListen
 
         return super.onOptionsItemSelected(item);
     }
-
+    double max = Double.MIN_VALUE;
+    double min = Double.MAX_VALUE;
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getName().equals("SAMSUNG Step Counter Sensor")) {
-            Toast.makeText(MainActivity.this, String.valueOf(event.values[0]), Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this, String.valueOf(event.values[0]), Toast.LENGTH_SHORT).show();
+        } else if (event.sensor.getName().equals("Barometer Sensor")) {
+            max = Math.max(event.values[0], max);
+            min = Math.min(event.values[0], min);
+            Log.i(TAG, "Barometer values Max:min " + max + ":" + min);
+        } else {
+            Log.i(TAG, event.sensor.getName() + " onSensorChange " + Arrays.toString(event.values));
         }
-        Log.i(TAG, event.sensor.getName() + " onSensorChange " + Arrays.toString(event.values));
     }
 
     @Override
