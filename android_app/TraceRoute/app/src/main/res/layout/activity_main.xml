@@ -1,11 +1,331 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
-
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+<ScrollView
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <!-- Accelerometer View -->
+    <TextView android:text="@string/accelerometer_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <TextView android:text="@string/units"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    <TextView android:text="@string/acceleration_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout android:id="@+id/acc_values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/acc_x_text"
+            android:text="X"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/acc_x_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/acc_x_text"/>
 
-</RelativeLayout>
+        <!-- Y-coordinate -->
+        <TextView android:id="@+id/acc_y_text"
+            android:text="Y"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/acc_x_text"
+            />
+        <TextView android:id="@+id/acc_y_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/acc_x_val"
+            android:layout_toRightOf="@+id/acc_y_text"/>
+
+        <!-- Z-coordinate -->
+        <TextView android:id="@+id/acc_z_text"
+            android:text="Z"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/acc_y_text"
+            />
+        <TextView android:id="@+id/acc_z_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/acc_y_text"
+            android:layout_toRightOf="@+id/acc_z_text"
+            />
+        </RelativeLayout>
+
+    <!-- Gyroscope View -->
+    <TextView android:text="@string/gyroscope_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp" />
+    <TextView android:text="@string/units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView android:text="@string/radian_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout android:id="@+id/gyro_values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/gyro_x_text"
+            android:text="X"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/gyro_x_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/gyro_x_text"/>
+
+        <!-- Y-coordinate -->
+        <TextView android:id="@+id/gyro_y_text"
+            android:text="Y"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gyro_x_text"
+            />
+        <TextView android:id="@+id/gyro_y_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gyro_x_val"
+            android:layout_toRightOf="@+id/gyro_y_text"/>
+
+        <!-- Z-coordinate -->
+        <TextView android:id="@+id/gyro_z_text"
+            android:text="Z"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/gyro_y_text"
+            />
+        <TextView android:id="@+id/gyro_z_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gyro_y_text"
+            android:layout_toRightOf="@+id/gyro_z_text"
+            />
+    </RelativeLayout>
+
+    <!-- Barometer View -->
+    <TextView android:text="@string/barometer_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <RelativeLayout android:id="@+id/barr_values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- Pressure-measurement -->
+        <TextView android:id="@+id/pressure_text"
+            android:text="Pressure (millibar)"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/pressure_value"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/pressure_text"/>
+
+        <!-- Estimated Altitude feet -->
+        <TextView android:id="@+id/altitude_text_ft"
+            android:text="Estimated Altitude (feet)"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/pressure_text"
+            />
+        <TextView android:id="@+id/altitude_value_ft"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pressure_value"
+            android:layout_toRightOf="@+id/altitude_text_ft"/>
+
+        <!-- Estimated Altitude meters -->
+        <TextView android:id="@+id/altitude_text_meters"
+            android:text="Estimated Altitude (meters)"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/altitude_text_ft"
+            />
+        <TextView android:id="@+id/altitude_value_meters"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/altitude_value_ft"
+            android:layout_toRightOf="@+id/altitude_text_meters"/>
+
+        <TextView android:id="@+id/max_alt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/altitude_text_meters"/>
+        <TextView android:id="@+id/min_alt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/max_alt"/>
+    </RelativeLayout>
+
+    <!-- Linear Acceration View -->
+    <TextView android:text="@string/linear_acceleration_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <TextView android:text="@string/units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView android:text="@string/acceleration_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout android:id="@+id/lin_acc_values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/lin_acc_x_text"
+            android:text="X"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/lin_acc_x_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/lin_acc_x_text"/>
+
+        <!-- Y-coordinate -->
+        <TextView android:id="@+id/lin_acc_y_text"
+            android:text="Y"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lin_acc_x_text"
+            />
+        <TextView android:id="@+id/lin_acc_y_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lin_acc_x_val"
+            android:layout_toRightOf="@+id/lin_acc_y_text"/>
+
+        <!-- Z-coordinate -->
+        <TextView android:id="@+id/lin_acc_z_text"
+            android:text="Z"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lin_acc_y_text"
+            />
+        <TextView android:id="@+id/lin_acc_z_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lin_acc_y_text"
+            android:layout_toRightOf="@+id/lin_acc_z_text"
+            />
+    </RelativeLayout>
+
+
+    <!-- Gravity View -->
+    <TextView android:text="@string/gravity_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <TextView android:text="@string/units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView android:text="@string/acceleration_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RelativeLayout android:id="@+id/grav_values"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/grav_x_text"
+            android:text="X"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/grav_x_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/grav_x_text"/>
+
+        <!-- Y-coordinate -->
+        <TextView android:id="@+id/grav_y_text"
+            android:text="Y"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grav_x_text"
+            />
+        <TextView android:id="@+id/grav_y_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/grav_x_val"
+            android:layout_toRightOf="@+id/grav_y_text"/>
+
+        <!-- Z-coordinate -->
+        <TextView android:id="@+id/grav_z_text"
+            android:text="Z"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/grav_y_text"
+            />
+        <TextView android:id="@+id/grav_z_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/grav_y_text"
+            android:layout_toRightOf="@+id/grav_z_text"
+            />
+    </RelativeLayout>
+
+    <!-- Step counter View -->
+    <TextView android:text="@string/step_counter_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <RelativeLayout android:id="@+id/step_vals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/steps_text"
+            android:text="Steps"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/steps_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/steps_text"/>
+    </RelativeLayout>
+    <!-- Step Detector View -->
+    <TextView android:text="@string/step_detector_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <RelativeLayout android:id="@+id/step_detect_vals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/steps_detect_text"
+            android:text="Steps"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/steps_detect_val"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/steps_detect_text"/>
+    </RelativeLayout>
+
+</LinearLayout>
+</ScrollView>
+</LinearLayout>
