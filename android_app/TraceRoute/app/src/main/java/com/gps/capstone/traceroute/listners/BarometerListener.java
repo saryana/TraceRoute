@@ -39,8 +39,8 @@ public class BarometerListener implements SensorEventListener {
         float meterAltitude = (float) (feetAltitude * .3048);
         ((TextView) view.findViewById(R.id.altitude_value_ft)).setText(String.valueOf(feetAltitude));
         ((TextView) view.findViewById(R.id.altitude_value_meters)).setText(String.valueOf(meterAltitude));
-        ((TextView) view.findViewById(R.id.max_alt)).setText(String.valueOf(maxAlt) + " feet");
-        ((TextView) view.findViewById(R.id.min_alt)).setText(String.valueOf(minAlt) + " feet");
+        ((TextView) view.findViewById(R.id.max_alt)).setText("Max alt: " + String.valueOf(maxAlt) + " feet");
+        ((TextView) view.findViewById(R.id.min_alt)).setText("Min alt: " + String.valueOf(minAlt) + " feet");
     }
 
     @Override
