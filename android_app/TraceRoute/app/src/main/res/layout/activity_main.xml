@@ -29,7 +29,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/acc_x_text"
-            android:text="X"
+            android:text="@string/x_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -40,7 +40,7 @@
 
         <!-- Y-coordinate -->
         <TextView android:id="@+id/acc_y_text"
-            android:text="Y"
+            android:text="@string/y_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/acc_x_text"
@@ -53,7 +53,7 @@
 
         <!-- Z-coordinate -->
         <TextView android:id="@+id/acc_z_text"
-            android:text="Z"
+            android:text="@string/z_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/acc_y_text"
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/gyro_x_text"
-            android:text="X"
+            android:text="@string/x_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -94,7 +94,7 @@
 
         <!-- Y-coordinate -->
         <TextView android:id="@+id/gyro_y_text"
-            android:text="Y"
+            android:text="@string/y_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/gyro_x_text"
@@ -107,7 +107,7 @@
 
         <!-- Z-coordinate -->
         <TextView android:id="@+id/gyro_z_text"
-            android:text="Z"
+            android:text="@string/z_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/gyro_y_text"
@@ -131,7 +131,7 @@
         android:layout_height="wrap_content">
         <!-- Pressure-measurement -->
         <TextView android:id="@+id/pressure_text"
-            android:text="Pressure (millibar)"
+            android:text="@string/mbar_units"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -142,7 +142,7 @@
 
         <!-- Estimated Altitude feet -->
         <TextView android:id="@+id/altitude_text_ft"
-            android:text="Estimated Altitude (feet)"
+            android:text="@string/altitude_feet"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/pressure_text"
@@ -155,7 +155,7 @@
 
         <!-- Estimated Altitude meters -->
         <TextView android:id="@+id/altitude_text_meters"
-            android:text="Estimated Altitude (meters)"
+            android:text="@string/altitude_meters"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/altitude_text_ft"
@@ -193,7 +193,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/lin_acc_x_text"
-            android:text="X"
+            android:text="@string/x_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -204,7 +204,7 @@
 
         <!-- Y-coordinate -->
         <TextView android:id="@+id/lin_acc_y_text"
-            android:text="Y"
+            android:text="@string/y_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/lin_acc_x_text"
@@ -217,7 +217,7 @@
 
         <!-- Z-coordinate -->
         <TextView android:id="@+id/lin_acc_z_text"
-            android:text="Z"
+            android:text="@string/z_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/lin_acc_y_text"
@@ -248,7 +248,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/grav_x_text"
-            android:text="X"
+            android:text="@string/x_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -259,7 +259,7 @@
 
         <!-- Y-coordinate -->
         <TextView android:id="@+id/grav_y_text"
-            android:text="Y"
+            android:text="@string/y_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/grav_x_text"
@@ -272,7 +272,7 @@
 
         <!-- Z-coordinate -->
         <TextView android:id="@+id/grav_z_text"
-            android:text="Z"
+            android:text="@string/z_coordinate"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_below="@id/grav_y_text"
@@ -296,7 +296,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/steps_text"
-            android:text="Steps"
+            android:text="@string/steps"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />
@@ -316,7 +316,7 @@
         android:layout_height="wrap_content">
         <!-- X-coordinate -->
         <TextView android:id="@+id/steps_detect_text"
-            android:text="Steps"
+            android:text="@string/steps"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             />

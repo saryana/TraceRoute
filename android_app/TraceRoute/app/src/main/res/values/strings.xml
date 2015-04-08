@@ -16,4 +16,11 @@
     <string name="step_counter_text">Step Counter</string>
     <string name="step_units">steps</string>
     <string name="step_detector_text">Step Detector</string>
+    <string name="altitude_meters">Estimated Altitude (meters)</string>
+    <string name="altitude_feet">Estimated Altitude (feet)</string>
+    <string name="mbar_units">Pressure (millibar)</string>
+    <string name="z_coordinate">Z</string>
+    <string name="y_coordinate">Y</string>
+    <string name="x_coordinate">X</string>
+    <string name="steps">Steps</string>
 </resources>

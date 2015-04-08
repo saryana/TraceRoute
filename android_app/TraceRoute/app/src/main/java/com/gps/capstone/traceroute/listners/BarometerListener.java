@@ -10,6 +10,8 @@ import com.gps.capstone.traceroute.R;
 
 /**
  * Created by saryana on 4/7/15.
+ *
+ * Barometer listener
  */
 public class BarometerListener implements SensorEventListener {
 

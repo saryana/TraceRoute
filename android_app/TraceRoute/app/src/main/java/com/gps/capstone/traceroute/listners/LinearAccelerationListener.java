@@ -11,6 +11,7 @@ import com.gps.capstone.traceroute.R;
 /**
  * Created by saryana on 4/7/15.
  *
+ * Linear Acceleration Listener
  */
 public class LinearAccelerationListener implements SensorEventListener {
 
