@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OpenGL"
+            android:name=".GLFiles.OpenGL"
             android:label="@string/title_activity_open_gl"
             android:parentActivityName=".MainActivity" >
             <meta-data

@@ -22,6 +22,8 @@ import com.gps.capstone.traceroute.listners.LinearAccelerationListener;
 import com.gps.capstone.traceroute.listners.StepCounterListener;
 import com.gps.capstone.traceroute.listners.StepDetectorListener;
 
+import com.gps.capstone.traceroute.GLFiles.OpenGL;
+
 public class MainActivity extends ActionBarActivity {
     // Tag used for logging
     private final String TAG = this.getClass().getSimpleName();

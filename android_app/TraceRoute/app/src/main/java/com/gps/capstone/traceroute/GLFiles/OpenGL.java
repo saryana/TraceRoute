@@ -1,17 +1,24 @@
-package com.gps.capstone.traceroute;
+package com.gps.capstone.traceroute.GLFiles;
 
+import android.opengl.GLSurfaceView;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gps.capstone.traceroute.R;
+
 
 public class OpenGL extends ActionBarActivity {
+
+    private GLSurfaceView mGLSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_open_gl);
+
+        mGLSurface = new MySurfaceView(this);
+        setContentView(mGLSurface);
     }
 
 
