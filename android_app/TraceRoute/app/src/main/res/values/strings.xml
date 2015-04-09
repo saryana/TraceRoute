@@ -23,4 +23,5 @@
     <string name="y_coordinate">Y</string>
     <string name="x_coordinate">X</string>
     <string name="steps">Steps</string>
+    <string name="title_activity_open_gl">OpenGL</string>
 </resources>
