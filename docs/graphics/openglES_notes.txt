@@ -1,0 +1,49 @@
+In order to use the OpenGL ES API we must add a declaration to the manifest:
+<uses-feature android:glEsVersion="0x00020000" android:required="true" />  // Version 2.0
+
+The two promary classes for OpenGL ES are:
+GLSurfaceView - a View to draw in. This class can be extended to add more event listeners. A renderer is added after creating an instance of this class to control what is drawn.
+GLSurfaceView.Renderer - This is a class that controls what exactly is drawn in the GLSurfaceView. it contains three methods:
+    onSurfaceCreated() - Called once to set up the view's OpenGL ES environment.
+    onDrawFrame() - Called for each redraw of the view.
+    onSurfaceChanged() - Called if the geometry of the view changes, for example when the device's screen orientation changes.
+
+Coordinates:
+	By default, OpenGL ES assumes a coordinate system where [0,0,0] (X,Y,Z) specifies the center of the GLSurfaceView frame, [1,1,0] is the top right corner of the frame and [-1,-1,0] is bottom left corner of the frame.
+
+Defining a simple Triangle:
+	A triangle can be drawn by defining the coordinates of the three vertices in counter clockwise order.
+	The order the vertices are declared in is important for determining which side is the front. So it is possible to not draw the backside.
+	For efficiency, the coordinates are written into a ByteBuffer and then passed into the OpenGL ES pipeline to be processed.
+
+More complex shapes can be drawn with multiple triangles. If vertices between triangles overlap it is possible to reuse the coordinates by defining a draw order. Something like saying "Draw this triangle with vertices 1, 5, and 8 and another one with 1, 6, and 7"
+
+Drawing Shapes
+	
+	To draw a shape we need to define:
+    	Vertex Shader - OpenGL ES graphics code for rendering the vertices of a shape.
+    	Fragment Shader - OpenGL ES code for rendering the face of a shape with colors or textures.
+    	Program - An OpenGL ES object that contains the shaders you want to use for drawing one or more shapes.
+    
+    Before a shape can be drawn, we must compile the shader code, add them to a OpenGL ES program object and then link the program. This can be done in the constructor.
+
+    Finally, a draw() method for the shape class is defined that tells the rendering pipeline what to draw and how to draw it. This draw method will be called in the onDrawFrame() method of the Renderer class.
+
+Projections
+	Used to adjust the coordinates of drawn objects so they do not become skewed by the unequal proportions of the window. This is usually recalculated when the orientation changes. This is basically just calculating a matrix to apply to object coordinates so the objects appear to retain their ratios even when orientations change. The Matrix.frustumM() method allows us to do this easily.
+Camera Views
+	Simulate a virtual camera by transforming the coordinates of objects. This way it becomes possible to view the objects from different angles. The camera position and angle can be recalculated based on user interactions. This is another matrix calculated to change the object coordinates so that it seems we are viewing it from a particular angle and distance. The Matrix.setLookAtM() method can handle this.
+
+	By multiplying the projection and camera matrices together and applying to the coordinates we can get their compounded effect. Multiplying is done with Matrix.multiplyMM(). To apply this to a shape, a matrix variable is added to the shader and the draw method needs to take the matrix as a parameter to pass it to the shader.
+
+DRAWING FOR OUR PROJECT
+	Vector that always points in the same direction:
+		First define a vector shape class
+		Draw the vector pointing in a particular direction. The direction can be based on compass sensor data.
+		By listening to the gyroscope sensor events, change the camera view accordingly.
+
+	3D graph with plot points to record relative position:
+		This will probably be a class that extends GLSurfaceView and keeps state such as initial orientation and list of positions to draw. It can also listen for touch events so we can scroll to or enlarge different parts of the graph.
+		Coordinate lines can be thin 3D rectangles of different colors?
+		The data for the relative position will first need to be calculated using the sensor data collected. Then the relative displacement in the X, Y, Z direction can be added to the list of postions to draw.
+		The points can either be connected by short line segments or just be drawn as a small square. If we make the drawn shapes always face the camera directly using rotation matrices, they can just be 2D shapes.
