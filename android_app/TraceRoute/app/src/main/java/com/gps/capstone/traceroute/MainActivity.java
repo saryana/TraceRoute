@@ -14,15 +14,15 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.gps.capstone.traceroute.listners.AccelerometerListener;
-import com.gps.capstone.traceroute.listners.BarometerListener;
-import com.gps.capstone.traceroute.listners.GravityListener;
-import com.gps.capstone.traceroute.listners.GyroscopeListner;
-import com.gps.capstone.traceroute.listners.LinearAccelerationListener;
-import com.gps.capstone.traceroute.listners.StepCounterListener;
-import com.gps.capstone.traceroute.listners.StepDetectorListener;
-
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
+import com.gps.capstone.traceroute.listeners.AccelerometerListener;
+import com.gps.capstone.traceroute.listeners.BarometerListener;
+import com.gps.capstone.traceroute.listeners.DirectionListener;
+import com.gps.capstone.traceroute.listeners.GravityListener;
+import com.gps.capstone.traceroute.listeners.GyroscopeListner;
+import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
+import com.gps.capstone.traceroute.listeners.StepCounterListener;
+import com.gps.capstone.traceroute.listeners.StepDetectorListener;
 
 public class MainActivity extends ActionBarActivity {
     // Tag used for logging
@@ -32,20 +32,23 @@ public class MainActivity extends ActionBarActivity {
     private SensorManager sensorManager;
 
     // Lets grab each of the sensors we will be using and their corresponding listener
-    private Sensor accelerometer;
-    private SensorEventListener accelerometerListener;
-    private Sensor gyroscope;
-    private SensorEventListener gyroscopeListener;
-    private Sensor barometer;
+    private Sensor mAccelerometer;
+    private SensorEventListener mAccelerometerListener;
+    private Sensor mGyroscope;
+    private SensorEventListener mGyroscopeListener;
+    private Sensor mBarometer;
     private SensorEventListener barometerListener;
-    private Sensor linearAcceleration;
-    private SensorEventListener linearAccelerationListener;
-    private Sensor gravity;
-    private SensorEventListener gravityListener;
-    private Sensor stepCounter;
-    private SensorEventListener stepCounterListener;
-    private Sensor stepDetector;
-    private SensorEventListener stepDetectorListener;
+    private Sensor mLinearAcceleration;
+    private SensorEventListener mLinearAccelerationListener;
+    private Sensor mGravity;
+    private SensorEventListener mGravityListener;
+    private Sensor mStepCounter;
+    private SensorEventListener mStepCounterListener;
+    private Sensor mStepDetector;
+    private SensorEventListener mStepDetectorListener;
+    private Sensor mDirectionVector;
+    private Sensor mGeomagneticDV;
+    private SensorEventListener mDirectionListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,36 +66,44 @@ public class MainActivity extends ActionBarActivity {
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        // Grab the accelerometer
-        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        accelerometerListener = new AccelerometerListener((RelativeLayout) findViewById(R.id.acc_values));
+        // Grab the mAccelerometer
+        mAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccelerometerListener = new AccelerometerListener((RelativeLayout) findViewById(R.id.acc_values));
 
-        // Grab the gyroscope
-        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        gyroscopeListener = new GyroscopeListner((RelativeLayout) findViewById(R.id.gyro_values));
+        // Grab the mGyroscope
+        mGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mGyroscopeListener = new GyroscopeListner((RelativeLayout) findViewById(R.id.gyro_values));
 
-        // Grab the barometer
-        barometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+        // Grab the mBarometer
+        mBarometer = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         barometerListener = new BarometerListener((RelativeLayout) findViewById(R.id.barr_values));
 
         // Grab the Linear Acceleration (Software sensor I think)
-        linearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        linearAccelerationListener = new LinearAccelerationListener((RelativeLayout) findViewById(R.id.lin_acc_values));
+        mLinearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mLinearAccelerationListener = new LinearAccelerationListener((RelativeLayout) findViewById(R.id.lin_acc_values));
 
-        // Grab the gravity sensor
-        gravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        gravityListener = new GravityListener((RelativeLayout) findViewById(R.id.grav_values));
+        // Grab the mGravity sensor
+        mGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mGravityListener = new GravityListener((RelativeLayout) findViewById(R.id.grav_values));
 
         // Grab the step counter
-        stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        if (stepCounter == null) {
+        mStepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (mStepCounter == null) {
             Log.e(TAG, "FUCK");
         }
-        stepCounterListener = new StepCounterListener((RelativeLayout) findViewById(R.id.step_vals));
+        mStepCounterListener = new StepCounterListener((RelativeLayout) findViewById(R.id.step_vals));
 
         // Grab the step detector
-        stepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
-        stepDetectorListener = new StepDetectorListener((RelativeLayout) findViewById(R.id.step_detect_vals));
+        mStepDetector = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        mStepDetectorListener = new StepDetectorListener((RelativeLayout) findViewById(R.id.step_detect_vals));
+
+        // Get the direction vectors and listener
+        mDirectionVector = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mGeomagneticDV = sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR);
+        if (mGeomagneticDV == null) {
+            Log.e(TAG, "AHH");
+        }
+        mDirectionListener = new DirectionListener((RelativeLayout) findViewById(R.id.direction_vals));
     }
 
     @Override
@@ -104,13 +115,16 @@ public class MainActivity extends ActionBarActivity {
         Log.d(TAG, "Registered the listeners");
 
         // Register all the sensors with the listeners
-        sensorManager.registerListener(accelerometerListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(gyroscopeListener, gyroscope, SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(barometerListener, barometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(linearAccelerationListener, linearAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(gravityListener, gravity, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(stepCounterListener, stepCounter, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(stepDetectorListener, stepDetector, SensorManager.SENSOR_DELAY_NORMAL, Sensor.REPORTING_MODE_SPECIAL_TRIGGER);
+        sensorManager.registerListener(mAccelerometerListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mGyroscopeListener, mGyroscope, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(barometerListener, mBarometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mLinearAccelerationListener, mLinearAcceleration, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mGravityListener, mGravity, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mStepCounterListener, mStepCounter, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mStepDetectorListener, mStepDetector, SensorManager.SENSOR_DELAY_NORMAL, Sensor.REPORTING_MODE_SPECIAL_TRIGGER);
+        sensorManager.registerListener(mDirectionListener, mDirectionVector, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(mDirectionListener, mGeomagneticDV, SensorManager.SENSOR_DELAY_NORMAL);
+
     }
 
     @Override
@@ -122,13 +136,14 @@ public class MainActivity extends ActionBarActivity {
         Log.d(TAG, "Unregistered the listeners");
 
         // Unregister the listeners, I'm not sure how this will factor in with the phone going to sleep
-        sensorManager.unregisterListener(accelerometerListener);
-        sensorManager.unregisterListener(gyroscopeListener);
+        sensorManager.unregisterListener(mAccelerometerListener);
+        sensorManager.unregisterListener(mGyroscopeListener);
         sensorManager.unregisterListener(barometerListener);
-        sensorManager.unregisterListener(linearAccelerationListener);
-        sensorManager.unregisterListener(gravityListener);
-        sensorManager.unregisterListener(stepCounterListener);
-        sensorManager.unregisterListener(stepDetectorListener);
+        sensorManager.unregisterListener(mLinearAccelerationListener);
+        sensorManager.unregisterListener(mGravityListener);
+        sensorManager.unregisterListener(mStepCounterListener);
+        sensorManager.unregisterListener(mStepDetectorListener);
+        sensorManager.unregisterListener(mDirectionListener);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute.listners;
+package com.gps.capstone.traceroute.listeners;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

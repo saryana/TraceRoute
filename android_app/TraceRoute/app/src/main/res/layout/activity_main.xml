@@ -334,6 +334,27 @@
             android:layout_toRightOf="@+id/steps_detect_text"/>
     </RelativeLayout>
 
+    <!-- Direction vectors -->
+    <TextView android:text="@string/direction_vector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:paddingTop="10dp"/>
+    <RelativeLayout android:id="@+id/direction_vals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <!-- X-coordinate -->
+        <TextView android:id="@+id/direction_vector"
+            android:text="@string/steps"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            />
+        <TextView android:id="@+id/geomagnetic_direction_vector"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/direction_vector"/>
+    </RelativeLayout>
+
 </LinearLayout>
 </ScrollView>
 </LinearLayout>
