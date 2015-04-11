@@ -24,4 +24,5 @@
     <string name="x_coordinate">X</string>
     <string name="steps">Steps</string>
     <string name="title_activity_open_gl">OpenGL</string>
+    <string name="direction_vector">Direction Vectors</string>
 </resources>
