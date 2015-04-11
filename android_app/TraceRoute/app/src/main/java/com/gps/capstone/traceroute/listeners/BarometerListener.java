@@ -3,6 +3,7 @@ package com.gps.capstone.traceroute.listeners;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,16 +32,12 @@ public class BarometerListener implements SensorEventListener {
     public void onSensorChanged(SensorEvent event) {
         float pressureValue = event.values[0];
         ((TextView) view.findViewById(R.id.pressure_value)).setText(String.valueOf(pressureValue));
-        float feetAltitude = (float)Math.pow(pressureValue/1013.25, .190284);
-        feetAltitude = 1 - feetAltitude;
-        feetAltitude *= 135366.45;
-        maxAlt = Math.max(feetAltitude, maxAlt);
-        minAlt = Math.min(feetAltitude, minAlt);
-        float meterAltitude = (float) (feetAltitude * .3048);
-        ((TextView) view.findViewById(R.id.altitude_value_ft)).setText(String.valueOf(feetAltitude));
+        float meterAltitude = SensorManager.getAltitude(SensorManager.PRESSURE_STANDARD_ATMOSPHERE, pressureValue);
+        maxAlt = Math.max(meterAltitude, maxAlt);
+        minAlt = Math.min(meterAltitude, minAlt);
         ((TextView) view.findViewById(R.id.altitude_value_meters)).setText(String.valueOf(meterAltitude));
-        ((TextView) view.findViewById(R.id.max_alt)).setText("Max alt: " + String.valueOf(maxAlt) + " feet");
-        ((TextView) view.findViewById(R.id.min_alt)).setText("Min alt: " + String.valueOf(minAlt) + " feet");
+        ((TextView) view.findViewById(R.id.max_alt)).setText("Max alt: " + String.valueOf(maxAlt) + " m");
+        ((TextView) view.findViewById(R.id.min_alt)).setText("Min alt: " + String.valueOf(minAlt) + " m");
     }
 
     @Override

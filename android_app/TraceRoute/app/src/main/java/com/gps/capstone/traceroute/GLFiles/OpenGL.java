@@ -7,11 +7,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.SensorDataManager;
+import com.squareup.otto.Bus;
 
 
 public class OpenGL extends ActionBarActivity {
 
     private GLSurfaceView mGLSurface;
+    public static Bus mBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +22,8 @@ public class OpenGL extends ActionBarActivity {
 
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
+        mBus = new Bus();
+        SensorDataManager sensorDataManager = new SensorDataManager(this, mBus);
     }
 
 

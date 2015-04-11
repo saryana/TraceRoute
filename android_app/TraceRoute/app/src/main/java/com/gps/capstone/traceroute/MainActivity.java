@@ -109,7 +109,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         Toast.makeText(this, "Registering the listeners", Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "Registered the listeners");
@@ -130,7 +129,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         Toast.makeText(this, "Unregister the listeners", Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "Unregistered the listeners");

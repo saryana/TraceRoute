@@ -121,6 +121,8 @@ public class Axis {
         GLES20.glDrawArrays(GLES20.GL_LINES, 2, 2);
         GLES20.glDrawArrays(GLES20.GL_LINES, 4, 2);
 
+
+
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
