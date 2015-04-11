@@ -144,19 +144,41 @@ public class MySurfaceView extends GLSurfaceView {
             // and compute the pan and zoom changes!
             int fingerOne = e.findPointerIndex(fingerOneID);
             int fingerTwo = e.findPointerIndex(fingerTwoID);
-            computeTwoFingerPan(e, fingerOne, fingerTwo);
-            computeTwoFingerZoom(e, fingerOne, fingerTwo);
+            float curXFingerOne = e.getX(fingerOne);
+            float curYFingerOne = e.getY(fingerOne);
+            float curXFingerTwo = e.getX(fingerTwo);
+            float curYFingerTwo = e.getY(fingerTwo);
+            computeTwoFingerPan(e, curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+            computeTwoFingerZoom(e, curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+            // update the previous values of the finger positions.
+            previousXFingerOne = curXFingerOne;
+            previousYFingerOne = curYFingerOne;
+            previousXFingerTwo = curXFingerTwo;
+            previousYFingerTwo = curYFingerTwo;
         }
     }
 
     // Compute the pan amount for a two finger touch event.
-    private void computeTwoFingerPan(MotionEvent e, int fingerOne, int fingerTwo) {
+    // Panning is a little more nuanced than zoom - there could be certain two finger gestures
+    // that could confuse this. Right now the method I'm using for panning
+    // is simple: Compute the previous midpoint and the current midpoint between the two fingers,
+    // and pan the camera based on how the midpoint changed.
+    private void computeTwoFingerPan(MotionEvent e, float curXFingerOne,
+                                     float curYFingerOne, float curXFingerTwo, float curYFingerTwo) {
+        float[] prevMidpoint = midpointFormula(previousXFingerOne, previousYFingerOne, previousXFingerTwo, previousYFingerTwo);
+        float[] curMidpoint = midpointFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+        float deltaMidpointX = curMidpoint[0] - prevMidpoint[0];
+        float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
+        // TODO: Do something with these deltas! Pan the camera based on them.
 
     }
 
     // Compute the zoom amount for a two-finger touch event.
-    private void computeTwoFingerZoom(MotionEvent e, int fingerOne, int fingerTwo) {
-
+    private void computeTwoFingerZoom(MotionEvent e, float curXFingerOne,
+                                      float curYFingerOne, float curXFingerTwo, float curYFingerTwo) {
+        float curDistance = distanceFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+        float deltaDistance = previousDistance - curDistance;
+        // TODO: do something with deltaDistance! Change the zoom level based on the change in finger distance.
     }
 
     // Enumerated type to indicate what the previous touch event was.
@@ -167,5 +189,34 @@ public class MySurfaceView extends GLSurfaceView {
     // computes the distance between two points and returns it in a float.
     private float distanceFormula(float x1, float y1, float x2, float y2) {
         return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
+    }
+
+    // computes the midpoint between two points and returns a tuple with
+    // the x-coordinate and y-coordinate of the midpoint.
+    private float[] midpointFormula(float x1, float y1, float x2, float y2) {
+        // I know this is bad style. You can hit me if you want.
+        // 0 = x-coordinate, 1 = y-coordinate
+        float[] tuple = new float[2];
+        // compute the relative position of the midpoint.
+        float dx = (x1 - x2) / 2;
+        float dy = (y1 - y2) / 2;
+
+        // if x1's value is less than x2, add -1 * dx to x1 to get the x coordinate of the midpoint.
+        if (dx < 0) {
+            tuple[0] = x1 + (dx * -1);
+        } else {
+            // add the negative value of dx to x1 to get the x-coordinate of the midpoint.
+            tuple[0] = x1 - dx;
+        }
+
+        // if y1's value is less than y2, add -1 * dy to y1 to get the y-coordinate of the midpoint.
+        if (dy < 0) {
+            tuple[1] = y1 + (dy * -1);
+        } else {
+            // add the negative value of dy to y1 to get the y-coordinate of the midpoint.
+            tuple[1] = y1 - dy;
+        }
+        // return the midpoint.
+        return tuple;
     }
 }
