@@ -16,7 +16,7 @@ public class MySurfaceView extends GLSurfaceView {
 
     private MyGLRenderer mRenderer;
 
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private final float TOUCH_SCALE_FACTOR = 90.0f / 320;
 
 
     // Fields to keep track of 1-finger movement. This is for rotation.

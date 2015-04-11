@@ -148,30 +148,17 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/pressure_text"/>
 
-        <!-- Estimated Altitude feet -->
-        <TextView android:id="@+id/altitude_text_ft"
-            android:text="@string/altitude_feet"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/pressure_text"
-            />
-        <TextView android:id="@+id/altitude_value_ft"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/pressure_value"
-            android:layout_toRightOf="@+id/altitude_text_ft"/>
-
         <!-- Estimated Altitude meters -->
         <TextView android:id="@+id/altitude_text_meters"
             android:text="@string/altitude_meters"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/altitude_text_ft"
+            android:layout_below="@+id/pressure_text"
             />
         <TextView android:id="@+id/altitude_value_meters"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/altitude_value_ft"
+            android:layout_below="@id/pressure_value"
             android:layout_toRightOf="@+id/altitude_text_meters"/>
 
         <TextView android:id="@+id/max_alt"
@@ -184,7 +171,7 @@
             android:layout_below="@id/max_alt"/>
     </RelativeLayout>
 
-    <!-- Linear Acceration View -->
+    <!-- Linear Acceleration View -->
     <TextView android:text="@string/linear_acceleration_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
