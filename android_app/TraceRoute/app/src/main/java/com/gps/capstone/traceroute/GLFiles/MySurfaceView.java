@@ -6,7 +6,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.gps.capstone.traceroute.BusProvider;
-import com.squareup.otto.Subscribe;
+import com.gps.capstone.traceroute.GLFiles.util.TouchType;
+import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 
 /**
  * Created by saryana on 4/9/15.
@@ -15,11 +16,11 @@ import com.squareup.otto.Subscribe;
  * touch event. We may not need any of these fields.
  */
 public class MySurfaceView extends GLSurfaceView {
-
+    // The class tag
     private final String TAG = this.getClass().getSimpleName();
 
     // Keeps track of the most recent motion event.
-    private PreviousTouch previousMotion = PreviousTouch.SHIT;
+    private TouchType previousMotion = TouchType.SHIT;
 
     private MyGLRenderer mRenderer;
 
@@ -81,7 +82,7 @@ public class MySurfaceView extends GLSurfaceView {
             computeTwoFingerMotion(e);
         } else {
         // For garbage touch events.
-            previousMotion = PreviousTouch.SHIT;
+            previousMotion = TouchType.SHIT;
         }
 
         return true;
@@ -95,9 +96,9 @@ public class MySurfaceView extends GLSurfaceView {
         // If the previous motion wasn't a single finger
         // touch, set the previous coordinates to be the coordinates
         // of this single finger touch and exit.
-        if (previousMotion != PreviousTouch.SINGLE) {
+        if (previousMotion != TouchType.SINGLE) {
             // Update the previousMotion to be a single finger touch event!
-            previousMotion = PreviousTouch.SINGLE;
+            previousMotion = TouchType.SINGLE;
             mPreviousX = x;
             mPreviousY = y;
             return;
@@ -134,9 +135,9 @@ public class MySurfaceView extends GLSurfaceView {
     private void computeTwoFingerMotion(MotionEvent e) {
         // if the previous motion wasn't a double touch, or we don't recognise the
         // pointer IDs, set the initial state for a double touch event.
-        if (previousMotion != PreviousTouch.DOUBLE || (e.findPointerIndex(fingerOneID) == -1 ||
+        if (previousMotion != TouchType.DOUBLE || (e.findPointerIndex(fingerOneID) == -1 ||
                 e.findPointerIndex(fingerTwoID) == -1)) {
-            previousMotion = PreviousTouch.DOUBLE;
+            previousMotion = TouchType.DOUBLE;
             fingerOneID = e.getPointerId(0);
             fingerTwoID = e.getPointerId(1);
 
@@ -146,7 +147,7 @@ public class MySurfaceView extends GLSurfaceView {
             previousXFingerTwo = e.getX(1);
             previousYFingerTwo = e.getY(1);
 
-            previousDistance = distanceFormula(previousXFingerOne, previousYFingerOne, previousXFingerTwo, previousYFingerTwo);
+            previousDistance = TouchUtil.distanceFormula(previousXFingerOne, previousYFingerOne, previousXFingerTwo, previousYFingerTwo);
 
         } else {
             // if everything checks out, get the indicies for finger one and two,
@@ -174,8 +175,8 @@ public class MySurfaceView extends GLSurfaceView {
     // and pan the camera based on how the midpoint changed.
     private void computeTwoFingerPan(MotionEvent e, float curXFingerOne,
                                      float curYFingerOne, float curXFingerTwo, float curYFingerTwo) {
-        float[] prevMidpoint = midpointFormula(previousXFingerOne, previousYFingerOne, previousXFingerTwo, previousYFingerTwo);
-        float[] curMidpoint = midpointFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+        float[] prevMidpoint = TouchUtil.midpointFormula(previousXFingerOne, previousYFingerOne, previousXFingerTwo, previousYFingerTwo);
+        float[] curMidpoint = TouchUtil.midpointFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
         float deltaMidpointX = curMidpoint[0] - prevMidpoint[0];
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
         // TODO: Do something with these deltas! Pan the camera based on them.
@@ -187,47 +188,10 @@ public class MySurfaceView extends GLSurfaceView {
     // Compute the zoom amount for a two-finger touch event.
     private void computeTwoFingerZoom(MotionEvent e, float curXFingerOne,
                                       float curYFingerOne, float curXFingerTwo, float curYFingerTwo) {
-        float curDistance = distanceFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+        float curDistance = TouchUtil.distanceFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
         float deltaDistance = previousDistance - curDistance;
+        // Set the previous distance to be the current distance.
+        previousDistance = curDistance;
         // TODO: do something with deltaDistance! Change the zoom level based on the change in finger distance.
-    }
-
-    // Enumerated type to indicate what the previous touch event was.
-    private enum PreviousTouch {
-        SINGLE, DOUBLE, SHIT;
-    }
-
-    // computes the distance between two points and returns it in a float.
-    private float distanceFormula(float x1, float y1, float x2, float y2) {
-        return (float)Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-    }
-
-    // computes the midpoint between two points and returns a tuple with
-    // the x-coordinate and y-coordinate of the midpoint.
-    private float[] midpointFormula(float x1, float y1, float x2, float y2) {
-        // I know this is bad style. You can hit me if you want.
-        // 0 = x-coordinate, 1 = y-coordinate
-        float[] tuple = new float[2];
-        // compute the relative position of the midpoint.
-        float dx = (x1 - x2) / 2;
-        float dy = (y1 - y2) / 2;
-
-        // if x1's value is less than x2, add -1 * dx to x1 to get the x coordinate of the midpoint.
-        if (dx < 0) {
-            tuple[0] = x1 + (dx * -1);
-        } else {
-            // add the negative value of dx to x1 to get the x-coordinate of the midpoint.
-            tuple[0] = x1 - dx;
-        }
-
-        // if y1's value is less than y2, add -1 * dy to y1 to get the y-coordinate of the midpoint.
-        if (dy < 0) {
-            tuple[1] = y1 + (dy * -1);
-        } else {
-            // add the negative value of dy to y1 to get the y-coordinate of the midpoint.
-            tuple[1] = y1 - dy;
-        }
-        // return the midpoint.
-        return tuple;
     }
 }
