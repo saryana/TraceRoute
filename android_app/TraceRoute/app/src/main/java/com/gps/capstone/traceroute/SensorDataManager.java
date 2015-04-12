@@ -5,8 +5,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.Matrix;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 
@@ -20,7 +22,7 @@ public class SensorDataManager implements SensorEventListener {
     private final String TAG = this.getClass().getSimpleName();
 
     // Bus system used for communication
-    private Bus mBus;
+    public Bus mBus;
     // Context we are created
     private Context mContext;
     // Sensor manager we are using
@@ -34,6 +36,17 @@ public class SensorDataManager implements SensorEventListener {
     private float[] mGravVals;
     private float[] mAccelVals;
 
+
+    private static SensorDataManager mInstance;
+
+    public static void createInstance(Context c, Bus b) {
+        if (mInstance == null) {
+            mInstance = new SensorDataManager(c, b);
+        }
+    }
+    public static SensorDataManager getInstance() {
+        return mInstance;
+    }
 
     public SensorDataManager(Context context, Bus bus) {
         mBus = bus;
@@ -64,9 +77,9 @@ public class SensorDataManager implements SensorEventListener {
             if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
                 float[] orientation = new float[3];
                 orientation = SensorManager.getOrientation(R, orientation);
-                Log.i(TAG, "I " + Arrays.toString(I));
-                Log.i(TAG, "R " + Arrays.toString(R));
-                Log.i(TAG, "Orientation " + Arrays.toString(orientation));
+//                Log.i(TAG, "I " + Arrays.toString(I));
+//                Log.i(TAG, "R " + Arrays.toString(R));
+//                Log.i(TAG, "Orientation " + Arrays.toString(orientation));
                 mBus.post(new NewRotationVectorEvent(I, 0));
 //                mBus.post(new NewRotationVectorEvent(R, 1));
 //                mBus.post(new NewRotationVectorEvent(orientation, 3));
@@ -80,5 +93,7 @@ public class SensorDataManager implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
-
+    public void unregister() {
+        mSensorManager.unregisterListener(this);
+    }
 }
