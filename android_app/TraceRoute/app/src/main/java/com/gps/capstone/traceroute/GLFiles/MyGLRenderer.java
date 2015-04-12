@@ -3,8 +3,13 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
+import com.gps.capstone.traceroute.NewRotationVectorEvent;
+import com.gps.capstone.traceroute.SensorDataManager;
 import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -85,4 +90,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
 
+
+    @Subscribe
+    public void onNewData(NewRotationVectorEvent e) {
+        Log.d("DATA", Arrays.toString(e.data));
+    }
 }

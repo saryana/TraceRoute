@@ -3,12 +3,17 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gps.capstone.traceroute.NewRotationVectorEvent;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.SensorDataManager;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 
 public class OpenGL extends ActionBarActivity {
@@ -23,7 +28,8 @@ public class OpenGL extends ActionBarActivity {
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
         mBus = new Bus();
-        SensorDataManager sensorDataManager = new SensorDataManager(this, mBus);
+        mBus.register(this);
+        SensorDataManager.createInstance(this, mBus);
     }
 
 
@@ -47,5 +53,10 @@ public class OpenGL extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe
+    public void onNewData(NewRotationVectorEvent e) {
+        Log.d("DATA2", Arrays.toString(e.data));
     }
 }
