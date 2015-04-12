@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute;
+package com.gps.capstone.traceroute.sensors;
 
 /**
  * Created by saryana on 4/11/15.

@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute;
+package com.gps.capstone.traceroute.sensors;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -7,17 +7,16 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.BusProvider;
 import com.squareup.otto.Bus;
 
 /**
  * Created by saryana on 4/11/15.
  */
 public class SensorDataManager implements SensorEventListener {
-
+    // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 
-    // Bus system used for communication
-    public Bus mBus;
     // Sensor manager we are using
     private SensorManager mSensorManager;
     // Current acceleration values
@@ -38,10 +37,8 @@ public class SensorDataManager implements SensorEventListener {
      * Creates a new SensorDataManager that post evens about new data being received from the
      * accelerometer and gravity sensor for now
      * @param context Context we are being called in
-     * @param bus Bus for communication
      */
-    public SensorDataManager(Context context, Bus bus) {
-        mBus = bus;
+    public SensorDataManager(Context context) {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         // Grab and register listeners for the accelerometer and the gravity
@@ -70,7 +67,7 @@ public class SensorDataManager implements SensorEventListener {
                     R != null) {
 //                float[] orientation = new float[3];
 //                orientation = SensorManager.getOrientation(R, orientation);
-                mBus.post(new OrientationChangeEvent(R, 0));
+                BusProvider.getInstance().post(new OrientationChangeEvent(R, 0));
             } else {
                 Log.e(TAG, "Didn't et information from rotation matrix");
             }
@@ -79,8 +76,12 @@ public class SensorDataManager implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        // Currently not used
     }
+
+    /**
+     * Unregister the sensor listener when we are destroying the activity
+     */
     public void unregister() {
         mSensorManager.unregisterListener(this);
     }

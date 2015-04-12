@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.SensorDataManager;
 
 
 public class OpenGL extends ActionBarActivity {
@@ -19,6 +20,7 @@ public class OpenGL extends ActionBarActivity {
 
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
+        SensorDataManager sensorDataManager = new SensorDataManager(this);
     }
 
 
