@@ -44,13 +44,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         float[] scratch = new float[16];
-        Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+
+        // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+        Matrix.invertM(scratch, 0, mRotationMatrix, 0);
 
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
-
 
         mAxis.draw(scratch);
     }
@@ -90,9 +91,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
 
+    public void setRotationMatrix(float[] r) {
+        mRotationMatrix = r;
+    }
 
     @Subscribe
     public void onNewData(NewRotationVectorEvent e) {
+
         Log.d("DATA", Arrays.toString(e.data));
     }
 }
