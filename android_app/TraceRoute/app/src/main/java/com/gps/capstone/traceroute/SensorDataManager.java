@@ -5,14 +5,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.opengl.Matrix;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Produce;
-
-import java.util.Arrays;
 
 /**
  * Created by saryana on 4/11/15.
@@ -23,46 +18,37 @@ public class SensorDataManager implements SensorEventListener {
 
     // Bus system used for communication
     public Bus mBus;
-    // Context we are created
-    private Context mContext;
     // Sensor manager we are using
     private SensorManager mSensorManager;
-    // Accelerometer
-    private Sensor mAccel;
-    // Magnetic field
-    private Sensor mGrav;
-    public float[] R;
-    public float[] I;
-    private float[] mGravVals;
+    // Current acceleration values
     private float[] mAccelVals;
+    // Current gravity values
+    private float[] mGravVals;
 
+    // Singleton instance of the SensorDataManager
+//    private static SensorDataManager mInstance;
 
-    private static SensorDataManager mInstance;
+//    public static void createInstance(Context c, Bus b) {
+//        if (mInstance == null) {
+//            mInstance = new SensorDataManager(c, b);
+//        }
+//    }
 
-    public static void createInstance(Context c, Bus b) {
-        if (mInstance == null) {
-            mInstance = new SensorDataManager(c, b);
-        }
-    }
-    public static SensorDataManager getInstance() {
-        return mInstance;
-    }
-
+    /**
+     * Creates a new SensorDataManager that post evens about new data being received from the
+     * accelerometer and gravity sensor for now
+     * @param context Context we are being called in
+     * @param bus Bus for communication
+     */
     public SensorDataManager(Context context, Bus bus) {
         mBus = bus;
-        mContext = context;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        mGravVals = null;
-        mAccelVals = null;
-
-        R = new float[9];
-        I = new float[9];
-
-        mAccel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        mGrav = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        mSensorManager.registerListener(this, mAccel, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mGrav, SensorManager.SENSOR_DELAY_NORMAL);
+        // Grab and register listeners for the accelerometer and the gravity
+        Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor grav = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mSensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, grav, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -72,19 +58,21 @@ public class SensorDataManager implements SensorEventListener {
         } else {
             mGravVals = event.values;
         }
-
+        // If we don't have any new data, we can't compute the orientation and post an event
         if (mAccelVals != null && mGravVals != null) {
-            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
-                float[] orientation = new float[3];
-                orientation = SensorManager.getOrientation(R, orientation);
-//                Log.i(TAG, "I " + Arrays.toString(I));
-//                Log.i(TAG, "R " + Arrays.toString(R));
-//                Log.i(TAG, "Orientation " + Arrays.toString(orientation));
-                mBus.post(new NewRotationVectorEvent(I, 0));
-//                mBus.post(new NewRotationVectorEvent(R, 1));
-//                mBus.post(new NewRotationVectorEvent(orientation, 3));
+            // Rotation matrix
+            float[] R = null;
+            // Inclination of the phone
+            float[] I = null;
+
+            // Did we get valid data?
+            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals) &&
+                    R != null) {
+//                float[] orientation = new float[3];
+//                orientation = SensorManager.getOrientation(R, orientation);
+                mBus.post(new OrientationChangeEvent(R, 0));
             } else {
-                Log.e(TAG, "No data from rotation matrix");
+                Log.e(TAG, "Didn't et information from rotation matrix");
             }
         }
     }

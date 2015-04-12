@@ -5,8 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.NewRotationVectorEvent;
-import com.gps.capstone.traceroute.SensorDataManager;
+import com.gps.capstone.traceroute.OrientationChangeEvent;
 import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
@@ -88,11 +87,5 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setAngle(float angle) {
         mAngle = angle;
-    }
-
-
-    @Subscribe
-    public void onNewData(NewRotationVectorEvent e) {
-        Log.d("DATA", Arrays.toString(e.data));
     }
 }
