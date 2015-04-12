@@ -58,13 +58,12 @@ public class SensorDataManager implements SensorEventListener {
         // If we don't have any new data, we can't compute the orientation and post an event
         if (mAccelVals != null && mGravVals != null) {
             // Rotation matrix
-            float[] R = null;
+            float[] R = new float[9];
             // Inclination of the phone
-            float[] I = null;
+            float[] I = new float[9];
 
             // Did we get valid data?
-            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals) &&
-                    R != null) {
+            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
 //                float[] orientation = new float[3];
 //                orientation = SensorManager.getOrientation(R, orientation);
                 BusProvider.getInstance().post(new OrientationChangeEvent(R, 0));
