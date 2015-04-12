@@ -2,7 +2,10 @@ package com.gps.capstone.traceroute.GLFiles;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.MotionEvent;
+
+import com.squareup.otto.Subscribe;
 
 /**
  * Created by saryana on 4/9/15.
@@ -11,6 +14,9 @@ import android.view.MotionEvent;
  * touch event. We may not need any of these fields.
  */
 public class MySurfaceView extends GLSurfaceView {
+
+    private final String TAG = this.getClass().getSimpleName();
+
     // Keeps track of the most recent motion event.
     private PreviousTouch previousMotion = PreviousTouch.SHIT;
 
@@ -170,6 +176,8 @@ public class MySurfaceView extends GLSurfaceView {
         float deltaMidpointX = curMidpoint[0] - prevMidpoint[0];
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
         // TODO: Do something with these deltas! Pan the camera based on them.
+
+        Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
 
     }
 
