@@ -1,13 +1,13 @@
-package com.gps.capstone.traceroute;
+package com.gps.capstone.traceroute.sensors;
 
 /**
  * Created by saryana on 4/11/15.
  */
-public class NewRotationVectorEvent {
+public class OrientationChangeEvent {
     public float[] data;
     public int type;
 
-    public NewRotationVectorEvent(float[] data, int type) {
+    public OrientationChangeEvent(float[] data, int type) {
         this.data = data;
         this.type = type;
     }
