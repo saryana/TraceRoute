@@ -25,4 +25,11 @@
     <string name="steps">Steps</string>
     <string name="title_activity_open_gl">OpenGL</string>
     <string name="direction_vector">Direction Vectors</string>
+    <string name="action_open_gl">OpenGL</string>
+    <string name="action_user_setting">User Settings</string>
+    <string name="action_debug_console">Debug</string>
+    <string name="title_activity_user_settings">UserSettings</string>
+    <string name="height_text">Height (Feet and Inches)</string>
+    <string name="feet">ft</string>
+    <string name="inches">inches</string>
 </resources>

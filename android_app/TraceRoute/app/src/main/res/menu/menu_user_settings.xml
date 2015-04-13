@@ -1,13 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.gps.capstone.traceroute.GLFiles.OpenGL">
-    <item android:id="@+id/debug_console"
-        android:title="@string/action_debug_console"
+    tools:context="com.gps.capstone.traceroute.UserSettings">
+
+    <item android:id="@+id/open_gl_view"
+        android:title="@string/action_open_gl"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/user_settings"
-        android:title="@string/action_user_setting"
+    <item android:id="@+id/debug_console"
+        android:title="@string/action_debug_console"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

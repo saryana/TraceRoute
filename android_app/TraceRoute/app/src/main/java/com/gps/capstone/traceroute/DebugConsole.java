@@ -9,8 +9,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -24,7 +22,7 @@ import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
 import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
 
-public class MainActivity extends ActionBarActivity {
+public class DebugConsole extends ActionBarActivity {
     // Tag used for logging
     private final String TAG = this.getClass().getSimpleName();
 
@@ -53,16 +51,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this, OpenGL.class);
-                startActivity(i);
-            }
-        });
+        setContentView(R.layout.activity_debug_console);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -147,7 +136,7 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_debug_console, menu);
         return true;
     }
 
@@ -158,11 +147,18 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        // Depending on what the user clicks lets start that activity
+        Intent i = null;
+        switch (id) {
+            case R.id.user_settings:
+                i = new Intent(this, UserSettings.class);
+                break;
+            case R.id.open_gl_view:
+                i = new Intent(this, OpenGL.class);
+                break;
         }
-
+        if (i != null)
+            startActivity(i);
         return super.onOptionsItemSelected(item);
     }
 

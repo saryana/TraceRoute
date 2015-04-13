@@ -26,6 +26,10 @@ public class SensorDataManager implements SensorEventListener {
     private float[] mAccelVals;
     // Current gravity values
     private float[] mGravVals;
+    // Gravity sensor
+    private Sensor mGravitySensor;
+    // Accelerometer sensor
+    private Sensor mAccelerationSensor;
 
     // Singleton instance of the SensorDataManager
 //    private static SensorDataManager mInstance;
@@ -44,11 +48,10 @@ public class SensorDataManager implements SensorEventListener {
     public SensorDataManager(Context context) {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mContext = context;
-        // Grab and register listeners for the accelerometer and the gravity
-        Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor grav = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        mSensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, grav, SensorManager.SENSOR_DELAY_NORMAL);
+        // Grab and register listeners for the accelerometer and the gravity sensors
+        mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        register();
     }
 
     @Override
@@ -83,6 +86,14 @@ public class SensorDataManager implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Currently not used
+    }
+
+    /**
+     * Registers the sensor's listeners
+     */
+    public void register() {
+        mSensorManager.registerListener(this, mAccelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     /**
