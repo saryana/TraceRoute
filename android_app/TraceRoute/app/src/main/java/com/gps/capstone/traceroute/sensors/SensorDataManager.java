@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.gps.capstone.traceroute.BusProvider;
 import com.squareup.otto.Bus;
@@ -17,6 +18,8 @@ public class SensorDataManager implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 
+    // Context we were created in
+    private Context mContext;
     // Sensor manager we are using
     private SensorManager mSensorManager;
     // Current acceleration values
@@ -40,7 +43,7 @@ public class SensorDataManager implements SensorEventListener {
      */
     public SensorDataManager(Context context) {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-
+        mContext = context;
         // Grab and register listeners for the accelerometer and the gravity
         Sensor accel = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         Sensor grav = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
@@ -58,14 +61,18 @@ public class SensorDataManager implements SensorEventListener {
         // If we don't have any new data, we can't compute the orientation and post an event
         if (mAccelVals != null && mGravVals != null) {
             // Rotation matrix
-            float[] R = new float[9];
+            float[] R = new float[16];
             // Inclination of the phone
-            float[] I = new float[9];
+            float[] I = new float[16];
 
             // Did we get valid data?
-            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
+            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals) &&
+                    R != null) {
 //                float[] orientation = new float[3];
 //                orientation = SensorManager.getOrientation(R, orientation);
+//                if (R.length == 16) {
+//                    Log.d(TAG, "WE HAVE A 4x4");
+//                }
                 BusProvider.getInstance().post(new OrientationChangeEvent(R, 0));
             } else {
                 Log.e(TAG, "Didn't et information from rotation matrix");
