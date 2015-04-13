@@ -83,7 +83,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setAngle(float angle) {
         mAngle = angle;
     }
-
     public void setRotationMatrix(float[] r) {
         mRotationMatrix = r;
     }
