@@ -69,7 +69,7 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(OrientationChangeEvent e) {
-        Log.d(TAG, "WE GOT DATA " + Arrays.toString(e.data));
+//        Log.d(TAG, "WE GOT DATA " + Arrays.toString(e.data));
         mRenderer.setRotationMatrix(e.data);
         requestRender();
     }
