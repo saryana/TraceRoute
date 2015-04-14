@@ -4,16 +4,16 @@
     <PreferenceCategory
         android:title="Test Ground">
 
-        <ListPreference
+        <ListPreference android:key="@string/pref_key_height_ft_test"
             android:title="Height (ft)"
-            android:key="@string/pref_key_height_ft_test"
             android:entries="@array/height_ft_array"
-            android:entryValues="@array/height_ft_array_vals" />
-        <!--<ListPreference-->
-        <!--android:title="Height (in)"-->
-        <!--android:key="@string/pref_key_height_in_test"-->
-        <!--android:entries="@array/height_in_array"-->
-        <!--android:entryValues="@array/height_in_array" />-->
+            android:entryValues="@array/height_ft_array"
+            android:defaultValue="1"/>
+        <ListPreference android:key="@string/pref_key_height_in_test"
+            android:title="Height (in)"
+            android:entries="@array/height_in_array"
+            android:entryValues="@array/height_in_array"
+            android:defaultValue="0" />
     </PreferenceCategory>
 
 </PreferenceScreen>

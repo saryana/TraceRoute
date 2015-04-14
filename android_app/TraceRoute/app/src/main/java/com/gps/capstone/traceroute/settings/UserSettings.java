@@ -1,8 +1,10 @@
 package com.gps.capstone.traceroute.settings;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 
@@ -49,16 +51,21 @@ public class UserSettings extends PreferenceActivity {
     /**
      * This fragment shows the preferences for the second header.
      */
-    public static class Prefs2Fragment extends PreferenceFragment {
+    public static class Prefs2Fragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).registerOnSharedPreferenceChangeListener(this);
             // Can retrieve arguments from headers XML.
             Log.i("args", "Arguments: " + getArguments());
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.preference_dependencies);
+        }
+
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            Log.d("PREF2Frag", key + " has value of " + sharedPreferences.getInt(key, -1));
         }
     }
 

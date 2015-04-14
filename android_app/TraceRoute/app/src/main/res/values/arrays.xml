@@ -11,18 +11,7 @@
         <item>7</item>
     </string-array>
 
-
-    <integer-array name="height_ft_array_vals">
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
-        <item>7</item>
-    </integer-array>
-
-    <integer-array name="height_in_array">
+    <string-array name="height_in_array">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -35,5 +24,5 @@
         <item>9</item>
         <item>10</item>
         <item>11</item>
-    </integer-array>
+    </string-array>
 </resources>
