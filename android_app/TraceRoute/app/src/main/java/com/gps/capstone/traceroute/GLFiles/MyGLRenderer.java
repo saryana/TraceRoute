@@ -3,6 +3,7 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.preference.PreferenceManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,6 +21,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private ProgramManager graphicsEnvironment;
 
     private Axis mAxis;
+    private Cube mCube;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
@@ -29,6 +31,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         mAxis = new Axis();
+        mCube = new Cube();
+
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -43,15 +47,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         float[] scratch = new float[16];
 
-        // Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
-        Matrix.invertM(scratch, 0, mRotationMatrix, 0);
-
+        // This determines if the user is taking control or it is based off of the orientation of the phone
+        if (OpenGL.USER_CONTROL) {
+            Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+        } else {
+            Matrix.invertM(scratch, 0, mRotationMatrix, 0);
+        }
+        float[] scratch2 = new float[16];
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch, 0, mMVPMatrix, 0, mRotationMatrix, 0);
+        Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
-        mAxis.draw(scratch);
+        mAxis.draw(scratch2);
+        mCube.draw(scratch2);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {

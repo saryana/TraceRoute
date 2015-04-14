@@ -1,6 +1,7 @@
 package com.gps.capstone.traceroute.settings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
@@ -13,9 +14,13 @@ import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
 
-public class Prefs1Frag extends PreferenceFragment {
-
+public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    // Tag for logging
     private final String TAG = getClass().getSimpleName();
+
+    public Prefs1Frag() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,14 +31,27 @@ public class Prefs1Frag extends PreferenceFragment {
         // SharedPreferences wherever they are needed.
 //        PreferenceManager.setDefaultValues(getActivity(),
 //                R.xml.advanced_preferences, false);
-        Log.e(TAG, "On create");
+
+        // TODO sean: Currently can't get the menu to show for some bizarre reason
         setHasOptionsMenu(true);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.fragmented_preferences);
     }
 
-    public Prefs1Frag() {
-        // Required empty public constructor
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Make it so when we change any preferences we can see it here
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .registerOnSharedPreferenceChangeListener(this);
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Don't forget to unregister the listener when we are done
+        PreferenceManager.getDefaultSharedPreferences(getActivity())
+                            .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -61,9 +79,23 @@ public class Prefs1Frag extends PreferenceFragment {
                 i = new Intent(getActivity(), DebugConsole.class);
                 break;
         }
-        if (i != null)
+        // TODO sean: Figure out to fix the back stack
+        // Need to figure out how to fix the back stack so we aren't
+        // having a giant back stack
+        if (i != null) {
             startActivity(i);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_key_user_control))) {
+            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, false));
+            OpenGL.USER_CONTROL = true;
+        } else {
+            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
+        }
+    }
 }

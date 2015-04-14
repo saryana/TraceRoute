@@ -1,12 +1,13 @@
 <resources>
     <string name="app_name">TraceRoute</string>
 
+    <!-- String resources throughout the application -->
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="values_text">Values</string>
     <string name="accelerometer_text">Accelerometer</string>
     <string name="gyroscope_text">Gyroscope</string>
-    <string name="linear_acceleration_text">Linear Acceleratio</string>
+    <string name="linear_acceleration_text">Linear Acceleration</string>
     <string name="units">Units:</string>
     <string name="acceleration_units">m/s^2</string>
     <string name="radian_units">rad/sec</string>
@@ -33,6 +34,13 @@
     <string name="feet">ft</string>
     <string name="inches">inches</string>
 
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Preference keys -->
+    <string name="pref_key_height_ft">prefKeyHeightFt</string>
+    <string name="pref_key_height_in">prefKeyHeightIn</string>
+    <string name="pref_key_total_height_in">prefKeyTotalHeight</string>
+    <string name="pref_key_user_control">preKeyUserControl</string>
+    <string name="pref_key_height_ft_test">prefKeyHeightTest</string>
+    <string name="pref_key_height_in_test">prefKeyHeightInTest</string>
+
 </resources>
