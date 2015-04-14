@@ -11,8 +11,6 @@ import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.sensors.OrientationChangeEvent;
 import com.squareup.otto.Subscribe;
 
-import java.util.Arrays;
-
 /**
  * Created by saryana on 4/9/15.
  *
