@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <header android:fragment="com.gps.capstone.traceroute.settings.Prefs1Frag"
+        android:icon="@drawable/ic_action_picture"
+        android:title="Prefs 1"
+        android:summary="An example of some preferences." />
+
+    <header android:fragment="com.gps.capstone.traceroute.settings.UserSettings$Prefs2Fragment"
+        android:icon="@drawable/ic_action_settings"
+        android:title="Prefs 2"
+        android:summary="Some other preferences you can see.">
+        <!-- Arbitrary key/value pairs can be included with a header as
+             arguments to its fragment. -->
+        <extra android:name="someKey" android:value="someHeaderValue" />
+    </header>
+
+</preference-headers>

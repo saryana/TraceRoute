@@ -14,8 +14,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".GLFiles.OpenGL"
-            android:label="@string/title_activity_open_gl"
-            android:parentActivityName=".DebugConsole" >
+            android:label="@string/title_activity_open_gl" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -39,7 +38,7 @@
                 android:value="com.gps.capstone.traceroute.GLFiles.OpenGL" />
         </activity>
         <activity
-            android:name=".UserSettingss"
+            android:name=".settings.UserSettings"
             android:label="@string/title_activity_user_settingss"
             android:parentActivityName=".GLFiles.OpenGL" >
             <meta-data

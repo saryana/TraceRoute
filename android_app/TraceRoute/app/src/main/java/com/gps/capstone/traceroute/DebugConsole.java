@@ -21,6 +21,7 @@ import com.gps.capstone.traceroute.listeners.GyroscopeListner;
 import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
 import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
+import com.gps.capstone.traceroute.settings.UserSettings;
 
 public class DebugConsole extends ActionBarActivity {
     // Tag used for logging
@@ -136,7 +137,7 @@ public class DebugConsole extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_debug_console, menu);
+        getMenuInflater().inflate(R.menu.menu_user_settings, menu);
         return true;
     }
 

@@ -5,10 +5,12 @@
 
     <item android:id="@+id/open_gl_view"
         android:title="@string/action_open_gl"
+        android:icon="@drawable/ic_action_picture"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/debug_console"
         android:title="@string/action_debug_console"
+        android:icon="@drawable/ic_action_computer"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

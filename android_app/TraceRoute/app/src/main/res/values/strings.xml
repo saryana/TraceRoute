@@ -32,4 +32,7 @@
     <string name="height_text">Height (Feet and Inches)</string>
     <string name="feet">ft</string>
     <string name="inches">inches</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
