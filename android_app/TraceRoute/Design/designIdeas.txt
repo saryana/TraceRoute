@@ -1,0 +1,24 @@
+--WHAT'S CURRENTLY WORKING
+- The sensor screen displays all sensor data as it gets updated.
+- The OpenGL view is displaying a 3d axis depending on the phone's rotation
+- We have buttons on the openGL view for getting the user's preferences.
+
+--WHAT'S IN PROGRESS
+
+--OPENGL VIEW
+-Drawing a 3d shape for extra perspective and debugging of the 3d view.
+-Drawing rectangular prisms for use in drawing the 3d path.
+-Stitching together rectangular prisms to form a path shape.
+
+-Follow the user as they move through an interior.
+-Rotate and manipulate the model based on touch gestures.
+- Have a button that switches between 'follow' mode and 'free' mode,
+where the user can control the camera.
+
+--SENSOR VIEW
+
+
+--WHAT'S DICKED
+- The sensor display screen doesn't display properly on a Galaxy S5 screen.
+- The OpenGL pane wigs out when the sensors give it bad data. We need to figure out how
+to ignore those values or to smooth it somehow.
