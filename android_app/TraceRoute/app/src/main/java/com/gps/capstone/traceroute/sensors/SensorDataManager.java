@@ -15,7 +15,7 @@ import com.squareup.otto.Subscribe;
  */
 public class SensorDataManager implements SensorEventListener {
     // Used for a low pass filter
-    private static final float ALPHA = 0.25f;
+    private static final float ALPHA = 0.025f;
 
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
