@@ -4,13 +4,15 @@
     <PreferenceCategory
         android:title="User Settings">
 
-        <EditTextPreference android:key="height_feet"
+        <EditTextPreference android:key="@string/pref_key_height_ft"
             android:title="Height (Feet)"
+            android:defaultValue="0"
             android:summary="Height in feet"
             android:dialogTitle="Height (ft)" />
 
-        <EditTextPreference android:key="height_inches"
+        <EditTextPreference android:key="@string/pref_key_height_in"
             android:title="Height (Inches)"
+            android:defaultValue="0"
             android:summary="Height in inches"
             android:dialogTitle="Height (in)" />
 
@@ -19,10 +21,12 @@
     <PreferenceCategory
         android:title="Open GL Settings">
 
-        <CheckBoxPreference android:key="use_phone_movement"
-            android:title="Use phone movement?"
-            android:summary="Uses the phone's movement if true, otherwise uses touch" />
+        <CheckBoxPreference android:key="@string/pref_key_user_control"
+            android:defaultValue="false"
+            android:title="User Control"
+            android:summary="If checked, the user will be able to control the 3d model" />
 
     </PreferenceCategory>
+
 
 </PreferenceScreen>

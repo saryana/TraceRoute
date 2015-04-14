@@ -1,28 +1,26 @@
 package com.gps.capstone.traceroute.settings;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.Button;
 
-import com.gps.capstone.traceroute.DebugConsole;
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
 
 import java.util.List;
 
 public class UserSettings extends PreferenceActivity {
 
+    // Tag for logging
     private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // If we want to use a single fragment as the entire view, or we can do
+        // it the 'unsupported' method and just load the the resource file
 //        getFragmentManager().beginTransaction().replace(android.R.id.content, new Prefs1Frag()).commit();
 
     }

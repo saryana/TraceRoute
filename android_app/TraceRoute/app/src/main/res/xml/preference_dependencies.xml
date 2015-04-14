@@ -2,27 +2,18 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="User Setting22222s">
+        android:title="Test Ground">
 
-        <EditTextPreference android:key="height_feet"
-            android:title="Height (Feet)"
-            android:summary="Height in feet"
-            android:dialogTitle="Height (ft)" />
-
-        <EditTextPreference android:key="height_inches"
-            android:title="Height (Inches)"
-            android:summary="Height in inches"
-            android:dialogTitle="Height (in)" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="Open GL Settings222">
-
-        <CheckBoxPreference android:key="use_phone_movement"
-            android:title="Use phone movement?"
-            android:summary="Uses the phone's movement if true, otherwise uses touch" />
-
+        <ListPreference
+            android:title="Height (ft)"
+            android:key="@string/pref_key_height_ft_test"
+            android:entries="@array/height_ft_array"
+            android:entryValues="@array/height_ft_array_vals" />
+        <!--<ListPreference-->
+        <!--android:title="Height (in)"-->
+        <!--android:key="@string/pref_key_height_in_test"-->
+        <!--android:entries="@array/height_in_array"-->
+        <!--android:entryValues="@array/height_in_array" />-->
     </PreferenceCategory>
 
 </PreferenceScreen>

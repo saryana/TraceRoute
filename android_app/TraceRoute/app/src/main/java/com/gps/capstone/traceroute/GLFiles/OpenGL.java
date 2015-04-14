@@ -3,7 +3,9 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +16,11 @@ import com.gps.capstone.traceroute.settings.UserSettings;
 
 
 public class OpenGL extends ActionBarActivity {
+    // Tag for debugging
+    private final String TAG = getClass().getSimpleName();
+
+    // Defines whether the user is in control of the map or not
+    public static boolean USER_CONTROL;
 
     private GLSurfaceView mGLSurface;
     // Sensor data manager
@@ -22,7 +29,9 @@ public class OpenGL extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
+                            .getBoolean(getString(R.string.pref_key_user_control), false);
+        Log.d(TAG, "User control: " + USER_CONTROL);
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
         mSensorDataManager = new SensorDataManager(this);
@@ -31,6 +40,9 @@ public class OpenGL extends ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.pref_key_user_control), false);
+        Log.d(TAG, "User control: " + USER_CONTROL);
 
         mSensorDataManager.register();
     }
