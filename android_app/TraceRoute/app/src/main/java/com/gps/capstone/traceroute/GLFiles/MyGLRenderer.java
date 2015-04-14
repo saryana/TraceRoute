@@ -17,9 +17,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
     private float[] mRotationMatrix = new float[16];
 
+    private ProgramManager graphicsEnvironment;
+
     private Axis mAxis;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+        // create the shader manager object for loading shaders.
+        graphicsEnvironment = new ProgramManager();
+
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
