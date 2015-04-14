@@ -6,10 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.gps.capstone.traceroute.BusProvider;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -35,15 +33,6 @@ public class SensorDataManager implements SensorEventListener {
     // Accelerometer sensor
     private Sensor mAccelerationSensor;
 
-    // Singleton instance of the SensorDataManager
-//    private static SensorDataManager mInstance;
-
-//    public static void createInstance(Context c, Bus b) {
-//        if (mInstance == null) {
-//            mInstance = new SensorDataManager(c, b);
-//        }
-//    }
-
     /**
      * Creates a new SensorDataManager that post evens about new data being received from the
      * accelerometer and gravity sensor for now
@@ -55,28 +44,17 @@ public class SensorDataManager implements SensorEventListener {
         // Grab and register listeners for the accelerometer and the gravity sensors
         mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        Log.e(TAG, "GRAV SENSOR " + mSensorManager.getSensorList(Sensor.TYPE_GRAVITY).size());
+        Log.e(TAG, "ACCEL SENS " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
         register();
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        int type;
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            type = 0;
+            mAccelVals = lowPass(event.values, mAccelVals);
         } else {
-            type = 1;
-        }
-        BusProvider.getInstance().post(new NewDataEvent(event.values, type));
-        onNewData(new NewDataEvent(event.values, type));
-    }
-
-    @Subscribe
-    public void onNewData(NewDataEvent event) {
-//        Log.i(TAG, "Got data");
-        if (event.type == 0) {
-            mAccelVals = lowPass(event.data, mAccelVals);
-        } else {
-            mGravVals = lowPass(event.data, mGravVals);
+            mGravVals = lowPass(event.values, mGravVals);
         }
         // If we don't have any new data, we can't compute the orientation and post an event
         if (mAccelVals != null && mGravVals != null) {
@@ -89,7 +67,7 @@ public class SensorDataManager implements SensorEventListener {
             if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
                 BusProvider.getInstance().post(new OrientationChangeEvent(R, 0));
             } else {
-                Log.e(TAG, "Didn't et information from rotation matrix");
+                Log.e(TAG, "Didn't get information from rotation matrix");
             }
         }
     }
