@@ -4,10 +4,12 @@
     tools:context=".MainActivity">
     <item android:id="@+id/open_gl_view"
         android:title="@string/action_open_gl"
+        android:icon="@drawable/ic_action_picture"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/user_settings"
         android:title="@string/action_user_setting"
+        android:icon="@drawable/ic_action_settings"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

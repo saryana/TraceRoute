@@ -9,8 +9,8 @@ import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.UserSettings;
 import com.gps.capstone.traceroute.sensors.SensorDataManager;
+import com.gps.capstone.traceroute.settings.UserSettings;
 
 
 public class OpenGL extends ActionBarActivity {

@@ -4,10 +4,12 @@
     tools:context="com.gps.capstone.traceroute.GLFiles.OpenGL">
     <item android:id="@+id/debug_console"
         android:title="@string/action_debug_console"
+        android:icon="@drawable/ic_action_computer"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/user_settings"
         android:title="@string/action_user_setting"
+        android:icon="@drawable/ic_action_settings"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

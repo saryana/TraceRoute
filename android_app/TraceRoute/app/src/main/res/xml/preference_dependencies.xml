@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="User Setting22222s">
+
+        <EditTextPreference android:key="height_feet"
+            android:title="Height (Feet)"
+            android:summary="Height in feet"
+            android:dialogTitle="Height (ft)" />
+
+        <EditTextPreference android:key="height_inches"
+            android:title="Height (Inches)"
+            android:summary="Height in inches"
+            android:dialogTitle="Height (in)" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Open GL Settings222">
+
+        <CheckBoxPreference android:key="use_phone_movement"
+            android:title="Use phone movement?"
+            android:summary="Uses the phone's movement if true, otherwise uses touch" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
