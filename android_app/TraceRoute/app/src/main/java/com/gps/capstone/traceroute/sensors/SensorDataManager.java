@@ -9,8 +9,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.BusProvider;
+import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
-import com.squareup.otto.Subscribe;
 
 /**
  * Created by saryana on 4/11/15.
@@ -30,10 +30,18 @@ public class SensorDataManager implements SensorEventListener {
     private float[] mAccelVals;
     // Current gravity values
     private float[] mGravVals;
+    // Gyroscope values
+    private float[] mGyroVals;
     // Gravity sensor
     private Sensor mGravitySensor;
     // Accelerometer sensor
     private Sensor mAccelerationSensor;
+    // Gyroscope sensor
+    private Sensor mGyroscopeSensor;
+    // initial matrix sent from user
+    private boolean mSentMatrix;
+    // time stamp for the gyroscope
+    private long mTimeStamp;
 
     /**
      * Creates a new SensorDataManager that post evens about new data being received from the
@@ -41,12 +49,20 @@ public class SensorDataManager implements SensorEventListener {
      * @param context Context we are being called in
      */
     public SensorDataManager(Context context) {
-        ALPHA = PreferenceManager.getDefaultSharedPreferences(context).getFloat(context.getString(R.string.pref_key_alpha), ALPHA);
+        ALPHA = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha),""+ ALPHA));
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mContext = context;
+
+        // this will be for the FSM when we are using the gyroscope
+        mTimeStamp = 0;
+        mSentMatrix = false;
+        mGyroVals = new float[3];
+
         // Grab and register listeners for the accelerometer and the gravity sensors
         mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        mGyroscopeSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
         Log.e(TAG, "GRAV SENSOR " + mSensorManager.getSensorList(Sensor.TYPE_GRAVITY).size());
         Log.e(TAG, "ACCEL SENS " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
         register();
@@ -54,13 +70,31 @@ public class SensorDataManager implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        int type = event.sensor.getType();
+
+        // Determine the values we have
+        if (type == Sensor.TYPE_ACCELEROMETER) {
             mAccelVals = lowPass(event.values, mAccelVals);
-        } else {
+        } else if (type == Sensor.TYPE_GRAVITY) {
             mGravVals = lowPass(event.values, mGravVals);
+        } else if (type == Sensor.TYPE_GYROSCOPE) {
+            if (mTimeStamp != 0) {
+                for (int i = 0; i < event.values.length; i++) {
+
+                }
+                mGyroVals = event.values;
+            }
+            mTimeStamp = event.timestamp;
         }
+
+        // If we want to use the gyroscope, make sure we are in the correct state
+        if (OpenGL.USE_GYROSCOPE && mSentMatrix) {
+            BusProvider.getInstance().post(new OrientationChangeEvent(mGyroVals, SensorUtil.EventType.GYROSCOPE_CHANGE));
+        }
+
         // If we don't have any new data, we can't compute the orientation and post an event
         if (mAccelVals != null && mGravVals != null) {
+            mSentMatrix = true;
             // Rotation matrix
             float[] R = new float[16];
             // Inclination of the phone
@@ -68,7 +102,7 @@ public class SensorDataManager implements SensorEventListener {
 
             // Did we get valid data?
             if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
-                BusProvider.getInstance().post(new OrientationChangeEvent(R, 0));
+                BusProvider.getInstance().post(new OrientationChangeEvent(R, SensorUtil.EventType.ROTATION_MATRIX_CHANGE));
             } else {
                 Log.e(TAG, "Didn't get information from rotation matrix");
             }
@@ -104,6 +138,7 @@ public class SensorDataManager implements SensorEventListener {
     public void register() {
         mSensorManager.registerListener(this, mAccelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     /**
