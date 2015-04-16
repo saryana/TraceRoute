@@ -76,18 +76,18 @@ public class SensorDataManager implements SensorEventListener {
      * Low pass filter to smooth the data according to a specified alpha, a lower alpha means more
      * smoothing
      * @param input New data we received
-     * @param output Old values, null on start
+     * @param previous Old values, null on start
      * @return Now filtered data
      */
-    private float[] lowPass(float[] input, float[] output) {
-        if (output == null) {
+    private float[] lowPass(float[] input, float[] previous) {
+        if (previous == null) {
             return input;
         }
         for (int i = 0; i < input.length; i++) {
-            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+            previous[i] = previous[i] + ALPHA * (input[i] - previous[i]);
         }
 
-        return output;
+        return previous;
     }
 
     @Override
