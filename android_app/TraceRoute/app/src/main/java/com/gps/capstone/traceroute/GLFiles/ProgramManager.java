@@ -18,20 +18,20 @@ public class ProgramManager {
     // Vertex Shader
     private final String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
-                    "attribute vec4 vPosition;" +
-                    "void main() {" +
-                    "  gl_Position = uMVPMatrix * vPosition;" +
-                    "}";
+            "attribute vec4 vPosition;" +
+            "void main() {" +
+            "  gl_Position = uMVPMatrix * vPosition;" +
+            "}";
 
     // Fragment Shader
     private final String fragmentShaderCode =
             "precision mediump float;" +
-                    "uniform vec4 vColor;" +
-                    "void main() {" +
-                    "  gl_FragColor = vColor;" +
-                    "}";
+            "uniform vec4 vColor;" +
+            "void main() {" +
+            "  gl_FragColor = vColor;" +
+            "}";
 
-    // Get the vertex shader
+    // Get the vertex shader handle
     public int getVertexShader() {
         if (vertexShader == null) {
             vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
@@ -40,7 +40,7 @@ public class ProgramManager {
         return vertexShader;
     }
 
-    // Get the fragment shader
+    // Get the fragment shader handle
     public int getFragmentShader() {
         if (fragmentShader == null) {
             fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
@@ -69,12 +69,12 @@ public class ProgramManager {
             mProgram = GLES20.glCreateProgram();
 
             // add the vertex shader to program
-            GLES20.glAttachShader(mProgram, vertexShader);
+            GLES20.glAttachShader(mProgram, getVertexShader());
 
             // add the fragment shader to program
-            GLES20.glAttachShader(mProgram, fragmentShader);
+            GLES20.glAttachShader(mProgram, getFragmentShader());
 
-            // creates OpenGL ES program executables
+            // Links the shaders together.
             GLES20.glLinkProgram(mProgram);
         }
         return mProgram;
