@@ -7,7 +7,7 @@ import com.gps.capstone.traceroute.GLFiles.ProgramManager;
 /**
  * Defines a line primitive to be drawn in openGL.
  */
-public class Line {
+public class TriangularPrism {
     // Stores the graphics environment manager.
     private ProgramManager mGraphicsEnv;
 
@@ -18,8 +18,8 @@ public class Line {
      * and the given 3d coordinates.
      * @param graphicsEnv
      */
-    public Line(ProgramManager graphicsEnv, float x1, float y1, float z1,
-                int x2, int y2, int z2) {
+    public TriangularPrism(ProgramManager graphicsEnv, float x1, float y1, float z1,
+                           int x2, int y2, int z2) {
         mGraphicsEnv = graphicsEnv;
         coords = new float[6];
         coords[0] = x1;
