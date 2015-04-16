@@ -1,5 +1,7 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.opengl.GLES20;
+
 import com.gps.capstone.traceroute.GLFiles.ProgramManager;
 
 /**
@@ -27,12 +29,17 @@ public class Line {
         coords[4] = y2;
         coords[5] = z2;
 
-        
+
 
     }
 
     // draw the line.
-    private void draw() {
+    private void draw(float[] mvpMatrix) {
+        int programHandle = mGraphicsEnv.getProgram();
 
+        // Set program handles. These will later be used to pass in values to the program.
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "u_MVPMatrix");
+        mPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
+        mColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
     }
 }
