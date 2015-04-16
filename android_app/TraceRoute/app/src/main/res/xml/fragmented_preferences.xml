@@ -24,7 +24,7 @@
         <EditTextPreference android:key="@string/pref_key_alpha"
             android:title="Alpha for low pass filter"
             android:defaultValue=".02f"
-            android:summary="A lower alpha will try to 'smooth' the data more"
+            android:summary="A lower alpha will try to 'smooth' the values more"
             android:dialogTitle="Alpha value" />
         <CheckBoxPreference android:key="@string/pref_key_use_gyroscope"
             android:defaultValue="true"

@@ -27,7 +27,7 @@ public class DebugConsole extends ActionBarActivity {
     // Tag used for logging
     private final String TAG = this.getClass().getSimpleName();
 
-    // The sensor data will provide us data and we can register things with it
+    // The sensor values will provide us values and we can register things with it
     private SensorManager sensorManager;
 
     // Lets grab each of the sensors we will be using and their corresponding listener

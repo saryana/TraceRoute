@@ -34,7 +34,7 @@
             android:name=".DebugConsole"
             android:label="@string/app_name"
             android:parentActivityName=".GLFiles.OpenGL" >
-            <meta-data
+            <meta-values
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gps.capstone.traceroute.GLFiles.OpenGL" />
         </activity>
@@ -42,7 +42,7 @@
             android:name=".UserSettings"
             android:label="@string/title_activity_user_settings"
             android:parentActivityName=".GLFiles.OpenGL" >
-            <meta-data
+            <meta-values
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gps.capstone.traceroute.GLFiles.OpenGL" />
         </activity>
@@ -50,7 +50,7 @@
             android:name=".settings.UserSettings"
             android:label="@string/title_activity_user_settingss"
             android:parentActivityName=".GLFiles.OpenGL" >
-            <meta-data
+            <meta-values
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.gps.capstone.traceroute.GLFiles.OpenGL" />
         </activity>

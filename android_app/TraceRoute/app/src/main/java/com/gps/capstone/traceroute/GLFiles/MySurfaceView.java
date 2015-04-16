@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
-import com.gps.capstone.traceroute.sensors.OrientationChangeEvent;
+import com.gps.capstone.traceroute.sensors.NewDataEvent;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -59,17 +59,17 @@ public class MySurfaceView extends GLSurfaceView {
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(mRenderer);
 
-        // Render the view only when there is a change in the drawing data
+        // Render the view only when there is a change in the drawing values
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         BusProvider.getInstance().register(this);
     }
 
     @Subscribe
-    public void onDataChange(OrientationChangeEvent e) {
-//        Log.d(TAG, "WE GOT DATA " + Arrays.toString(e.data));
+    public void onDataChange(NewDataEvent e) {
+//        Log.d(TAG, "WE GOT DATA " + Arrays.toString(e.values));
 
-        mRenderer.setRotationMatrix(e.data);
+        mRenderer.setRotationMatrix(e.values);
 
 
 

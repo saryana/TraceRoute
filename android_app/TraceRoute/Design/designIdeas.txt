@@ -1,5 +1,5 @@
 --WHAT'S CURRENTLY WORKING
-- The sensor screen displays all sensor data as it gets updated.
+- The sensor screen displays all sensor values as it gets updated.
 - The OpenGL view is displaying a 3d axis depending on the phone's rotation
 - We have buttons on the openGL view for getting the user's preferences.
 
@@ -20,5 +20,5 @@ where the user can control the camera.
 
 --WHAT'S DICKED
 - The sensor display screen doesn't display properly on a Galaxy S5 screen.
-- The OpenGL pane wigs out when the sensors give it bad data. We need to figure out how
+- The OpenGL pane wigs out when the sensors give it bad values. We need to figure out how
 to ignore those values or to smooth it somehow.

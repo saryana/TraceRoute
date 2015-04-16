@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.SensorDataManager;
+import com.gps.capstone.traceroute.sensors.RawSensorManager;
 
 public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Tag for logging
@@ -101,7 +101,7 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         } else if (key.equals(R.string.pref_key_alpha)) {
             float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
             Log.i(TAG, "Alpha change " + newAlpha);
-            SensorDataManager.ALPHA = newAlpha;
+            RawSensorManager.ALPHA = newAlpha;
         } else {
             Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
         }

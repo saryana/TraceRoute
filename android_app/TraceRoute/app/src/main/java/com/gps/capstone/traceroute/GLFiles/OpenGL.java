@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.SensorDataManager;
+import com.gps.capstone.traceroute.sensors.RawSensorManager;
 import com.gps.capstone.traceroute.settings.UserSettings;
 
 
@@ -25,8 +25,8 @@ public class OpenGL extends ActionBarActivity {
     public static boolean USE_GYROSCOPE;
 
     private GLSurfaceView mGLSurface;
-    // Sensor data manager
-    private SensorDataManager mSensorDataManager;
+    // Sensor values manager
+    private RawSensorManager mRawSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class OpenGL extends ActionBarActivity {
         Log.d(TAG, "User control: " + USER_CONTROL);
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
-        mSensorDataManager = new SensorDataManager(this);
+        mRawSensorManager = new RawSensorManager(this);
     }
 
     @Override
@@ -46,14 +46,14 @@ public class OpenGL extends ActionBarActivity {
                 .getBoolean(getString(R.string.pref_key_user_control), false);
         Log.d(TAG, "User control: " + USER_CONTROL);
 
-        mSensorDataManager.register();
+        mRawSensorManager.register();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        mSensorDataManager.unregister();
+        mRawSensorManager.unregister();
     }
 
     @Override

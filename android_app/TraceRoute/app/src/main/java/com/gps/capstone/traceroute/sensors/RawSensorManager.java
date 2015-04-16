@@ -9,62 +9,66 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.BusProvider;
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.squareup.otto.Bus;
 
 /**
  * Created by saryana on 4/11/15.
+ *
+ * The RawSensor manager is essentially a sensor manager that allows us
+ * to get get the values from the sensors and pass them on to the DataProvider
+ * that will help the state of the data and make sure we are receiving things in
+ * the proper order.
  */
-public class SensorDataManager implements SensorEventListener {
-    // Used for a low pass filter
-    public static float ALPHA = 0.02f;
-
+public class RawSensorManager implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 
-    // Context we were created in
-    private Context mContext;
+    // Might need to put the low pass filter in a util class
+    // Used for a low pass filter
+    public static float ALPHA = 0.02f;
+
+    // Sensors we need the previous values of
+
+    // Current acceleration values
+    private float[] mAccelerometerValues;
+    // Current gravity values
+    private float[] mGravityValues;
+
+    // Sensors we need for now
+
     // Sensor manager we are using
     private SensorManager mSensorManager;
-    // Current acceleration values
-    private float[] mAccelVals;
-    // Current gravity values
-    private float[] mGravVals;
-    // Gyroscope values
-    private float[] mGyroVals;
     // Gravity sensor
     private Sensor mGravitySensor;
     // Accelerometer sensor
     private Sensor mAccelerationSensor;
     // Gyroscope sensor
     private Sensor mGyroscopeSensor;
-    // initial matrix sent from user
-    private boolean mSentMatrix;
-    // time stamp for the gyroscope
-    private long mTimeStamp;
+
+    // Bus used for communication between classes
+    private Bus mBus;
 
     /**
-     * Creates a new SensorDataManager that post evens about new data being received from the
+     * Creates a new RawSensorManager that post evens about new values being received from the
      * accelerometer and gravity sensor for now
      * @param context Context we are being called in
      */
-    public SensorDataManager(Context context) {
+    public RawSensorManager(Context context) {
+        // Might need a better way to update the value on the fly
         ALPHA = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha),""+ ALPHA));
-        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        mContext = context;
 
-        // this will be for the FSM when we are using the gyroscope
-        mTimeStamp = 0;
-        mSentMatrix = false;
-        mGyroVals = new float[3];
+        mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+
+        mBus = BusProvider.getInstance();
 
         // Grab and register listeners for the accelerometer and the gravity sensors
         mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         mGyroscopeSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        Log.e(TAG, "GRAV SENSOR " + mSensorManager.getSensorList(Sensor.TYPE_GRAVITY).size());
-        Log.e(TAG, "ACCEL SENS " + mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER).size());
+        // Register the sensors
         register();
     }
 
@@ -74,58 +78,31 @@ public class SensorDataManager implements SensorEventListener {
 
         // Determine the values we have
         if (type == Sensor.TYPE_ACCELEROMETER) {
-            mAccelVals = lowPass(event.values, mAccelVals);
+            mAccelerometerValues = lowPass(event.values, mAccelerometerValues);
         } else if (type == Sensor.TYPE_GRAVITY) {
-            mGravVals = lowPass(event.values, mGravVals);
+            mGravityValues = lowPass(event.values, mGravityValues);
         } else if (type == Sensor.TYPE_GYROSCOPE) {
-            if (mTimeStamp != 0) {
-                for (int i = 0; i < event.values.length; i++) {
-
-                }
-                mGyroVals = event.values;
-            }
-            mTimeStamp = event.timestamp;
+            // Post the raw values on the channel
+            mBus.post(new RawDataEvent(event, event.values, EventType.GYROSCOPE_CHANGE));
         }
 
-        // If we want to use the gyroscope, make sure we are in the correct state
-        if (OpenGL.USE_GYROSCOPE && mSentMatrix) {
-            BusProvider.getInstance().post(new OrientationChangeEvent(mGyroVals, SensorUtil.EventType.GYROSCOPE_CHANGE));
-        }
-
-        // If we don't have any new data, we can't compute the orientation and post an event
-        if (mAccelVals != null && mGravVals != null) {
-            mSentMatrix = true;
+        // If we don't have any new values, we can't compute the orientation and post an event
+        if (mAccelerometerValues != null && mGravityValues != null) {
             // Rotation matrix
             float[] R = new float[16];
             // Inclination of the phone
             float[] I = new float[16];
 
-            // Did we get valid data?
-            if (SensorManager.getRotationMatrix(R, I, mAccelVals, mGravVals)) {
-                BusProvider.getInstance().post(new OrientationChangeEvent(R, SensorUtil.EventType.ROTATION_MATRIX_CHANGE));
+            // Did we get valid values?
+            if (SensorManager.getRotationMatrix(R, I, mAccelerometerValues, mGravityValues)) {
+                // Do a little pre-processing then post the matrix on the channel
+                BusProvider.getInstance().post(new RawDataEvent(event, R, EventType.ROTATION_MATRIX_CHANGE));
             } else {
                 Log.e(TAG, "Didn't get information from rotation matrix");
             }
         }
     }
 
-    /**
-     * Low pass filter to smooth the data according to a specified alpha, a lower alpha means more
-     * smoothing
-     * @param input New data we received
-     * @param previous Old values, null on start
-     * @return Now filtered data
-     */
-    private float[] lowPass(float[] input, float[] previous) {
-        if (previous == null) {
-            return input;
-        }
-        for (int i = 0; i < input.length; i++) {
-            previous[i] = previous[i] + ALPHA * (input[i] - previous[i]);
-        }
-
-        return previous;
-    }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -146,5 +123,23 @@ public class SensorDataManager implements SensorEventListener {
      */
     public void unregister() {
         mSensorManager.unregisterListener(this);
+    }
+
+    /**
+     * Low pass filter to smooth the values according to a specified alpha, a lower alpha means more
+     * smoothing
+     * @param input New values we received
+     * @param previous Old values, null on start
+     * @return Now filtered values
+     */
+    private float[] lowPass(float[] input, float[] previous) {
+        if (previous == null) {
+            return input;
+        }
+        for (int i = 0; i < input.length; i++) {
+            previous[i] = previous[i] + ALPHA * (input[i] - previous[i]);
+        }
+
+        return previous;
     }
 }

@@ -3,7 +3,6 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.preference.PreferenceManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -49,6 +48,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
         float[] scratch = new float[16];
+        float[] scratch2 = new float[16];
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
         if (OpenGL.USER_CONTROL) {
@@ -60,7 +60,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (OpenGL.USE_GYROSCOPE) {
 
         } else {
-            float[] scratch2 = new float[16];
             // Combine the rotation matrix with the projection and camera view
             // Note that the mMVPMatrix factor *must be first* in order
             // for the matrix multiplication product to be correct.
