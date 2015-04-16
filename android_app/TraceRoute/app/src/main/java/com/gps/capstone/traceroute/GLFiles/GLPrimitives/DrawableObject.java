@@ -17,7 +17,7 @@ import java.nio.FloatBuffer;
  * The drawable object should use floating point numbers for
  * coordinates, and it needs to be 3-d
  */
-public class DrawableObject {
+public abstract class DrawableObject {
     // Stores the graphics environment manager.
     protected ProgramManager mGraphicsEnv;
     protected int programHandle;

@@ -69,12 +69,12 @@ public class ProgramManager {
             mProgram = GLES20.glCreateProgram();
 
             // add the vertex shader to program
-            GLES20.glAttachShader(mProgram, vertexShader);
+            GLES20.glAttachShader(mProgram, getVertexShader());
 
             // add the fragment shader to program
-            GLES20.glAttachShader(mProgram, fragmentShader);
+            GLES20.glAttachShader(mProgram, getFragmentShader());
 
-            // creates OpenGL ES program executables
+            // Links the shaders together.
             GLES20.glLinkProgram(mProgram);
         }
         return mProgram;
