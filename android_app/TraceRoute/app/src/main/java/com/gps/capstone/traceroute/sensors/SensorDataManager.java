@@ -5,9 +5,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.BusProvider;
+import com.gps.capstone.traceroute.R;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -15,7 +17,7 @@ import com.squareup.otto.Subscribe;
  */
 public class SensorDataManager implements SensorEventListener {
     // Used for a low pass filter
-    private static final float ALPHA = 0.02f;
+    public static float ALPHA = 0.02f;
 
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
@@ -39,6 +41,7 @@ public class SensorDataManager implements SensorEventListener {
      * @param context Context we are being called in
      */
     public SensorDataManager(Context context) {
+        ALPHA = PreferenceManager.getDefaultSharedPreferences(context).getFloat(context.getString(R.string.pref_key_alpha), ALPHA);
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mContext = context;
         // Grab and register listeners for the accelerometer and the gravity sensors

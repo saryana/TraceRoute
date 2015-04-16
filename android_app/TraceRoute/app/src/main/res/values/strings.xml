@@ -42,5 +42,6 @@
     <string name="pref_key_user_control">preKeyUserControl</string>
     <string name="pref_key_height_ft_test">prefKeyHeightTest</string>
     <string name="pref_key_height_in_test">prefKeyHeightInTest</string>
+    <string name="pref_key_alpha">prefKeyAlpha</string>
 
 </resources>
