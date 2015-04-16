@@ -5,9 +5,9 @@ package com.gps.capstone.traceroute.sensors;
  */
 public class OrientationChangeEvent {
     public float[] data;
-    public int type;
+    public SensorUtil.EventType type;
 
-    public OrientationChangeEvent(float[] data, int type) {
+    public OrientationChangeEvent(float[] data, SensorUtil.EventType type) {
         this.data = data;
         this.type = type;
     }

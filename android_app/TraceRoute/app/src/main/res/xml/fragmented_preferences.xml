@@ -21,6 +21,17 @@
     <PreferenceCategory
         android:title="Open GL Settings">
 
+        <EditTextPreference android:key="@string/pref_key_alpha"
+            android:title="Alpha for low pass filter"
+            android:defaultValue=".02f"
+            android:summary="A lower alpha will try to 'smooth' the data more"
+            android:dialogTitle="Alpha value" />
+        <CheckBoxPreference android:key="@string/pref_key_use_gyroscope"
+            android:defaultValue="true"
+            android:title="Use the gyroscope to rotate the model"
+            android:summary="If checked, it will use the gyroscope to rotate the model,
+            otherwise it will use the rotation matrix from the accelerometer and compass" />
+
         <CheckBoxPreference android:key="@string/pref_key_user_control"
             android:defaultValue="false"
             android:title="User Control"
