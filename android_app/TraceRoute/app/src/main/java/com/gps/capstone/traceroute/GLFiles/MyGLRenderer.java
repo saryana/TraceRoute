@@ -18,6 +18,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private final float[] mViewMatrix = new float[16];
     private float[] mRotationMatrix = new float[16];
 
+    private float[] mGyroRotationMatrix = new float[16];
+    private boolean mHaveInitialOrientation = false;
+
     private ProgramManager graphicsEnvironment;
 
     private Axis mAxis;
@@ -53,11 +56,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         } else {
             Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         }
-        float[] scratch2 = new float[16];
-        // Combine the rotation matrix with the projection and camera view
-        // Note that the mMVPMatrix factor *must be first* in order
-        // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
+
+        if (OpenGL.USE_GYROSCOPE) {
+
+        } else {
+            float[] scratch2 = new float[16];
+            // Combine the rotation matrix with the projection and camera view
+            // Note that the mMVPMatrix factor *must be first* in order
+            // for the matrix multiplication product to be correct.
+            Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
+        }
 
         mAxis.draw(scratch2);
         mCube.draw(scratch2);

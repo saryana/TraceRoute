@@ -22,6 +22,8 @@ public class OpenGL extends ActionBarActivity {
     // Defines whether the user is in control of the map or not
     public static boolean USER_CONTROL;
 
+    public static boolean USE_GYROSCOPE;
+
     private GLSurfaceView mGLSurface;
     // Sensor data manager
     private SensorDataManager mSensorDataManager;
