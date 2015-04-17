@@ -35,9 +35,6 @@ public class OpenGL extends BasicActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
-                            .getBoolean(getString(R.string.pref_key_user_control), false);
-        Log.d(TAG, "User control: " + USER_CONTROL);
 
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
@@ -51,9 +48,12 @@ public class OpenGL extends BasicActivity {
         super.onResume();
         USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.pref_key_user_control), false);
+        USE_GYROSCOPE = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.pref_key_use_gyroscope), false);
         Log.d(TAG, "User control: " + USER_CONTROL);
+        Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
 
-        mDataProvider.register();
+        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
     }
 
     @Override

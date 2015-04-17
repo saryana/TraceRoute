@@ -147,10 +147,20 @@ public class SensorDataProvider {
 
     /**
      * Re-register the things we need to keep track of
+     * @param userControl if true, user is controlling the movement,
+     *                    otherwise it is based off of sensors
+     * @param useGyroscope If true, using the gyroscope for the medium of moving
+     *                     the model, false then using the rotation matrix
      */
-    public void register() {
+    public void register(boolean userControl, boolean useGyroscope) {
+        this.mUseGyroscope = useGyroscope;
+
         mBus.register(this);
-        mRawSensorManager.register();
+        // If the user is in control we don't need the sensors
+        if (!userControl) {
+            Log.i(TAG, "Registering the RawSensorManager");
+            mRawSensorManager.register();
+        }
     }
 
     /**
