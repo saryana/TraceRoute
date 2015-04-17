@@ -36,5 +36,6 @@ public class TriangularPrism {
     // draw the line.
     private void draw(float[] mvpMatrix) {
         int programHandle = mGraphicsEnv.getProgram();
+
     }
 }
