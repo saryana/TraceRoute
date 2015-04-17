@@ -6,6 +6,11 @@
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+    <!-- Permissions we are asking -->
+
+    <!-- While the user is in the app keep the screen on -->
+    <!--<uses-permission android:name="android.permission.WAKE_LOCK" />-->
+
     <!-- Require the senors exist -->
     <uses-feature android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
@@ -15,6 +20,7 @@
         android:required="true" />
     <uses-feature android:name="android.hardware.sensor.compass"
         android:required="true" />
+
 
     <application
         android:allowBackup="true"

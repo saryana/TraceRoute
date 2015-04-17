@@ -55,7 +55,6 @@ public class SensorDataProvider {
                                 .getBoolean(context.getString(R.string.pref_key_use_gyroscope), false);
         mInitialRotationMatrix = false;
         mBus = BusProvider.getInstance();
-        mBus.register(this);
         mTimestamp = 0;
     }
 
@@ -144,7 +143,22 @@ public class SensorDataProvider {
                 mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
             }
         }
+    }
 
+    /**
+     * Re-register the things we need to keep track of
+     */
+    public void register() {
+        mBus.register(this);
+        mRawSensorManager.register();
+    }
+
+    /**
+     * Un-register things we no longer care about
+     */
+    public void unregister() {
+        mBus.unregister(this);
+        mRawSensorManager.unregister();
     }
 
 

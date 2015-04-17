@@ -8,6 +8,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.R;
@@ -24,10 +26,10 @@ public class OpenGL extends ActionBarActivity {
     public static boolean USER_CONTROL;
     // Defines whether to use the gyro scope or the rotation matrix
     public static boolean USE_GYROSCOPE;
-
+    // The source of our sensor data
+    private SensorDataProvider mDataProvider;
+    // The view we are rendering
     private GLSurfaceView mGLSurface;
-    // Sensor values manager
-    private RawSensorManager mRawSensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +37,12 @@ public class OpenGL extends ActionBarActivity {
         USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
                             .getBoolean(getString(R.string.pref_key_user_control), false);
         Log.d(TAG, "User control: " + USER_CONTROL);
+
         mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
-        mRawSensorManager = new RawSensorManager(this);
-        SensorDataProvider sensorDataProvider = new SensorDataProvider(this);
+
+        mDataProvider = new SensorDataProvider(this);
+        getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
@@ -48,14 +52,15 @@ public class OpenGL extends ActionBarActivity {
                 .getBoolean(getString(R.string.pref_key_user_control), false);
         Log.d(TAG, "User control: " + USER_CONTROL);
 
-        mRawSensorManager.register();
+        mDataProvider.register();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        mDataProvider.unregister();
+        getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mRawSensorManager.unregister();
     }
 
     @Override
