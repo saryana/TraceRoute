@@ -18,6 +18,7 @@ import com.squareup.otto.Subscribe;
  * For now it will do a lot of book keeping until we can figure out what we actually need.
  */
 public class SensorDataProvider {
+    private static final float EPSILON = .1f;
     // Nanoseconds to seconds
     private static final float NS2S = 1.0f / 1000000000.0f;
 
@@ -54,7 +55,6 @@ public class SensorDataProvider {
                                 .getBoolean(context.getString(R.string.pref_key_use_gyroscope), false);
         mInitialRotationMatrix = false;
         mBus = BusProvider.getInstance();
-        mBus.register(this);
         mTimestamp = 0;
     }
 
@@ -66,8 +66,12 @@ public class SensorDataProvider {
     @Subscribe
     public void onRawDataChange(RawDataEvent event) {
         switch (event.type) {
-            case GYROSCOPE_CHANGE: updateGyroscopeSate(event.event);
-            case ROTATION_MATRIX_CHANGE: updateRotationState(event.values);
+            case GYROSCOPE_CHANGE:
+                updateGyroscopeSate(event.event);
+                break;
+            case ROTATION_MATRIX_CHANGE:
+                updateRotationState(event.values);
+                break;
             default:
                 Log.e(TAG, "Event that we cannot handle");
         }
@@ -81,13 +85,13 @@ public class SensorDataProvider {
      */
     private void updateRotationState(float[] values) {
         mRotationMatrix = values;
+
         // If we don't want to use the gyroscope or we haven't sent an initial matrix,
         // then post a new event for the the rotation matrix
         if (!mUseGyroscope || !mInitialRotationMatrix) {
             mInitialRotationMatrix = true;
             mBus.post(new NewDataEvent(mRotationMatrix, EventType.ROTATION_MATRIX_CHANGE));
         }
-
     }
 
     /**
@@ -134,9 +138,27 @@ public class SensorDataProvider {
             float[] deltaRotationMatrix = new float[9];
             // transform the new quaternion to a matrix for the grapics to use
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
-            mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
-        }
 
+            if (mUseGyroscope) {
+                mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
+            }
+        }
+    }
+
+    /**
+     * Re-register the things we need to keep track of
+     */
+    public void register() {
+        mBus.register(this);
+        mRawSensorManager.register();
+    }
+
+    /**
+     * Un-register things we no longer care about
+     */
+    public void unregister() {
+        mBus.unregister(this);
+        mRawSensorManager.unregister();
     }
 
 

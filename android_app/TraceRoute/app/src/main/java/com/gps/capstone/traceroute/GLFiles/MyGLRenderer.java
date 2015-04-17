@@ -57,8 +57,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         }
 
+        // Are we using the gyroscope data?
         if (OpenGL.USE_GYROSCOPE) {
 
+
+        // This gets fired when we are dealing with just the rotation matrix
         } else {
             // Combine the rotation matrix with the projection and camera view
             // Note that the mMVPMatrix factor *must be first* in order
