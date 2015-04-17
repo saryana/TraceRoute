@@ -67,8 +67,12 @@ public class SensorDataProvider {
     @Subscribe
     public void onRawDataChange(RawDataEvent event) {
         switch (event.type) {
-            case GYROSCOPE_CHANGE: updateGyroscopeSate(event.event);
-            case ROTATION_MATRIX_CHANGE: updateRotationState(event.values);
+            case GYROSCOPE_CHANGE:
+                updateGyroscopeSate(event.event);
+                break;
+            case ROTATION_MATRIX_CHANGE:
+                updateRotationState(event.values);
+                break;
             default:
                 Log.e(TAG, "Event that we cannot handle");
         }
@@ -82,13 +86,13 @@ public class SensorDataProvider {
      */
     private void updateRotationState(float[] values) {
         mRotationMatrix = values;
+
         // If we don't want to use the gyroscope or we haven't sent an initial matrix,
         // then post a new event for the the rotation matrix
         if (!mUseGyroscope || !mInitialRotationMatrix) {
             mInitialRotationMatrix = true;
             mBus.post(new NewDataEvent(mRotationMatrix, EventType.ROTATION_MATRIX_CHANGE));
         }
-
     }
 
     /**
@@ -135,7 +139,10 @@ public class SensorDataProvider {
             float[] deltaRotationMatrix = new float[9];
             // transform the new quaternion to a matrix for the grapics to use
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
-            mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
+
+            if (mUseGyroscope) {
+                mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
+            }
         }
 
     }

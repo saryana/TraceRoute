@@ -9,7 +9,10 @@ import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.sensors.NewDataEvent;
+import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 /**
  * Created by saryana on 4/9/15.
@@ -67,12 +70,18 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewDataEvent e) {
-//        Log.d(TAG, "WE GOT DATA " + Arrays.toString(e.values));
+        switch (e.type) {
+            case ROTATION_MATRIX_CHANGE:
+                mRenderer.setRotationMatrix(e.values);
+                break;
+            case DELTA_ROTATION_MATRIX:
+                // this is for when we have the information form the
+                // gyroscope
+                break;
+            default:
+                Log.e(TAG, "Event that we cannot handle");
 
-        mRenderer.setRotationMatrix(e.values);
-
-
-
+        }
         requestRender();
     }
 
