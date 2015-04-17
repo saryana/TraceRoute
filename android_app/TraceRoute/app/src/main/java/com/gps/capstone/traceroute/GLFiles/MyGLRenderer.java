@@ -20,20 +20,20 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mGyroRotationMatrix = new float[16];
     private boolean mHaveInitialOrientation = false;
 
-    private ProgramManager graphicsEnvironment;
+    private ProgramManager mGraphicsEnvironment;
 
     private Axis mAxis;
     private Cube mCube;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
-        graphicsEnvironment = new ProgramManager();
+        mGraphicsEnvironment = new ProgramManager();
 
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-        mAxis = new Axis();
-        mCube = new Cube(graphicsEnvironment, null, true);
+        mAxis = new Axis(mGraphicsEnvironment);
+        mCube = new Cube(mGraphicsEnvironment, null, true);
 
     }
 
