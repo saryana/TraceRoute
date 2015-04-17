@@ -36,7 +36,7 @@ public class Axis {
     private int mPositionHandle;
     private int mColorHandle;
 
-
+    private ProgramManager graphicsEnvironment;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
@@ -55,7 +55,9 @@ public class Axis {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 1.0f };
 
-    public Axis() {
+    public Axis(ProgramManager graphicsEnv) {
+        graphicsEnvironment = graphicsEnv;
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -70,10 +72,8 @@ public class Axis {
         // set the buffer to read the first coordinate
         vertexBuffer.position(0);
 
-        int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER,
-                vertexShaderCode);
-        int fragmentShader = MyGLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER,
-                fragmentShaderCode);
+        int vertexShader = graphicsEnvironment.getVertexShader();
+        int fragmentShader = graphicsEnvironment.getFragmentShader();
 
         // create empty OpenGL ES Program
         mProgram = GLES20.glCreateProgram();
