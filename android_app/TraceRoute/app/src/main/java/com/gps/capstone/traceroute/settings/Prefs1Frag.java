@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,7 +70,6 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         // Depending on what the user clicks lets start that activity
         Intent i = null;
         switch (id) {
@@ -84,6 +84,7 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         // Need to figure out how to fix the back stack so we aren't
         // having a giant back stack
         if (i != null) {
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(i);
         }
 

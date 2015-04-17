@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
+import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.RawSensorManager;
@@ -18,7 +19,7 @@ import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.settings.UserSettings;
 
 
-public class OpenGL extends ActionBarActivity {
+public class OpenGL extends BasicActivity {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -68,28 +69,5 @@ public class OpenGL extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_open_gl, menu);
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        // Depending on what the user clicks lets start that activity
-        Intent i = null;
-        switch (id) {
-            case R.id.user_settings:
-                i = new Intent(this, UserSettings.class);
-                break;
-            case R.id.debug_console:
-                i = new Intent(this, DebugConsole.class);
-                break;
-        }
-        if (i != null)
-            startActivity(i);
-
-        return super.onOptionsItemSelected(item);
     }
 }

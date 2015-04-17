@@ -23,7 +23,7 @@ import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
 import com.gps.capstone.traceroute.settings.UserSettings;
 
-public class DebugConsole extends ActionBarActivity {
+public class DebugConsole extends BasicActivity {
     // Tag used for logging
     private final String TAG = this.getClass().getSimpleName();
 
@@ -137,30 +137,7 @@ public class DebugConsole extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_user_settings, menu);
+        getMenuInflater().inflate(R.menu.menu_debug_console, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        // Depending on what the user clicks lets start that activity
-        Intent i = null;
-        switch (id) {
-            case R.id.user_settings:
-                i = new Intent(this, UserSettings.class);
-                break;
-            case R.id.open_gl_view:
-                i = new Intent(this, OpenGL.class);
-                break;
-        }
-        if (i != null)
-            startActivity(i);
-        return super.onOptionsItemSelected(item);
-    }
-
 }
