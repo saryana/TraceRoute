@@ -18,6 +18,7 @@ import com.squareup.otto.Subscribe;
  * For now it will do a lot of book keeping until we can figure out what we actually need.
  */
 public class SensorDataProvider {
+    private static final float EPSILON = .1f;
     // Nanoseconds to seconds
     private static final float NS2S = 1.0f / 1000000000.0f;
 
