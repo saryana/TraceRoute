@@ -31,7 +31,10 @@ public class ProgramManager {
             "  gl_FragColor = vColor;" +
             "}";
 
-    // Get the vertex shader handle
+    /**
+     *
+     * @return A handle for the vertex shader used in the openGL program.
+     */
     public int getVertexShader() {
         if (vertexShader == null) {
             vertexShader = loadShader(GLES20.GL_VERTEX_SHADER,
@@ -40,7 +43,10 @@ public class ProgramManager {
         return vertexShader;
     }
 
-    // Get the fragment shader handle
+    /**
+     *
+     * @return A handle for the fragment shader used in the openGL program.
+     */
     public int getFragmentShader() {
         if (fragmentShader == null) {
             fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER,
@@ -49,7 +55,7 @@ public class ProgramManager {
         return fragmentShader;
     }
 
-    // Compile and load the shader of the given type.
+    // Compiles the shader (stored in shaderCode) of the given type.
     private int loadShader(int type, String shaderCode){
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
@@ -62,7 +68,10 @@ public class ProgramManager {
         return shader;
     }
 
-    // Get the openGL program
+    /**
+     *
+     * @return A handle to the openGL program.
+     */
     public int getProgram() {
         if (mProgram == null) {
             // create empty OpenGL ES Program

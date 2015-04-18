@@ -10,8 +10,8 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 /**
- * Defines an over-arching class
- * that all drawable objects should implement.
+ * Defines a class
+ * that all openGL figures should implement.
  *
  * REQUIREMENTS:
  *
@@ -43,8 +43,9 @@ public abstract class DrawableObject {
      * Takes in a graphics environment object that stores the
      * openGL runtime environment and a buffer for
      * vertex data that stores information about the shape.
-     * @param graphicsEnvironment
-     * @param verticies
+     * @param graphicsEnvironment The graphics environment where this shape is getting
+     *                            drawn.
+     * @param verticies The coordinates that make up this shape.
      */
     public DrawableObject(ProgramManager graphicsEnvironment, float[] verticies) {
 
@@ -53,14 +54,15 @@ public abstract class DrawableObject {
         mGraphicsEnv = graphicsEnvironment;
         // Compile the shaders and return the program handle.
         programHandle = graphicsEnvironment.getProgram();
-        // Set program handles. These will later be used to pass in values to the program.
+
+        // Grab various openGL handles. These will be used to pass in values to openGL.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mFragmentPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "vPosition");
-        mFragmentColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        mVertexColorHandle = GLES20.glGetAttribLocation(programHandle, "vColor");
+        mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "a_Color");
+        mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "vColor");
 
-        // STORING THE VERTEX DATA
+        // This next segment converts the vertex data to a FloatBuffer.
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -74,14 +76,13 @@ public abstract class DrawableObject {
         vertexData.put(verticies);
         // set the buffer to read the first coordinate
         vertexData.position(0);
-
-
     }
 
+    // GETTERS
 
     /**
      * Returns the handle for the MVP matrix for this openGL session.
-     * @return
+     * @return the MVP matrix handle
      */
     public int getMVPMatrixHandle() {
         return mMVPMatrixHandle;
@@ -89,7 +90,7 @@ public abstract class DrawableObject {
 
     /**
      * Returns the vertex data.
-     * @return
+     * @return The FloatBuffer the stores the vertex data.
      */
     public FloatBuffer getVertexData() {
         return vertexData;
@@ -99,8 +100,8 @@ public abstract class DrawableObject {
 
     /**
      * Takes a draw order and converts it into an openGL-compatible format.
-     * @param list
-     * @return
+     * @param list The draw order list
+     * @return The draw order list converted to a ShortBuffer.
      */
     public static ShortBuffer convertDrawList(short[] list) {
         // Will hold the openGL-compatible draw order
