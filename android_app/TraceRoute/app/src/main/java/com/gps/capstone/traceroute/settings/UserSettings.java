@@ -41,10 +41,11 @@ public class UserSettings extends PreferenceActivity {
         loadHeadersFromResource(R.xml.preference_headers, target);
     }
 
+    // need ot figure out how to get a menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_debug_console, menu);
+//        getMenuInflater().inflate(R.menu.menu_debug_console, menu);
         return true;
     }
 

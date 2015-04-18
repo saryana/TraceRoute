@@ -51,7 +51,7 @@
         </activity>
         <activity
             android:name=".settings.UserSettings"
-            android:label="@string/title_activity_user_settingss"
+            android:label="@string/title_user_settings"
             android:parentActivityName=".GLFiles.OpenGL" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
