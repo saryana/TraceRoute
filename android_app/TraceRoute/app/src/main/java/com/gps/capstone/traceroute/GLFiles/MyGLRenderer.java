@@ -33,7 +33,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         mAxis = new Axis(mGraphicsEnvironment);
-        mCube = new Cube(mGraphicsEnvironment, null, true);
+        mCube = new Cube(mGraphicsEnvironment);
 
     }
 
