@@ -50,8 +50,10 @@ public class SensorDataProvider {
 
     private void determineListener() {
         if (mUseGyroscope) {
+            Log.i(TAG, "SETTING GYROSCOPE LISTENER");
             mSensorListener = new GyroscopeListener(mContext);
         } else {
+            Log.i(TAG, "SETTING MATRIX LISTENER");
             mSensorListener = new RotationMatrixListener(mContext);
         }
     }

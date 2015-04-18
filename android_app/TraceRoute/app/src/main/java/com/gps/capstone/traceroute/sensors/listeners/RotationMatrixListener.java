@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.RawDataEvent;
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.squareup.otto.Bus;
@@ -60,7 +61,6 @@ public class RotationMatrixListener extends SensorListener implements SensorEven
         // Grab and register listeners for the accelerometer and the gravity sensors
         mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-
     }
 
     @Override
@@ -87,7 +87,7 @@ public class RotationMatrixListener extends SensorListener implements SensorEven
             // Did we get valid values?
             if (SensorManager.getRotationMatrix(R, I, mAccelerometerValues, mGravityValues)) {
                 // Do a little pre-processing then post the matrix on the channel
-                BusProvider.getInstance().post(new RawDataEvent(event, R, EventType.ROTATION_MATRIX_CHANGE));
+                mBus.post(new NewDataEvent(R, EventType.ROTATION_MATRIX_CHANGE));
             } else {
                 Log.e(TAG, "Didn't get information from rotation matrix");
             }
