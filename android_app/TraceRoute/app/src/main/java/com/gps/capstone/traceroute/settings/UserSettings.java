@@ -65,7 +65,7 @@ public class UserSettings extends PreferenceActivity {
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            Log.d("PREF2Frag", key + " has value of " + sharedPreferences.getInt(key, -1));
+//            Log.d("PREF2Frag", key + " has value of " + sharedPreferences.getInt(key, -1));
         }
     }
 

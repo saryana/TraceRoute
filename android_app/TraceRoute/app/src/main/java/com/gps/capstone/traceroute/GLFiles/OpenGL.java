@@ -1,22 +1,15 @@
 package com.gps.capstone.traceroute.GLFiles;
 
-import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 import com.gps.capstone.traceroute.BasicActivity;
-import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.RawSensorManager;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
-import com.gps.capstone.traceroute.settings.UserSettings;
 
 
 public class OpenGL extends BasicActivity {

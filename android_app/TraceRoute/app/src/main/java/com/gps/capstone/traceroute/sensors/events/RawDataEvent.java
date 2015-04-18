@@ -1,13 +1,15 @@
-package com.gps.capstone.traceroute.sensors;
+package com.gps.capstone.traceroute.sensors.events;
 
 import android.hardware.SensorEvent;
+
+import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 
 /**
  * Created by saryana on 4/16/15.
  */
 public class RawDataEvent {
     // type of values
-    public SensorUtil.EventType type;
+    public EventType type;
     // Event that happened
     public SensorEvent event;
     // Values that we will need
@@ -19,7 +21,7 @@ public class RawDataEvent {
      * @param event Sensor data event that occured
      * @param type Type of data we got
      */
-    public RawDataEvent(SensorEvent event, float[] values, SensorUtil.EventType type) {
+    public RawDataEvent(SensorEvent event, float[] values, EventType type) {
         this.type = type;
         this.event = event;
         this.values = values;

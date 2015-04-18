@@ -1,11 +1,13 @@
-package com.gps.capstone.traceroute.sensors;
+package com.gps.capstone.traceroute.sensors.events;
+
+import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 
 /**
  * Created by saryana on 4/14/15.
  */
 public class NewDataEvent {
     // type of values
-    public SensorUtil.EventType type;
+    public EventType type;
     // values received
     public float[] values;
 
@@ -15,7 +17,7 @@ public class NewDataEvent {
      * @param values Values from the sensors
      * @param type Type of data we got
      */
-    public NewDataEvent(float[] values, SensorUtil.EventType type) {
+    public NewDataEvent(float[] values, EventType type) {
         this.type = type;
         this.values = values;
     }

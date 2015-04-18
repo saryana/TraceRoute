@@ -7,4 +7,8 @@ public class SensorUtil {
     public enum EventType {
         ROTATION_MATRIX_CHANGE, DELTA_ROTATION_MATRIX, GYROSCOPE_CHANGE
     }
+
+    public enum SensorSource {
+        ACCEL_GRAV, GRYO
+    }
 }

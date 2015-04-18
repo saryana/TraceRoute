@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute.sensors;
+package com.gps.capstone.traceroute.sensors.listeners;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.events.RawDataEvent;
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.squareup.otto.Bus;
 
@@ -21,7 +22,7 @@ import com.squareup.otto.Bus;
  * that will help the state of the data and make sure we are receiving things in
  * the proper order.
  */
-public class RawSensorManager implements SensorEventListener {
+public class RotationMatrixListener extends SensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 
@@ -37,25 +38,18 @@ public class RawSensorManager implements SensorEventListener {
     private float[] mGravityValues;
 
     // Sensors we need for now
-
-    // Sensor manager we are using
-    private SensorManager mSensorManager;
     // Gravity sensor
     private Sensor mGravitySensor;
     // Accelerometer sensor
     private Sensor mAccelerationSensor;
-    // Gyroscope sensor
-    private Sensor mGyroscopeSensor;
-
-    // Bus used for communication between classes
-    private Bus mBus;
 
     /**
-     * Creates a new RawSensorManager that post evens about new values being received from the
+     * Creates a new RotationMatrixListener that post evens about new values being received from the
      * accelerometer and gravity sensor for now
      * @param context Context we are being called in
      */
-    public RawSensorManager(Context context) {
+    public RotationMatrixListener(Context context) {
+        super(context);
         // Might need a better way to update the value on the fly
         ALPHA = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha),""+ ALPHA));
 
@@ -66,10 +60,7 @@ public class RawSensorManager implements SensorEventListener {
         // Grab and register listeners for the accelerometer and the gravity sensors
         mAccelerationSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        mGyroscopeSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        // Register the sensors
-        register();
     }
 
     @Override
@@ -82,8 +73,8 @@ public class RawSensorManager implements SensorEventListener {
         } else if (type == Sensor.TYPE_GRAVITY) {
             mGravityValues = lowPass(event.values, mGravityValues);
         } else if (type == Sensor.TYPE_GYROSCOPE) {
-            // Post the raw values on the channel
-            mBus.post(new RawDataEvent(event, event.values, EventType.GYROSCOPE_CHANGE));
+            Log.e(TAG, "Something has gone terribly wrong");
+            return;
         }
 
         // If we don't have any new values, we can't compute the orientation and post an event
@@ -113,15 +104,16 @@ public class RawSensorManager implements SensorEventListener {
      * Registers the sensor's listeners
      */
     public void register() {
+        mBus.register(this);
         mSensorManager.registerListener(this, mAccelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mGyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     /**
      * Unregister the sensor listener when we are destroying the activity
      */
     public void unregister() {
+        mBus.unregister(this);
         mSensorManager.unregisterListener(this);
     }
 

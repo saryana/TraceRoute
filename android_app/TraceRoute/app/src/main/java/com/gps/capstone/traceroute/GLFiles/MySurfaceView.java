@@ -8,11 +8,8 @@ import android.view.MotionEvent;
 import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
-import com.gps.capstone.traceroute.sensors.NewDataEvent;
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
-
-import java.util.Arrays;
 
 /**
  * Created by saryana on 4/9/15.

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,7 +13,7 @@ import android.view.MenuItem;
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.RawSensorManager;
+import com.gps.capstone.traceroute.sensors.listeners.RotationMatrixListener;
 
 public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Tag for logging
@@ -102,7 +101,7 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         } else if (key.equals(R.string.pref_key_alpha)) {
             float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
             Log.i(TAG, "Alpha change " + newAlpha);
-            RawSensorManager.ALPHA = newAlpha;
+            RotationMatrixListener.ALPHA = newAlpha;
         } else {
             Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
         }
