@@ -18,17 +18,20 @@ public class ProgramManager {
     // Vertex Shader
     private final String vertexShaderCode =
             "uniform mat4 uMVPMatrix;" +
-            "attribute vec4 vPosition;" +
+            "attribute vec4 a_Position;" +
+            "attribute vec4 a_Color;" +
+            "varying vec4 v_Color;" +
             "void main() {" +
-            "  gl_Position = uMVPMatrix * vPosition;" +
+            "  v_Color = a_Color;" +
+            "  gl_Position = uMVPMatrix * a_Position;" +
             "}";
 
     // Fragment Shader
     private final String fragmentShaderCode =
             "precision mediump float;" +
-            "uniform vec4 vColor;" +
+            "uniform vec4 v_Color;" +
             "void main() {" +
-            "  gl_FragColor = vColor;" +
+            "  gl_FragColor = v_Color;" +
             "}";
 
     /**
@@ -82,6 +85,10 @@ public class ProgramManager {
 
             // add the fragment shader to program
             GLES20.glAttachShader(mProgram, getFragmentShader());
+
+            // Bind attributes
+            GLES20.glBindAttribLocation(mProgram, 0, "a_Position");
+            GLES20.glBindAttribLocation(mProgram, 1, "a_Color");
 
             // Links the shaders together.
             GLES20.glLinkProgram(mProgram);
