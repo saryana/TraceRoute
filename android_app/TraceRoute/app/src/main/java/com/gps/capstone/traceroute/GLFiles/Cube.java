@@ -41,7 +41,7 @@ public class Cube extends DrawableObject {
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.0f, 0.5f, 0.8f, 1f };
+    float color[] = { 0.0f, 0.6f, 0.6f, 1f };
 
     public Cube(ProgramManager graphicsEnv) {
         super(graphicsEnv, cubeCoords);
