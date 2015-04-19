@@ -1,18 +1,14 @@
 package com.gps.capstone.traceroute;
 
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.listeners.AccelerometerListener;
 import com.gps.capstone.traceroute.listeners.BarometerListener;
 import com.gps.capstone.traceroute.listeners.DirectionListener;
@@ -21,7 +17,6 @@ import com.gps.capstone.traceroute.listeners.GyroscopeListner;
 import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
 import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
-import com.gps.capstone.traceroute.settings.UserSettings;
 
 public class DebugConsole extends BasicActivity {
     // Tag used for logging
@@ -48,11 +43,14 @@ public class DebugConsole extends BasicActivity {
     private Sensor mDirectionVector;
     private Sensor mGeomagneticDV;
     private SensorEventListener mDirectionListener;
+    private com.gps.capstone.traceroute.sensors.listeners.DirectionListener mDL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_debug_console);
+        // For detecting direction
+        mDL = new com.gps.capstone.traceroute.sensors.listeners.DirectionListener(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -102,7 +100,7 @@ public class DebugConsole extends BasicActivity {
         Toast.makeText(this, "Registering the listeners", Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "Registered the listeners");
-
+        mDL.register();
         // Register all the sensors with the listeners
         sensorManager.registerListener(mAccelerometerListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(mGyroscopeListener, mGyroscope, SensorManager.SENSOR_DELAY_UI);
@@ -122,7 +120,7 @@ public class DebugConsole extends BasicActivity {
         Toast.makeText(this, "Unregister the listeners", Toast.LENGTH_SHORT).show();
 
         Log.d(TAG, "Unregistered the listeners");
-
+        mDL.unregister();
         // Unregister the listeners, I'm not sure how this will factor in with the phone going to sleep
         sensorManager.unregisterListener(mAccelerometerListener);
         sensorManager.unregisterListener(mGyroscopeListener);
