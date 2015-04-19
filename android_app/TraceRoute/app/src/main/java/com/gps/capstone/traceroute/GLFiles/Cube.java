@@ -28,14 +28,14 @@ public class Cube extends DrawableObject {
             -0.3f,  0.3f, 0.3f,  // Front top left
             -0.3f, -0.3f, 0.3f,  // Front bottom left
             0.3f,  0.3f, 0.3f,   // Front top right
-            0.3f, -0.3f, 0.3f,   // Front bottom left
+            0.3f, -0.3f, 0.3f,   // Front bottom right
             -0.3f,  0.3f, -0.3f, // Back top left
             -0.3f, -0.3f, -0.3f, // Back bottom left
             0.3f, 0.3f, -0.3f, // Back top right
-            0.3f, -0.3f, -0.3f  // Back bottom left
+            0.3f, -0.3f, -0.3f  // Back bottom right
     };
 
-    private final short drawOrder[] = {0,1,2, 1,3,2, 2,3,6, 3,7,6, 6,7,5, 7,5,4, 4,5,1, 5,1,0, 4,0,6, 0,2,6, 1,5,7, 5,7,3}; // order to draw vertices
+    private final short drawOrder[] = {0,1,2, 1,3,2, 2,3,6, 3,7,6, 6,7,5, 4,5,6, 4,5,1, 1,0,4, 4,0,6, 0,2,6, 1,5,7, 1,3,7}; // order to draw vertices
 
     //private final int vertexCount = axisLineCoords.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex

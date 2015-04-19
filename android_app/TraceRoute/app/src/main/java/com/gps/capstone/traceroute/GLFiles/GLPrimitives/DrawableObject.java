@@ -49,7 +49,7 @@ public abstract class DrawableObject {
      */
     public DrawableObject(ProgramManager graphicsEnvironment, float[] verticies) {
 
-        // HANDLING THE OPEN GL SETUP
+        // OPEN GL SETUP
 
         mGraphicsEnv = graphicsEnvironment;
         // Compile the shaders and return the program handle.
@@ -63,6 +63,7 @@ public abstract class DrawableObject {
         mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "vColor");
 
         // This next segment converts the vertex data to a FloatBuffer.
+
         // initialize vertex byte buffer for shape coordinates
         ByteBuffer bb = ByteBuffer.allocateDirect(
                 // (number of coordinate values * 4 bytes per float)
@@ -78,7 +79,9 @@ public abstract class DrawableObject {
         vertexData.position(0);
     }
 
+    ///////////////////
     // GETTERS
+    ///////////////////
 
     /**
      * Returns the handle for the MVP matrix for this openGL session.
@@ -88,6 +91,10 @@ public abstract class DrawableObject {
         return mMVPMatrixHandle;
     }
 
+    public int getProgramHandle() { return programHandle; }
+
+
+
     /**
      * Returns the vertex data.
      * @return The FloatBuffer the stores the vertex data.
@@ -96,7 +103,9 @@ public abstract class DrawableObject {
         return vertexData;
     }
 
+    /////////////////////////
     // UTILITY FUNCTIONS
+    /////////////////////////
 
     /**
      * Takes a draw order and converts it into an openGL-compatible format.
