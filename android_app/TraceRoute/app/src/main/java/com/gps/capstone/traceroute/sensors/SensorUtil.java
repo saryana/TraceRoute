@@ -5,7 +5,7 @@ package com.gps.capstone.traceroute.sensors;
  */
 public class SensorUtil {
     public enum EventType {
-        ROTATION_MATRIX_CHANGE, DELTA_ROTATION_MATRIX, GYROSCOPE_CHANGE
+        ROTATION_MATRIX_CHANGE, DELTA_ROTATION_MATRIX, ROTATION_VECTOR_CHANGE, GYROSCOPE_CHANGE
     }
 
     public enum SensorSource {

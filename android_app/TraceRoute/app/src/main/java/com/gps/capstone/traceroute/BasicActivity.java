@@ -1,15 +1,10 @@
 package com.gps.capstone.traceroute;
 
 import android.content.Intent;
-import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
@@ -26,9 +21,8 @@ public abstract class BasicActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (VERSION.SDK_INT < VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        // Get status bar color somehow
+        getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     /**

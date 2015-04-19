@@ -23,6 +23,12 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
 
     // Gyroscope sensor with units rad/s in x, y, z
     private Sensor mGyroscope;
+    // Rotation vector for correcting
+    private Sensor mRotationVector;
+    // Store the rotation vector data for when the gyroscope drifts
+    private float[] mRotationVectorValues;
+    // If we have initialized the initial vector
+    private boolean mInitialized;
     // Timestamp for previous time
     private long mTimestamp;
 
@@ -33,18 +39,23 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
     public GyroscopeListener(Context context) {
         super(context);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mRotationVector = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mRotationVectorValues = new float[4];
+        mInitialized = false;
     }
 
     @Override
     public void register() {
         mBus.register(this);
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void unregister() {
         mBus.unregister(this);
         mSensorManager.unregisterListener(this);
+        mInitialized = false;
     }
 
     /**
@@ -54,10 +65,37 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
     @Override
     public void onSensorChanged(SensorEvent event) {
         int type = event.sensor.getType();
-        if (type != Sensor.TYPE_GYROSCOPE) {
-            Log.e(TAG, "Something has gone terribly wrong");
-            return;
+        switch (type) {
+            case Sensor.TYPE_GYROSCOPE:
+                gyroscopeData(event);
+                break;
+            case Sensor.TYPE_ROTATION_VECTOR:
+                rotationVectorData(event);
+                break;
+            default:
+                Log.e(TAG, "Something has gone terribly wrong");
         }
+    }
+
+    /**
+     * For the rotation vector, we only want to submit data when we need to initialize
+     * and when the gyroscope has begun to drift.
+     * @param event Event that got fired
+     */
+    private void rotationVectorData(SensorEvent event) {
+        mRotationVectorValues = event.values;
+        if (!mInitialized) {
+            mInitialized = true;
+            mBus.post(new NewDataEvent(mRotationVectorValues, EventType.ROTATION_VECTOR_CHANGE));
+        }
+    }
+
+    /**
+     * We need to process the gyroscope data a little by filtering out values that aren't
+     * large enough to trigger an event and get it into terms that we can actually use
+     * @param event Event that got fired
+     */
+    private void gyroscopeData(SensorEvent event) {
         float[] deltaRotationVector = null;
         if (mTimestamp != 0) {
             final float dT = (event.timestamp - mTimestamp) * NS2S;
@@ -93,7 +131,7 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
         mTimestamp = event.timestamp;
         if (deltaRotationVector != null) {
             float[] deltaRotationMatrix = new float[9];
-            // transform the new quaternion to a matrix for the grapics to use
+            // transform the new quaternion to a matrix for the graphics to use
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
 
             mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
@@ -102,6 +140,6 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        // Not used
     }
 }

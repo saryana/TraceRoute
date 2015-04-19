@@ -5,6 +5,7 @@
         <item name="colorPrimary">#E91E63</item>
         <item name="colorPrimaryDark">#C2185B</item>
         <item name="colorAccent">#E040FB</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
 </resources>
