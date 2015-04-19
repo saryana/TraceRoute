@@ -33,7 +33,7 @@ public abstract class DrawableObject {
     // support 2-D)
     private final int DIMENSIONS = 3;
 
-    private final int FLOAT_SIZE = 4;
+    private static final int FLOAT_SIZE = 4;
 
     protected FloatBuffer vertexData;
 
@@ -61,20 +61,7 @@ public abstract class DrawableObject {
         mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
 
         // This next segment converts the vertex data to a FloatBuffer.
-
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                // (number of coordinate values * 4 bytes per float)
-                verticies.length * FLOAT_SIZE);
-        // use the device hardware's native byte order
-        bb.order(ByteOrder.nativeOrder());
-
-        // create a floating point buffer from the ByteBuffer
-        vertexData = bb.asFloatBuffer();
-        // add the coordinates to the FloatBuffer
-        vertexData.put(verticies);
-        // set the buffer to read the first coordinate
-        vertexData.position(0);
+        vertexData = convertFloatArray(verticies);
     }
 
     ///////////////////
@@ -110,7 +97,7 @@ public abstract class DrawableObject {
      * @param list The draw order list
      * @return The draw order list converted to a ShortBuffer.
      */
-    public static ShortBuffer convertDrawList(short[] list) {
+    public static ShortBuffer convertShortArray(short[] list) {
         // Will hold the openGL-compatible draw order
         ShortBuffer result;
 
@@ -121,6 +108,31 @@ public abstract class DrawableObject {
         dlb.order(ByteOrder.nativeOrder());
         result = dlb.asShortBuffer();
         result.put(list);
+        result.position(0);
+
+        return result;
+    }
+
+    /**
+     * Takes in a float array and converts it into an openGL friendly format.
+     * @param list The array to convert
+     * @return The array as a float buffer
+     */
+    public static FloatBuffer convertFloatArray(float[] list) {
+        FloatBuffer result;
+
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                // (number of coordinate values * 4 bytes per float)
+                list.length * FLOAT_SIZE);
+        // use the device hardware's native byte order
+        bb.order(ByteOrder.nativeOrder());
+
+        // create a floating point buffer from the ByteBuffer
+        result = bb.asFloatBuffer();
+        // add the coordinates to the FloatBuffer
+        result.put(list);
+        // set the buffer to read the first coordinate
         result.position(0);
 
         return result;
