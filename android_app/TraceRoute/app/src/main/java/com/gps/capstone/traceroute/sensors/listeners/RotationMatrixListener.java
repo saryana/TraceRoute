@@ -11,9 +11,7 @@ import android.util.Log;
 import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
-import com.gps.capstone.traceroute.sensors.events.RawDataEvent;
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
-import com.squareup.otto.Bus;
 
 /**
  * Created by saryana on 4/11/15.
@@ -23,7 +21,7 @@ import com.squareup.otto.Bus;
  * that will help the state of the data and make sure we are receiving things in
  * the proper order.
  */
-public class RotationMatrixListener extends SensorListener implements SensorEventListener {
+public class RotationMatrixListener extends MySensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 

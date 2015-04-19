@@ -337,6 +337,18 @@
             android:layout_toRightOf="@+id/direction_vector"/>
     </RelativeLayout>
 
+    <!-- Direction vectors -->
+    <TextView android:text="@string/walking_direction"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:textSize="20sp"
+              android:paddingTop="10dp"/>
+    <!-- X-coordinate -->
+    <TextView android:id="@+id/walking_direction_value"
+              android:layout_width="200dp"
+              android:layout_height="wrap_content"
+        />
+
 </LinearLayout>
 </ScrollView>
 </LinearLayout>

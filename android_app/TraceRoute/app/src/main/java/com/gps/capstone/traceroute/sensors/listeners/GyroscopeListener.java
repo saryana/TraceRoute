@@ -13,7 +13,7 @@ import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 /**
  * Created by saryana on 4/18/15.
  */
-public class GyroscopeListener extends SensorListener implements SensorEventListener {
+public class GyroscopeListener extends MySensorListener implements SensorEventListener {
     // TAG for logging
     private final String TAG = getClass().getSimpleName();
     // filter value for the values we actually need
@@ -127,6 +127,9 @@ public class GyroscopeListener extends SensorListener implements SensorEventList
             deltaRotationVector[2] = sinThetaOverTwo * axisZ;
             deltaRotationVector[3] = cosThetaOverTwo;
         }
+
+        // Before this occurs we need to do a lot more checking of things
+
         // Update the new timestamp
         mTimestamp = event.timestamp;
         if (deltaRotationVector != null) {

@@ -1,22 +1,13 @@
 package com.gps.capstone.traceroute.sensors;
 
 import android.content.Context;
-import android.hardware.SensorEvent;
-import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
-import com.gps.capstone.traceroute.sensors.SensorUtil.SensorSource;
-import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
-import com.gps.capstone.traceroute.sensors.events.RawDataEvent;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
+import com.gps.capstone.traceroute.sensors.listeners.MySensorListener;
 import com.gps.capstone.traceroute.sensors.listeners.RotationMatrixListener;
-import com.gps.capstone.traceroute.sensors.listeners.SensorListener;
-import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Created by saryana on 4/16/15.
@@ -31,7 +22,7 @@ public class SensorDataProvider {
     private boolean mUseGyroscope;
 
     // The current sensor lister we are using
-    private SensorListener mSensorListener;
+    private MySensorListener mSensorListener;
     // Context we got called from
     private Context mContext;
 //    private SensorSource mSource;

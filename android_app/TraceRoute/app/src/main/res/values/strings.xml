@@ -45,5 +45,6 @@
     <string name="pref_key_height_in_test">prefKeyHeightInTest</string>
     <string name="pref_key_alpha">prefKeyAlpha</string>
     <string name="pref_key_use_gyroscope">prefKeyUseGyroscope</string>
+    <string name="walking_direction">Walking Direction</string>
 
 </resources>
