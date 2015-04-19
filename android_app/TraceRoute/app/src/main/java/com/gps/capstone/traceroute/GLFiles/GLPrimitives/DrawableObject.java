@@ -58,7 +58,7 @@ public abstract class DrawableObject {
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "a_Color");
-        mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "vColor");
+        mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
 
         // This next segment converts the vertex data to a FloatBuffer.
 
