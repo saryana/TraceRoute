@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 
+import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 /**
@@ -79,11 +80,12 @@ public class Cube extends DrawableObject {
         // Set color for drawing the axis
         GLES20.glUniform4fv(mVertexColorHandle, 1, color, 0);
 
+        // Colors?!
+        /*FloatBuffer compatibleColors = convertFloatArray(cubeColors);
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
+                colorStride, compatibleColors);*/
 
-
-
-
-        //GLES20.glEnableVertexAttribArray(mFragmentColorHandle);
+        //GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
 
         // Pass the projection and view transformation to the shader

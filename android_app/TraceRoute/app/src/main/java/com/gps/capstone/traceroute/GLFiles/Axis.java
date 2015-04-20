@@ -29,7 +29,7 @@ public class Axis extends DrawableObject {
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
 
     // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 1f, 0.0f, 0.0f, 1.0f };
+    float color[] = { 0.0f, 0.0f, 1f, 1.0f };
 
     public Axis(ProgramManager graphicsEnv) {
         super(graphicsEnv, axisLineCoords);
