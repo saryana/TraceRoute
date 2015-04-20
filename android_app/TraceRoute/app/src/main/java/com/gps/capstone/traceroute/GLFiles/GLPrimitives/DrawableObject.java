@@ -28,6 +28,7 @@ public abstract class DrawableObject {
     protected int mFragmentColorHandle;
     protected int mVertexPositionHandle;
     protected int mVertexColorHandle;
+    protected int mPointSizeHandle;
 
     // The number of dimensions per vertex. (This should always be 3. We don't
     // support 2-D)
@@ -59,6 +60,7 @@ public abstract class DrawableObject {
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "a_Color");
         mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
+        mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
 
         // This next segment converts the vertex data to a FloatBuffer.
         vertexData = convertFloatArray(verticies);

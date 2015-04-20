@@ -24,6 +24,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Axis mAxis;
     private Cube mCube;
+    private Path mPath;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
@@ -34,6 +35,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
+        mPath = new Path(mGraphicsEnvironment);
 
     }
 
@@ -71,6 +73,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         mAxis.draw(scratch2);
         mCube.draw(scratch2);
+        mPath.draw(scratch2);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
