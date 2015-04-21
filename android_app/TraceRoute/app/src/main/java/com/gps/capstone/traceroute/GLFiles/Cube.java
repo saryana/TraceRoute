@@ -82,10 +82,10 @@ public class Cube extends DrawableObject {
 
         // Colors?!
         FloatBuffer compatibleColors = convertFloatArray(cubeColors);
-        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
+        GLES20.glVertexAttribPointer(mFragmentColorHandle, 4, GLES20.GL_FLOAT, false,
                 colorStride, compatibleColors);
 
-        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
+        GLES20.glEnableVertexAttribArray(mFragmentColorHandle);
 
 
         // Pass the projection and view transformation to the shader
