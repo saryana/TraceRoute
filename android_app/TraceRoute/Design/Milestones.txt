@@ -1,0 +1,38 @@
+ROADMAP FOR THE NEXT FEW WEEKS
+
+
+
+Week 1
+SENSORS
+Determine distance based on walking in a straight line
+
+SENSORS AND GRAPHICS
+Display accurate device orientation to the openGL pane
+
+GRAPHICS
+Fix the MVPMatrix - right now verticies are being inaccurately drawn in 3-D.
+Draw a path
+
+Week 2
+SENSORS
+Determine walking direction based on Gyroscope
+
+GRAPHICS
+Diffuse/Per Pixel shading for depth
+
+Week 3
+(Bleed over from first two weeks)
+
+SENSORS
+Figure out what a Quaternion is.
+
+Week 4
+Altitude/Incline measurement with path correction.
+
+Week 5
+Path model manipulation with user touch. (stretch)
+
+Week 6
+Refining Accuracy
+
+
