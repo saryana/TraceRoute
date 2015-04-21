@@ -31,7 +31,7 @@ public class ProgramManager {
     // Fragment Shader
     private final String fragmentShaderCode =
             "precision mediump float;" +
-            "uniform vec4 v_Color;" +
+            "varying vec4 v_Color;" +
             "void main() {" +
             "  gl_FragColor = v_Color;" +
             "}";
