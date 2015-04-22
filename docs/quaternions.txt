@@ -1,0 +1,12 @@
+Quaternions
+Similar to axis angle (theta, n)
+theta = degrees of rotation
+n = vector in space
+let U = theta /2
+
+axis angle: (cos(U), n*sin(U))
+			W     , x, y, z 
+Quaternions have more information than an axis angle. W is now cos(theta/2) x,y,z is the value of that (n.x, n.y, n.z) * the rotation. So just multiply by a constant
+
+http://stackoverflow.com/questions/18587262/get-quaternion-from-android-gyroscope
+
