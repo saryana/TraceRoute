@@ -10,3 +10,8 @@ Quaternions have more information than an axis angle. W is now cos(theta/2) x,y,
 
 http://stackoverflow.com/questions/18587262/get-quaternion-from-android-gyroscope
 
+Caulghman filter
+Open CV distance between two objects
+
+https://github.com/NattyBumppo/FDIR-Workshop
+
