@@ -98,7 +98,7 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         } else if (key.equals(getString(R.string.pref_key_use_gyroscope))) {
             Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, true));
             // set the variable
-        } else if (key.equals(R.string.pref_key_alpha)) {
+        } else if (key.equals(getString(R.string.pref_key_alpha))) {
             float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
             Log.i(TAG, "Alpha change " + newAlpha);
             RotationMatrixListener.ALPHA = newAlpha;
