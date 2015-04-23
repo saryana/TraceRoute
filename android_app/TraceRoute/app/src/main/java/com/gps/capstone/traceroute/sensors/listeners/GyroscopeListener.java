@@ -31,6 +31,8 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
     private boolean mInitialized;
     // Timestamp for previous time
     private long mTimestamp;
+    // Store the current quat
+    private float[] mCurrentQuat;
 
     /**
      * Register the gyroscope sensor
@@ -42,6 +44,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
         mRotationVector = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mRotationVectorValues = new float[4];
         mInitialized = false;
+        mCurrentQuat = null;
     }
 
     @Override
@@ -86,7 +89,12 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
         mRotationVectorValues = event.values;
         if (!mInitialized) {
             mInitialized = true;
-            mBus.post(new NewDataEvent(mRotationVectorValues, EventType.ROTATION_VECTOR_CHANGE));
+            float[] deltaRotationMatrix = new float[16];
+            // transform the new quaternion to a matrix for the graphics to use
+            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mRotationVectorValues);
+
+            mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
+//            mBus.post(new NewDataEvent(mRotationVectorValues, EventType.ROTATION_VECTOR_CHANGE));
         }
     }
 
@@ -132,17 +140,56 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
 
         // Update the new timestamp
         mTimestamp = event.timestamp;
-        if (deltaRotationVector != null) {
-            float[] deltaRotationMatrix = new float[9];
+        if (mCurrentQuat != null && deltaRotationVector != null) {
+            float[] result = new float[9];
+            multiplyByQuat(result, mCurrentQuat, deltaRotationVector);
+            mCurrentQuat = result;
+            float[] deltaRotationMatrix = new float[16];
             // transform the new quaternion to a matrix for the graphics to use
-            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mCurrentQuat);
 
             mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
+        } else {
+            mCurrentQuat = deltaRotationVector;
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not used
+    }
+
+    /**
+     * Multiply this quaternion by the input quaternion and store the result in the out quaternion
+     *
+     * @param input
+     * @param output
+     */
+    public static void multiplyByQuat(float[] output, float[] current, float[] input) {
+        float[] inputCopy = new float[4];
+        if (input != output) {
+            output[3] = (current[3] * input[3] - current[0] * input[0] - current[1] * input[1] - current[2]
+                    * input[2]); //w = w1w2 - x1x2 - y1y2 - z1z2
+            output[0] = (current[3] * input[0] + current[0] * input[3] + current[1] * input[2] - current[2]
+                    * input[1]); //x = w1x2 + x1w2 + y1z2 - z1y2
+            output[1] = (current[3] * input[1] + current[1] * input[3] + current[2] * input[0] - current[0]
+                    * input[2]); //y = w1y2 + y1w2 + z1x2 - x1z2
+            output[2] = (current[3] * input[2] + current[2] * input[3] + current[0] * input[1] - current[1]
+                    * input[0]); //z = w1z2 + z1w2 + x1y2 - y1x2
+        } else {
+            inputCopy[0] = input[0];
+            inputCopy[1] = input[1];
+            inputCopy[2] = input[2];
+            inputCopy[3] = input[3];
+
+            output[3] = (current[3] * inputCopy[3] - current[0] * inputCopy[0] - current[1]
+                    * inputCopy[1] - current[2] * inputCopy[2]); //w = w1w2 - x1x2 - y1y2 - z1z2
+            output[0] = (current[3] * inputCopy[0] + current[0] * inputCopy[3] + current[1]
+                    * inputCopy[2] - current[2] * inputCopy[1]); //x = w1x2 + x1w2 + y1z2 - z1y2
+            output[1] = (current[3] * inputCopy[1] + current[1] * inputCopy[3] + current[2]
+                    * inputCopy[0] - current[0] * inputCopy[2]); //y = w1y2 + y1w2 + z1x2 - x1z2
+            output[2] = (current[3] * inputCopy[2] + current[2] * inputCopy[3] + current[0]
+                    * inputCopy[1] - current[1] * inputCopy[0]); //z = w1z2 + z1w2 + x1y2 - y1x2
+        }
     }
 }
