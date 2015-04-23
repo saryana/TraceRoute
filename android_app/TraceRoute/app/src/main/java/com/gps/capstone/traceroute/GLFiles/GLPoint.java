@@ -4,9 +4,6 @@ import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
 /**
  * Created by keith619 on 4/19/15.
  *
@@ -14,48 +11,33 @@ import java.nio.ByteOrder;
  */
 public class GLPoint extends DrawableObject {
 
+    float[] mPointCoords = new float[3];
 
-    // The coordinate of the point in 3-d space
-    private float[] mVertex = new float[3];
 
     // The color of the point
     private static float color[] = { 0.5f, 0.0f, 0.5f, 1.0f };
 
     public GLPoint(ProgramManager graphicsEnv, float x, float y, float z) {
-        super(graphicsEnv, new float[3]);
-        mVertex[0] = x;
-        mVertex[1] = y;
-        mVertex[2] = z;
+        super(graphicsEnv);
+        // The coordinate of the point in 3-d space
 
-        // Currently extending DrawableObject requires us to initialize the vertex values again because
-        // the points take the coordinates as parameters
-
-        // initialize vertex byte buffer for shape coordinates
-        ByteBuffer bb = ByteBuffer.allocateDirect(
-                // (number of coordinate values * 4 bytes per float)
-                mVertex.length * 4);
-        // use the device hardware's native byte order
-        bb.order(ByteOrder.nativeOrder());
-
-        // create a floating point buffer from the ByteBuffer
-        vertexData = bb.asFloatBuffer();
-        // add the coordinates to the FloatBuffer
-        vertexData.put(mVertex);
-        // set the buffer to read the first coordinate
-        vertexData.position(0);
+        mPointCoords[0] = x;
+        mPointCoords[1] = y;
+        mPointCoords[2] = z;
+        setVerticies(mPointCoords);
     }
 
     // Getters for the coordinate values
     public float getX() {
-        return mVertex[0];
+        return mPointCoords[0];
     }
 
     public float getY() {
-        return mVertex[1];
+        return mPointCoords[1];
     }
 
     public float getZ() {
-        return mVertex[2];
+        return mPointCoords[2];
     }
 
     /**
