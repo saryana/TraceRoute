@@ -45,9 +45,8 @@ public abstract class DrawableObject {
      * vertex data that stores information about the shape.
      * @param graphicsEnvironment The graphics environment where this shape is getting
      *                            drawn.
-     * @param verticies The coordinates that make up this shape.
      */
-    public DrawableObject(ProgramManager graphicsEnvironment, float[] verticies) {
+    public DrawableObject(ProgramManager graphicsEnvironment) {
 
         // OPEN GL SETUP
 
@@ -62,6 +61,15 @@ public abstract class DrawableObject {
         mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
         mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
 
+
+    }
+
+    /**
+     * Set the drawable verticies for this object. MAKE SURE YOU CALL THIS
+     * BEFORE ATTEMPTING TO DRAW THE OBJECT
+     * @param verticies
+     */
+    public void setVerticies(float[] verticies) {
         // This next segment converts the vertex data to a FloatBuffer.
         vertexData = convertFloatArray(verticies);
     }
