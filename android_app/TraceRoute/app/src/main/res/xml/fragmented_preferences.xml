@@ -27,7 +27,7 @@
             android:summary="A lower alpha will try to 'smooth' the values more"
             android:dialogTitle="Alpha value" />
         <CheckBoxPreference android:key="@string/pref_key_use_gyroscope"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:title="Use the gyroscope to rotate the model"
             android:summary="If checked, it will use the gyroscope to rotate the model, otherwise it will use the rotation matrix from the accelerometer and compass" />
 

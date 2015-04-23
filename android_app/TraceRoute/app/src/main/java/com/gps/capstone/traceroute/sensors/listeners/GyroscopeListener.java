@@ -50,8 +50,9 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
     @Override
     public void register() {
         mBus.register(this);
-        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_NORMAL);
+        // LOOK INTO
+        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override

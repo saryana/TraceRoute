@@ -35,7 +35,7 @@ public class SensorDataProvider {
     public SensorDataProvider(Context context) {
         mContext = context;
         mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
-                                .getBoolean(context.getString(R.string.pref_key_use_gyroscope), false);
+                                .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
         determineListener();
     }
 

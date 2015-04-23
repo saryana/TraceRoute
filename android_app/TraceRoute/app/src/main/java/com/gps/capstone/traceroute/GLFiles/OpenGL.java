@@ -42,7 +42,7 @@ public class OpenGL extends BasicActivity {
         USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.pref_key_user_control), false);
         USE_GYROSCOPE = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_key_use_gyroscope), false);
+                .getBoolean(getString(R.string.pref_key_use_gyroscope), true);
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
 
