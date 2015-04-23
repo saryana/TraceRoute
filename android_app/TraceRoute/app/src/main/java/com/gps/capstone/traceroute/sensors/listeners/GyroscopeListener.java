@@ -94,7 +94,6 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mRotationVectorValues);
 
             mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
-//            mBus.post(new NewDataEvent(mRotationVectorValues, EventType.ROTATION_VECTOR_CHANGE));
         }
     }
 
@@ -162,8 +161,9 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
     /**
      * Multiply this quaternion by the input quaternion and store the result in the out quaternion
      *
-     * @param input
-     * @param output
+     * @param output the output of the multiplication
+     * @param current the current state of the quat
+     * @param input the new input data
      */
     public static void multiplyByQuat(float[] output, float[] current, float[] input) {
         float[] inputCopy = new float[4];
