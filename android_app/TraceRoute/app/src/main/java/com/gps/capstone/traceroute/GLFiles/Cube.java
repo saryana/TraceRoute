@@ -37,14 +37,14 @@ public class Cube extends DrawableObject {
 
     static float cubeColors[] = {
             // R G B A
-            1.0f, 0.0f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
             0.0f, 1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f
+            0.0f, 0.0f, 1.0f, 1.0f
     };
 
     private final short drawOrder[] = {0,1,2, 1,3,2, 2,3,6, 3,7,6, 6,7,5, 4,5,6, 4,5,1, 1,0,4, 4,0,6, 0,2,6, 1,5,7, 1,3,7}; // order to draw vertices
