@@ -32,7 +32,8 @@ public class Axis extends DrawableObject {
     float color[] = { 0.0f, 0.0f, 1f, 1.0f };
 
     public Axis(ProgramManager graphicsEnv) {
-        super(graphicsEnv, axisLineCoords);
+        super(graphicsEnv);
+        setVerticies(axisLineCoords);
 
     }
 
