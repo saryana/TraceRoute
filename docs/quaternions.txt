@@ -1,4 +1,5 @@
-Quaternions
+--Quaternions
+
 Similar to axis angle (theta, n)
 theta = degrees of rotation
 n = vector in space
@@ -10,7 +11,13 @@ Quaternions have more information than an axis angle. W is now cos(theta/2) x,y,
 
 http://stackoverflow.com/questions/18587262/get-quaternion-from-android-gyroscope
 
-Caulghman filter
+Andrew's Explanation:
+Quaternions are essentially a 3-dimensional vector with a rotation component. This system allows you to model 
+every possible object orientation in 3-d space. This is why we've encountered them so much in our
+google adventures - they're a natrual choice for representing phone orientation with the gyroscope.  
+
+
+--Caulghman filter
 Open CV distance between two objects
 
 https://github.com/NattyBumppo/FDIR-Workshop
