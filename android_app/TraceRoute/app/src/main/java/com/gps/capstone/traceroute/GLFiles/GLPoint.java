@@ -56,8 +56,11 @@ public class GLPoint extends DrawableObject {
                 GLES20.GL_FLOAT, false,
                 12, getVertexData());
 
-        // Set color for drawing the axis
-        GLES20.glUniform4fv(mVertexColorHandle, 1, color, 0);
+        // Prepare the color for the point.
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
+                16, convertFloatArray(color));
+
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
@@ -69,5 +72,6 @@ public class GLPoint extends DrawableObject {
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
     }
 }

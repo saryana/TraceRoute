@@ -79,14 +79,14 @@ public class Cube extends DrawableObject {
 
 
         // Set color for drawing the axis
-        //GLES20.glUniform4fv(mVertexColorHandle, 1, color, 0);
+        //GLES20.glUniform4fv(mFragmentColorHandle, 1, color, 0);
 
         // Colors?!
         FloatBuffer compatibleColors = convertFloatArray(cubeColors);
-        GLES20.glVertexAttribPointer(mFragmentColorHandle, 4, GLES20.GL_FLOAT, false,
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
                 colorStride, compatibleColors);
 
-        GLES20.glEnableVertexAttribArray(mFragmentColorHandle);
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
 
         // Pass the projection and view transformation to the shader
@@ -98,8 +98,9 @@ public class Cube extends DrawableObject {
                 GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
 
 
-        // Disable vertex array
+        // Disable vertex attribute arrays.
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
     }
 
 }

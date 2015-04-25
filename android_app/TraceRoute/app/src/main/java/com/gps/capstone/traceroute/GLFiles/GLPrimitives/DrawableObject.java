@@ -25,9 +25,9 @@ public abstract class DrawableObject {
 
     // Various handles.
     protected int mMVPMatrixHandle;
-    protected int mFragmentColorHandle;
-    protected int mVertexPositionHandle;
     protected int mVertexColorHandle;
+    protected int mVertexPositionHandle;
+    protected int mFragmentColorHandle;
     protected int mPointSizeHandle;
 
     // The number of dimensions per vertex. (This should always be 3. We don't
@@ -57,8 +57,8 @@ public abstract class DrawableObject {
         // Grab various openGL handles. These will be used to pass in values to openGL.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
-        mFragmentColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        mVertexColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
+        mVertexColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
+        mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
         mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
 
 

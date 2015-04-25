@@ -4,10 +4,6 @@ import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
 /**
  * Created by keith619 on 4/9/15.
  */
@@ -25,8 +21,19 @@ public class Axis extends DrawableObject {
             0.0f, 0.0f, 10.0f // Z-axis positive
     };
 
+    // Defines some vertex colors.
+    private static float [] vertexColors = {
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f
+    };
+
     //private final int vertexCount = axisLineCoords.length / COORDS_PER_VERTEX;
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
+    private static final int COLOR_STRIDE = 16;
 
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.0f, 1f, 1.0f };
@@ -45,16 +52,20 @@ public class Axis extends DrawableObject {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(programHandle);
 
-        // Enable a handle to the axis vertices
-        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
-
         // Prepare the triangle coordinate values
         GLES20.glVertexAttribPointer(mVertexPositionHandle, COORDS_PER_VERTEX,
                 GLES20.GL_FLOAT, false,
                 vertexStride, getVertexData());
 
+        // Enable a handle to the axis vertices
+        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
+
         // Set color for drawing the axis
-        GLES20.glUniform4fv(mVertexColorHandle, 1, color, 0);
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4,
+                GLES20.GL_FLOAT, false,
+                COLOR_STRIDE, convertFloatArray(vertexColors));
+
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
@@ -66,5 +77,7 @@ public class Axis extends DrawableObject {
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
     }
 }
