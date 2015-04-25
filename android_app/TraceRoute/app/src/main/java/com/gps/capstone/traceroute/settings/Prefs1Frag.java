@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.listeners.RotationMatrixListener;
 
 public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     // Tag for logging
@@ -92,18 +91,24 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_key_user_control))) {
-            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, false));
-            OpenGL.USER_CONTROL = true;
-        } else if (key.equals(getString(R.string.pref_key_use_gyroscope))) {
-            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, true));
-            // set the variable
-        } else if (key.equals(getString(R.string.pref_key_alpha))) {
-            float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
-            Log.i(TAG, "Alpha change " + newAlpha);
-            RotationMatrixListener.ALPHA = newAlpha;
-        } else {
-            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
+        if (key.equals(getString(R.string.pref_key_height_ft)) || key.equals(getString(R.string.pref_key_height_in))) {
+            int height = 12 * Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_ft), "" + 0));
+            height += Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_in), ""+0));
+            // Put the total height in the pref
+            sharedPreferences.edit().putInt(getString(R.string.pref_key_total_height_in), height).apply();
         }
+//        } else if (key.equals(getString(R.string.pref_key_user_control))) {
+//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, false));
+//            OpenGL.USER_CONTROL = true;
+//        } else if (key.equals(getString(R.string.pref_key_use_gyroscope))) {
+//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, true));
+//            // set the variable
+//        } else if (key.equals(getString(R.string.pref_key_alpha))) {
+//            float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
+//            Log.i(TAG, "Alpha change " + newAlpha);
+//            AccelerometerCompassListener.ALPHA = newAlpha;
+//        } else {
+//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
+//        }
     }
 }

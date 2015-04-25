@@ -5,9 +5,10 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.listeners.AccelerometerCompassListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 import com.gps.capstone.traceroute.sensors.listeners.MySensorListener;
-import com.gps.capstone.traceroute.sensors.listeners.RotationMatrixListener;
+import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
 
 /**
  * Created by saryana on 4/16/15.
@@ -23,6 +24,8 @@ public class SensorDataProvider {
 
     // The current sensor lister we are using
     private MySensorListener mSensorListener;
+    // We need to keep track of the step detector for the entire period
+    private StepDetectorListener mStepDetector;
     // Context we got called from
     private Context mContext;
 
@@ -34,16 +37,21 @@ public class SensorDataProvider {
         mContext = context;
         mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
                                 .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
+        mStepDetector = new StepDetectorListener(context);
         determineListener();
     }
 
+    /**
+     * Depending on the settings it will set the default listener to use, currently it is
+     * between the Gyroscope and the Accelerometer
+     */
     private void determineListener() {
         if (mUseGyroscope) {
             Log.i(TAG, "SETTING GYROSCOPE LISTENER");
             mSensorListener = new GyroscopeListener(mContext);
         } else {
             Log.i(TAG, "SETTING MATRIX LISTENER");
-            mSensorListener = new RotationMatrixListener(mContext);
+            mSensorListener = new AccelerometerCompassListener(mContext);
         }
     }
 
@@ -62,6 +70,7 @@ public class SensorDataProvider {
         }
 
         mSensorListener.register();
+        mStepDetector.register();
         // If we have user control we might have to change it here
     }
 
@@ -70,6 +79,7 @@ public class SensorDataProvider {
      */
     public void unregister() {
         mSensorListener.unregister();
+        mStepDetector.unregister();
     }
 
 

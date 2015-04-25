@@ -21,7 +21,7 @@ import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
  * that will help the state of the data and make sure we are receiving things in
  * the proper order.
  */
-public class RotationMatrixListener extends MySensorListener implements SensorEventListener {
+public class AccelerometerCompassListener extends MySensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
 
@@ -43,14 +43,15 @@ public class RotationMatrixListener extends MySensorListener implements SensorEv
     private Sensor mAccelerationSensor;
 
     /**
-     * Creates a new RotationMatrixListener that post evens about new values being received from the
+     * Creates a new AccelerometerCompassListener that post evens about new values being received from the
      * accelerometer and gravity sensor for now
      * @param context Context we are being called in
      */
-    public RotationMatrixListener(Context context) {
+    public AccelerometerCompassListener(Context context) {
         super(context);
         // Might need a better way to update the value on the fly
-        ALPHA = Float.valueOf(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha),""+ ALPHA));
+
+        ALPHA = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha), ""+ALPHA));
 
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
