@@ -17,6 +17,7 @@ import com.gps.capstone.traceroute.listeners.GyroscopeListner;
 import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
 import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
+import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 
 public class DebugConsole extends BasicActivity {
     // Tag used for logging
@@ -44,6 +45,7 @@ public class DebugConsole extends BasicActivity {
     private Sensor mGeomagneticDV;
     private SensorEventListener mDirectionListener;
     private com.gps.capstone.traceroute.sensors.listeners.DirectionListener mDL;
+    private GyroscopeListener mGL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class DebugConsole extends BasicActivity {
         setContentView(R.layout.activity_debug_console);
         // For detecting direction
         mDL = new com.gps.capstone.traceroute.sensors.listeners.DirectionListener(this);
+        mGL = new GyroscopeListener(this);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -101,6 +104,7 @@ public class DebugConsole extends BasicActivity {
 
         Log.d(TAG, "Registered the listeners");
         mDL.register();
+        mGL.register();
         // Register all the sensors with the listeners
         sensorManager.registerListener(mAccelerometerListener, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(mGyroscopeListener, mGyroscope, SensorManager.SENSOR_DELAY_UI);
@@ -111,7 +115,7 @@ public class DebugConsole extends BasicActivity {
         sensorManager.registerListener(mStepDetectorListener, mStepDetector, SensorManager.SENSOR_DELAY_NORMAL, Sensor.REPORTING_MODE_SPECIAL_TRIGGER);
         sensorManager.registerListener(mDirectionListener, mDirectionVector, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(mDirectionListener, mGeomagneticDV, SensorManager.SENSOR_DELAY_NORMAL);
-
+        sensorManager.registerListener(mGravityListener, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -121,6 +125,7 @@ public class DebugConsole extends BasicActivity {
 
         Log.d(TAG, "Unregistered the listeners");
         mDL.unregister();
+        mGL.unregister();
         // Unregister the listeners, I'm not sure how this will factor in with the phone going to sleep
         sensorManager.unregisterListener(mAccelerometerListener);
         sensorManager.unregisterListener(mGyroscopeListener);

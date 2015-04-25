@@ -32,24 +32,20 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     // Threshold for how far a movement we have to go until we register it
     private static final float THRESHOLD = 2f;
 
-    private final Object mLock = new Object();
+//    private final Object mLock = new Object();
     private float[] mCurrentRotation;
 
     public DirectionListener(Activity activity) {
         super(activity);
         mActivity = activity;
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
     }
 
     @Override
     public void register() {
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        try {
-            mBus.register(this);
-        }catch(Exception e) {
-
-        }
+        Log.i(TAG, "Registered the bus");
+        mBus.register(this);
     }
 
     @Override
@@ -73,9 +69,12 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
             float[] invertedRotate = new float[16];
             float[] worldSpaceAccel = new float[4];
-            synchronized (mLock) {
-                Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
+//            synchronized (mLock) {
+            if (mCurrentRotation == null) {
+                return;
             }
+                Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
+//            }
             Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
 
             s += "{" + worldSpaceAccel[0] + ", " + worldSpaceAccel[1] + ", " + worldSpaceAccel[2] + "}" +"\n";
@@ -109,9 +108,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
                 break;
             case DELTA_ROTATION_MATRIX:
                 // Replace the current rotation matrix with the new one
-                synchronized (mLock) {
-                    mCurrentRotation = e.values;
-                }
+                mCurrentRotation = e.values;
                 break;
             default:
                 Log.e(TAG, "Event that we cannot handle");

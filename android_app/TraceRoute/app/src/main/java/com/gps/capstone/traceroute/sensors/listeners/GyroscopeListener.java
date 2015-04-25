@@ -40,6 +40,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
      */
     public GyroscopeListener(Context context) {
         super(context);
+        Log.i(TAG, "IN GYRO");
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mRotationVector = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mRotationVectorValues = new float[4];
@@ -49,6 +50,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
 
     @Override
     public void register() {
+        Log.i(TAG, "REGISTER GYROSCOPE");
         mBus.register(this);
         // LOOK INTO
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_GAME);
@@ -147,7 +149,6 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
             float[] deltaRotationMatrix = new float[16];
             // transform the new quaternion to a matrix for the graphics to use
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mCurrentQuat);
-
             mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
         } else {
             mCurrentQuat = deltaRotationVector;

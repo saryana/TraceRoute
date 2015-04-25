@@ -25,8 +25,6 @@ public class SensorDataProvider {
     private MySensorListener mSensorListener;
     // Context we got called from
     private Context mContext;
-//    private SensorSource mSource;
-
 
     /**
      * Sets up the basic utilities to make this work
@@ -61,15 +59,10 @@ public class SensorDataProvider {
         if (mUseGyroscope != useGyroscope) {
             this.mUseGyroscope = useGyroscope;
             determineListener();
-        } else {
-            mSensorListener.register();
         }
 
-        // If the user is in control we don't need the sensors
-        if (!userControl) {
-            Log.i(TAG, "Registering the RotationMatrixListener");
-            mSensorListener.register();
-        }
+        mSensorListener.register();
+        // If we have user control we might have to change it here
     }
 
     /**

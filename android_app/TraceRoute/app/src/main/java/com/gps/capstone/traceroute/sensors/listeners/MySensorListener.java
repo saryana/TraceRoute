@@ -29,7 +29,6 @@ public abstract class MySensorListener {
         mContext = context;
         mBus = BusProvider.getInstance();
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        register();
     }
 
     /**
