@@ -141,7 +141,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
         // Update the new timestamp
         mTimestamp = event.timestamp;
         if (mCurrentQuat != null && deltaRotationVector != null) {
-            float[] result = new float[9];
+            float[] result = new float[4];
             multiplyByQuat(result, mCurrentQuat, deltaRotationVector);
             mCurrentQuat = result;
             float[] deltaRotationMatrix = new float[16];
