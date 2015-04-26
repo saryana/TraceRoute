@@ -9,11 +9,37 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.squareup.otto.Produce;
 
 /**
  * Created by saryana on 4/18/15.
  */
 public class GyroscopeListener extends MySensorListener implements SensorEventListener {
+    /**
+     * The threshold that indicates an outlier of the rotation vector. If the dot-product between the two vectors
+     * (gyroscope orientation and rotationVector orientation) falls below this threshold (ideally it should be 1,
+     * if they are exactly the same) the system falls back to the gyroscope values only and just ignores the
+     * rotation vector.
+     *
+     * This value should be quite high (> 0.7) to filter even the slightest discrepancies that causes jumps when
+     * tiling the device. Possible values are between 0 and 1, where a value close to 1 means that even a very small
+     * difference between the two sensors will be treated as outlier, whereas a value close to zero means that the
+     * almost any discrepancy between the two sensors is tolerated.
+     */
+    private static final float OUTLIER_THRESHOLD = 0.85f;
+
+    /**
+     * The threshold that indicates a massive discrepancy between the rotation vector and the gyroscope orientation.
+     * If the dot-product between the two vectors
+     * (gyroscope orientation and rotationVector orientation) falls below this threshold (ideally it should be 1, if
+     * they are exactly the same), the system will start increasing the panic counter (that probably indicates a
+     * gyroscope failure).
+     *
+     * This value should be lower than OUTLIER_THRESHOLD (0.5 - 0.7) to only start increasing the panic counter,
+     * when there is a huge discrepancy between the two fused sensors.
+     */
+    private static final float OUTLIER_PANIC_THRESHOLD = 0.75f;
+
     // TAG for logging
     private final String TAG = getClass().getSimpleName();
     // filter value for the values we actually need
@@ -33,6 +59,8 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
     private long mTimestamp;
     // Store the current quat
     private float[] mCurrentQuat;
+    // Panic counter
+    private int mPanic;
 
     /**
      * Register the gyroscope sensor
@@ -55,6 +83,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
         // LOOK INTO
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_GAME);
+        mPanic = 0;
     }
 
     @Override
@@ -92,6 +121,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
         mRotationVectorValues = event.values;
         if (!mInitialized) {
             mInitialized = true;
+            mCurrentQuat = mRotationVectorValues;
             float[] deltaRotationMatrix = new float[16];
             // transform the new quaternion to a matrix for the graphics to use
             SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mRotationVectorValues);
@@ -107,7 +137,9 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
      */
     private void gyroscopeData(SensorEvent event) {
         float[] deltaRotationVector = null;
-        if (mTimestamp != 0) {
+        // We can't compute a delta without an initialized timestamp
+        // and we are now depending ont he rotation vector values
+        if (mTimestamp != 0 && mCurrentQuat != null) {
             final float dT = (event.timestamp - mTimestamp) * NS2S;
             // Axis of the rotation sample, not normalized yet.
             float axisX = event.values[0];
@@ -136,23 +168,41 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
             deltaRotationVector[1] = sinThetaOverTwo * axisY;
             deltaRotationVector[2] = sinThetaOverTwo * axisZ;
             deltaRotationVector[3] = cosThetaOverTwo;
+
+            // Move the current quat by the rotation we got
+            multiplyByQuat(mCurrentQuat, mCurrentQuat, deltaRotationVector);
+
+            float dotProd = Math.abs(dotProduct(mCurrentQuat, mRotationVectorValues));
+            // Is the dot product outside of our threshold
+            if (dotProd < OUTLIER_THRESHOLD) {
+                if (dotProd < OUTLIER_PANIC_THRESHOLD) {
+                    Log.e(TAG, "PANIC");
+                    mPanic++;
+                }
+            } else {
+                slerp(mCurrentQuat, mRotationVectorValues, mCurrentQuat, omegaMagnitude * .01f);
+                mPanic = 0;
+            }
+            if (mPanic > 60) {
+                Log.e(TAG, "PANNNNNNNNNIC");
+                if (omegaMagnitude < 3) {
+                    mPanic = 0;
+                    mCurrentQuat = mRotationVectorValues;
+                    Log.d(TAG, "STILL OK");
+                } else {
+                    Log.e(TAG, "WE REALLY FUCKED UP");
+                }
+            }
+            float[] deltaRotationMatrix = new float[16];
+            // transform the new quaternion to a matrix for the graphics to use
+            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mCurrentQuat);
+            mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
         }
 
         // Before this occurs we need to do a lot more checking of things
 
         // Update the new timestamp
         mTimestamp = event.timestamp;
-        if (mCurrentQuat != null && deltaRotationVector != null) {
-            float[] result = new float[4];
-            multiplyByQuat(result, mCurrentQuat, deltaRotationVector);
-            mCurrentQuat = result;
-            float[] deltaRotationMatrix = new float[16];
-            // transform the new quaternion to a matrix for the graphics to use
-            SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, mCurrentQuat);
-            mBus.post(new NewDataEvent(deltaRotationMatrix, EventType.DELTA_ROTATION_MATRIX));
-        } else {
-            mCurrentQuat = deltaRotationVector;
-        }
     }
 
     @Override
@@ -192,6 +242,58 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
                     * inputCopy[0] - current[0] * inputCopy[2]); //y = w1y2 + y1w2 + z1x2 - x1z2
             output[2] = (current[3] * inputCopy[2] + current[2] * inputCopy[3] + current[0]
                     * inputCopy[1] - current[1] * inputCopy[0]); //z = w1z2 + z1w2 + x1y2 - y1x2
+        }
+    }
+
+    /**
+     * @return Dot product between to quats
+     */
+    public float dotProduct(float[] q1, float[] q2) {
+        return q1[0] * q2[0] + q1[1] * q2[1] + q1[2] * q2[2] + q1[3] * q2[3];
+    }
+
+    /**
+     * Get a linear interpolation between this quaternion and the input quaternion, storing the result in the output
+     * quaternion.
+     *
+     * @param q1 The quaternion to be slerped with this quaternion.
+     * @param q2 The quaternion to get the interpolation from
+     * @param output The quaternion to store the result in.
+     * @param t The ratio between the two quaternions where 0 <= t <= 1.0 . Increase value of t will bring rotation
+     *            closer to the input quaternion.
+     */
+    public void slerp(float[] q1, float[] q2, float[] output, float t) {
+        float[] bufferQuat = new float[4];
+        float cosHalftheta = dotProduct(q1, q2);
+
+        if (cosHalftheta < 0) {
+            cosHalftheta = -cosHalftheta;
+            bufferQuat[0] = (-q2[0]);
+            bufferQuat[1] = (-q2[1]);
+            bufferQuat[2] = (-q2[2]);
+            bufferQuat[3] = (-q2[3]);
+        } else {
+            bufferQuat = q2;
+        }
+        if (Math.abs(cosHalftheta) >= 1.0) {
+            output[0] = (q1[0]);
+            output[1] = (q1[1]);
+            output[2] = (q1[2]);
+            output[3] = (q1[3]);
+        } else {
+            double sinHalfTheta = Math.sqrt(1.0 - cosHalftheta * cosHalftheta);
+            double halfTheta = Math.acos(cosHalftheta);
+
+            double ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta;
+            double ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
+
+            //Calculate Quaternion
+            output[3] = ((float) (q1[3] * ratioA + bufferQuat[3] * ratioB));
+            output[0] = ((float) (q1[0] * ratioA + bufferQuat[0] * ratioB));
+            output[1] = ((float) (q1[1] * ratioA + bufferQuat[1] * ratioB));
+            output[2] = ((float) (q1[2] * ratioA + bufferQuat[2] * ratioB));
+
+            //}
         }
     }
 }
