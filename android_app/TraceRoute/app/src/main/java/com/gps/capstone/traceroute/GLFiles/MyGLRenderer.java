@@ -4,6 +4,8 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -24,6 +26,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private Axis mAxis;
     private Cube mCube;
+    private TriangularPrism mPrism;
     private Path mPath;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -35,6 +38,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
+        mPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new Path(mGraphicsEnvironment);
 
     }
@@ -66,7 +70,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
         mAxis.draw(scratch2);
-        mCube.draw(scratch2);
+        //mCube.draw(scratch2);
+        mPrism.draw(scratch2);
         mPath.draw(scratch2);
     }
 

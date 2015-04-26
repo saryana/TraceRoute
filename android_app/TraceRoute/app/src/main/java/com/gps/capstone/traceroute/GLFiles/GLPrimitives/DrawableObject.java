@@ -32,7 +32,7 @@ public abstract class DrawableObject {
 
     // The number of dimensions per vertex. (This should always be 3. We don't
     // support 2-D)
-    private final int DIMENSIONS = 3;
+    private static final int DIMENSIONS = 3;
 
     private static final int FLOAT_SIZE = 4;
 
