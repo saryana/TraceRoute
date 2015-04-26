@@ -35,7 +35,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
+        GLES20.glEnable(GLES20.GL_CULL_FACE);
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
@@ -48,7 +48,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 4, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
