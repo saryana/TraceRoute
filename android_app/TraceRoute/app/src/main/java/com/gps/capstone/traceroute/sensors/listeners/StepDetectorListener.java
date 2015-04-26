@@ -1,10 +1,13 @@
 package com.gps.capstone.traceroute.sensors.listeners;
 
+import android.app.Notification;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,8 +15,6 @@ import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
-
-import java.util.Arrays;
 
 /**
  * Created by saryana on 4/25/15.
@@ -28,6 +29,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     private int mHeight;
     // total distance for now
     private int mTotal;
+    private Notification notification;
 
     /**
      * The step detector will trigger a new event every time it detects a step.
@@ -80,6 +82,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
 
     /**
      * Hey we got a step event, lets let the view know
+     *
      * @param event
      */
     @Override
@@ -88,9 +91,8 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
             Log.e(TAG, "User height not defined");
         } else {
             mTotal += mHeight * .41;
-//            Log.i(TAG, "STEP " + (mTotal/12) + " " + mTotal%12);
-           Toast.makeText(mContext, "STEP " + (mTotal/12) + " " + mTotal%12, Toast.LENGTH_SHORT).show();
-//            mBus.post(new StepEvent());
+
+            mNotificationManager.notify(1, getNotification());
         }
     }
 
@@ -99,4 +101,14 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
 
     }
 
+    /**
+     * @return Gets a notification with the updated value
+     */
+    public Notification getNotification() {
+        return mBuilder.setContentTitle("Distance")
+                        .setContentText(String.format("Distance traveled: %d ft %d inches", mTotal / 12, mTotal % 12))
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setPriority(NotificationCompat.PRIORITY_LOW)
+                        .build();
+    }
 }

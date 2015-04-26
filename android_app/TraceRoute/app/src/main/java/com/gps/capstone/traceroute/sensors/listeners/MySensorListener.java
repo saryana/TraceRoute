@@ -2,6 +2,9 @@ package com.gps.capstone.traceroute.sensors.listeners;
 
 import android.content.Context;
 import android.hardware.SensorManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
+import android.support.v4.app.NotificationManagerCompat;
 
 import com.gps.capstone.traceroute.BusProvider;
 import com.squareup.otto.Bus;
@@ -19,7 +22,10 @@ public abstract class MySensorListener {
     Bus mBus;
     // Sensor manager
     SensorManager mSensorManager;
-
+    // Notification for more up to date data
+    NotificationManagerCompat mNotificationManager;
+    // Notification builder
+    Builder mBuilder;
 
     /**
      * Initialize the listener that we will be using
@@ -29,6 +35,8 @@ public abstract class MySensorListener {
         mContext = context;
         mBus = BusProvider.getInstance();
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        mNotificationManager = NotificationManagerCompat.from(mContext);
+        mBuilder = new Builder(mContext);
     }
 
     /**
