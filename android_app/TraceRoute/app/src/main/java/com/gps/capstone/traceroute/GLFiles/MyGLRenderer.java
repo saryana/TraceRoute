@@ -53,7 +53,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        float[] scratch = new float[16];
+        float[] scratch =  mRotationMatrix; //new float[16];
         float[] scratch2 = new float[16];
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
@@ -61,7 +61,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
             Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         } else {
-            Matrix.invertM(scratch, 0, mRotationMatrix, 0);
+            //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         }
 
         // Combine the rotation matrix with the projection and camera view
