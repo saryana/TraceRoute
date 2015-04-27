@@ -59,7 +59,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // This determines if the user is taking control or it is based off of the orientation of the phone
         if (OpenGL.USER_CONTROL) {
             Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
-            Matrix.invertM(scratch, 0, mRotationMatrix, 0);
+            //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         } else {
             //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         }

@@ -13,6 +13,9 @@ import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by saryana on 4/19/15.
  *
@@ -30,15 +33,24 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private Sensor mAccelerometer;
     private Activity mActivity;
     // Threshold for how far a movement we have to go until we register it
-    private static final float THRESHOLD = 2f;
+    private static final float THRESHOLD = 0.5f;
+    // number of samples in rolling average
+    private static final int NSAMPLES = 5;
 
-//    private final Object mLock = new Object();
+    //    private final Object mLock = new Object();
     private float[] mCurrentRotation;
+
+    // Queue of samples in history
+    private Queue<float[]> mSamples;
+    // sum of all the data in samples
+    private float[] mRunningTotal;
 
     public DirectionListener(Activity activity) {
         super(activity);
         mActivity = activity;
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mSamples = new LinkedList<float[]>();
+        mRunningTotal = new float[3];
     }
 
     @Override
@@ -58,26 +70,37 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     @Override
     public void onSensorChanged(SensorEvent event) {
         float[] values = event.values;
+        // Must add an extra dimension to the acceleration vector for multiplication later
+        float accelVector[] = {values[0], values[1], values[2], 1};
+
+        // Convert the acceleration vector from phone coordinates to world coordinates
+        float[] invertedRotate = new float[16];
+        float[] worldSpaceAccel = new float[4];
+        if (mCurrentRotation == null) {
+            return;
+        }
+        Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
+        Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
+
+        // If enough samples are in the running average, remove the oldest
+        if (mSamples.size() == NSAMPLES) {
+            float[] oldestData = mSamples.remove();
+            mRunningTotal[0] -= oldestData[0];
+            mRunningTotal[1] -= oldestData[1];
+            mRunningTotal[2] -= oldestData[2];
+        }
+
+        // add most recent data
+        mSamples.add(worldSpaceAccel);
+        mRunningTotal[0] += worldSpaceAccel[0];
+        mRunningTotal[1] += worldSpaceAccel[1];
+        mRunningTotal[2] += worldSpaceAccel[2];
+
         String s = "";
-        if (magnitude(values) > THRESHOLD) {
-            // Must add an extra dimension to the acceleration vector for multiplication later
-            float[] accelVector = new float[4];
-            accelVector[0] = values[0];
-            accelVector[1] = values[1];
-            accelVector[2] = values[2];
-            accelVector[3] = 1;
+        float average[] = {mRunningTotal[0]/mSamples.size(), mRunningTotal[1]/ mSamples.size(), mRunningTotal[2]/ mSamples.size()};
+        if (magnitude(average) > THRESHOLD) {
 
-            float[] invertedRotate = new float[16];
-            float[] worldSpaceAccel = new float[4];
-//            synchronized (mLock) {
-            if (mCurrentRotation == null) {
-                return;
-            }
-                Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
-//            }
-            Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
-
-            s += "{" + worldSpaceAccel[0] + ", " + worldSpaceAccel[1] + ", " + worldSpaceAccel[2] + "}" +"\n";
+            s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
         }
         //for (int i = 0; i < values.length; i++) {
             /*if (Math.abs(values[i]) > THRESHOLD) {
