@@ -4,6 +4,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -28,6 +29,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Cube mCube;
     private TriangularPrism mPrism;
     private Path mPath;
+    private RectangularPrism mRectPrism;
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
@@ -40,6 +42,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new Path(mGraphicsEnvironment);
+        mRectPrism = new RectangularPrism(mGraphicsEnvironment);
+
+        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+        mRectPrism.setDimensions(faceOne,faceTwo,.6f,.6f);
 
     }
 
@@ -70,8 +77,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
         mAxis.draw(scratch2);
-        //mCube.draw(scratch2);
-        mPrism.draw(scratch2);
+        mCube.draw(scratch2);
+        //mPrism.draw(scratch2);
         mPath.draw(scratch2);
     }
 

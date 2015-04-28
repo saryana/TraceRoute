@@ -1,16 +1,29 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.opengl.GLES20;
+
 import com.gps.capstone.traceroute.GLFiles.ProgramManager;
 
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 /**
- *
+ * Defines a rectangular prism class that can be used to draw the the path.
  */
 public class RectangularPrism extends DrawableObject {
 
     private float[] colors = {
+        1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f, 1.0f
+    };
 
+    // The draw order for this prism.
+    private short[] drawOrder = {
+        // Front Face                                                         Rear Face
+        2,1,0, 0,3,2, 3,0,4, 4,7,3, 0,1,5, 5,4,0, 6,5,1, 1,2,6, 6,2,3, 3,7,6, 7,4,5, 5,6,7
     };
 
     /**
@@ -31,8 +44,22 @@ public class RectangularPrism extends DrawableObject {
      */
     public void setDimensions(float[] firstEndCoords, float[] secondEndCoords,
                                 float baseXWidth, float baseHeight) {
+        float[] result = new float[24];
+        // calculate coordinate data for both faces.
         float[] firstFace = calculateFace(firstEndCoords, secondEndCoords, baseXWidth, baseHeight);
         float[] secondFace = calculateSecondFace(firstEndCoords, secondEndCoords, firstFace);
+
+        // Set the
+        for (int i = 0; i < firstFace.length; i++) {
+            result[i] = firstFace[i];
+        }
+
+        for (int i = 0; i < secondFace.length; i++) {
+            result[i+firstFace.length] = secondFace[i];
+        }
+
+        setVerticies(result);
+
     }
 
     /*
@@ -49,6 +76,8 @@ public class RectangularPrism extends DrawableObject {
 
         // Compute two orthogonal vectors to the direction vector that are orthogonal to each other.
         // These three vectors together will define the orientation of the prism.
+        // The normalXZVector is a vector that's parallel to the XZ-plane and orthogonal to the
+        // prism's direction vector.
         float[] normalXZVector = crossProduct(directionVector, directionVectorFlat);
         float[] normalVectorTwo = crossProduct(directionVector, normalXZVector);
 
@@ -62,8 +91,17 @@ public class RectangularPrism extends DrawableObject {
     Compute the opposing face.
      */
     private float[] calculateSecondFace(float[] firstEndCoords, float[] secondEndCoords, float[] firstFace) {
-        // TODO: Make the second face.
-        return null;
+        // get the direction vector between two faces.
+        float[] directionVector = {secondEndCoords[0]-firstEndCoords[0], secondEndCoords[1]-firstEndCoords[1],
+                secondEndCoords[2]-firstEndCoords[2]};
+
+        float[] result = new float[12];
+
+        for (int i = 0 ; i < 12; i++) {
+            result[i] = firstFace[i] + directionVector[i%3];
+        }
+
+        return result;
     }
 
     // compute the corner positions for one of the bases.
@@ -86,6 +124,43 @@ public class RectangularPrism extends DrawableObject {
         // return this bad boy.
         return floatToFloat(result.toArray(new Float[0]));
     }
+
+    public void draw(float[] mvpMatrix) {
+        // Add program to OpenGL ES environment
+        GLES20.glUseProgram(programHandle);
+
+
+        // Prepare the triangle coordinate values
+        GLES20.glVertexAttribPointer(mVertexPositionHandle, DrawableObject.DIMENSIONS,
+                GLES20.GL_FLOAT, false,
+                DrawableObject.FLOAT_SIZE * DrawableObject.DIMENSIONS, vertexData);
+
+        // Enable a handle to the axis vertices
+        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
+
+        // Colors?!
+        FloatBuffer compatibleColors = convertFloatArray(colors);
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
+                DrawableObject.FLOAT_SIZE * 4, compatibleColors);
+
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
+
+
+        // Pass the projection and view transformation to the shader
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+
+        ShortBuffer drawListBuffer = convertShortArray(drawOrder);
+        // Draw Cube
+        GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, drawOrder.length,
+                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+
+
+        // Disable vertex attribute arrays.
+        GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
+    }
+
 
     /////////////////////////////////
     // UTILITY FUNCTIONS
