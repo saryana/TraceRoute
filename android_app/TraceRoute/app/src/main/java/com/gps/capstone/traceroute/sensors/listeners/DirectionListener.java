@@ -36,6 +36,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private static final float THRESHOLD = 0.5f;
     // number of samples in rolling average
     private static final int NSAMPLES = 5;
+    // Nano seconds to seconds
+    private static final float NS2S = 1.0f / 1000000000.0f;
 
     //    private final Object mLock = new Object();
     private float[] mCurrentRotation;
@@ -44,6 +46,12 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private Queue<float[]> mSamples;
     // sum of all the data in samples
     private float[] mRunningTotal;
+    // previous acceleration, used to calculate change in acceleration
+    private float[] mOldAccel;
+    // Running sum of velocity from accelerometer data
+    private float[] mVelocity;
+    // Timestamp used to calculate change in velocity
+    private long mTimestamp;
 
     public DirectionListener(Activity activity) {
         super(activity);
@@ -51,6 +59,9 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mSamples = new LinkedList<float[]>();
         mRunningTotal = new float[3];
+        mOldAccel = new float[4];
+        mVelocity = new float[3];
+
     }
 
     @Override
@@ -66,6 +77,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mBus.unregister(this);
         ((TextView)mActivity.findViewById(R.id.walking_direction_value)).setText("");
     }
+
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -96,11 +108,33 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mRunningTotal[1] += worldSpaceAccel[1];
         mRunningTotal[2] += worldSpaceAccel[2];
 
-        String s = "";
-        float average[] = {mRunningTotal[0]/mSamples.size(), mRunningTotal[1]/ mSamples.size(), mRunningTotal[2]/ mSamples.size()};
-        if (magnitude(average) > THRESHOLD) {
 
-            s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
+
+
+        float average[] = {mRunningTotal[0]/mSamples.size(), mRunningTotal[1]/ mSamples.size(), mRunningTotal[2]/ mSamples.size()};
+        // calculate change in velocity
+        if (mTimestamp != 0) {
+            // interpolate the change in acceleration to reduce error
+            float[] averageAccel = new float[3];
+            averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0]+mOldAccel[0]) / 2;
+            averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1]+mOldAccel[1]) / 2;
+            averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2]+mOldAccel[2]) / 2;
+
+            float deltaT = (event.timestamp - mTimestamp) * NS2S;
+
+            mVelocity[0] += averageAccel[0] * deltaT;
+            mVelocity[1] += averageAccel[1] * deltaT;
+            mVelocity[2] += averageAccel[2] * deltaT;
+        }
+
+        // TODO detect when possibly stopped?
+        // TODO filter out insignificant accelerations
+
+
+        String s = "";
+        if (magnitude(mVelocity) > THRESHOLD) {
+            s += "Heading: " + vectorToDirection(mVelocity) +"{" + mVelocity[0] + ", " + mVelocity[1] + ", " + mVelocity[2] + "}" + "\n";
+            //s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
         }
         //for (int i = 0; i < values.length; i++) {
             /*if (Math.abs(values[i]) > THRESHOLD) {
@@ -115,6 +149,10 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
                 }
             }*/
         //}
+        // Update the new timestamp
+        mTimestamp = event.timestamp;
+        mOldAccel = worldSpaceAccel;
+
         TextView tv = (TextView)mActivity.findViewById(R.id.walking_direction_value);
         tv.setText(s + tv.getText());
     }
@@ -142,5 +180,23 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     public static float magnitude(float[] v) {
         float magSquared = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
         return (float) Math.sqrt(magSquared);
+    }
+
+    //
+    public static float vectorToDirection(float[] v) {
+        //float magnitude = magnitude(v);
+        //float normalized[] = {v[0]/magnitude, v[1]/magnitude, v[2]/magnitude};
+
+        // find arctan(-x/y) instead of arctan(y/x), this makes it easier to convert to cardinal direction
+        double angleRad = Math.atan2(-v[0], v[1]);
+        double angleDegree = angleRad * 180 / Math.PI;
+
+        if (angleDegree < 0) {
+            angleDegree = -angleDegree;
+        } else if (angleDegree > 0) {
+            angleDegree = 360 - angleDegree;
+        }
+
+        return (float) angleDegree;
     }
 }
