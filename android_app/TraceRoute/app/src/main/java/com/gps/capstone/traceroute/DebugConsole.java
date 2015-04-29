@@ -155,6 +155,7 @@ public class DebugConsole extends BasicActivity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        // Too lazy to move this to isn't own listener
         ((TextView) findViewById(R.id.comp_x_val)).setText(String.valueOf(event.values[0]));
         ((TextView) findViewById(R.id.comp_y_val)).setText(String.valueOf(event.values[1]));
         ((TextView) findViewById(R.id.comp_z_val)).setText(String.valueOf(event.values[2]));
