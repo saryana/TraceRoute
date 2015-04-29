@@ -77,8 +77,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
         mAxis.draw(scratch2);
-        mCube.draw(scratch2);
-        //mPrism.draw(scratch2);
+        if (OpenGL.USE_CUBE) {
+            mCube.draw(scratch2);
+        } else {
+            mPrism.draw(scratch2);
+        }
         mPath.draw(scratch2);
     }
 

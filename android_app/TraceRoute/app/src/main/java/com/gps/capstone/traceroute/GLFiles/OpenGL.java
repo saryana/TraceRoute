@@ -21,6 +21,8 @@ public class OpenGL extends BasicActivity {
     public static boolean USER_CONTROL;
     // Defines whether to use the gyro scope or the rotation matrix
     public static boolean USE_GYROSCOPE;
+    // Flag to use cube for the render
+    public static boolean USE_CUBE;
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     // The view we are rendering
@@ -44,6 +46,8 @@ public class OpenGL extends BasicActivity {
         super.onResume();
         USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.pref_key_user_control), false);
+        USE_CUBE = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(getString(R.string.pref_key_use_cube), true);
         USE_GYROSCOPE = PreferenceManager.getDefaultSharedPreferences(this)
                 .getBoolean(getString(R.string.pref_key_use_gyroscope), true);
         Log.d(TAG, "User control: " + USER_CONTROL);

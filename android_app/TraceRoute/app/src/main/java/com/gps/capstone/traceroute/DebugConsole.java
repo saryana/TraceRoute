@@ -7,7 +7,9 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gps.capstone.traceroute.listeners.AccelerometerListener;
@@ -153,7 +155,9 @@ public class DebugConsole extends BasicActivity implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        ((TextView) findViewById(R.id.comp_x_val)).setText(String.valueOf(event.values[0]));
+        ((TextView) findViewById(R.id.comp_y_val)).setText(String.valueOf(event.values[1]));
+        ((TextView) findViewById(R.id.comp_z_val)).setText(String.valueOf(event.values[2]));
     }
 
     @Override
