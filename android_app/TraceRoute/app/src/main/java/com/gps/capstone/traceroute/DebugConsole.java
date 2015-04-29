@@ -1,6 +1,7 @@
 package com.gps.capstone.traceroute;
 
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import com.gps.capstone.traceroute.listeners.StepCounterListener;
 import com.gps.capstone.traceroute.listeners.StepDetectorListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 
-public class DebugConsole extends BasicActivity {
+public class DebugConsole extends BasicActivity implements SensorEventListener {
     // Tag used for logging
     private final String TAG = this.getClass().getSimpleName();
 
@@ -46,6 +47,8 @@ public class DebugConsole extends BasicActivity {
     private SensorEventListener mDirectionListener;
     private com.gps.capstone.traceroute.sensors.listeners.DirectionListener mDL;
     private GyroscopeListener mGL;
+    private Sensor mCompass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,8 @@ public class DebugConsole extends BasicActivity {
             Log.e(TAG, "AHH");
         }
         mDirectionListener = new DirectionListener((RelativeLayout) findViewById(R.id.direction_vals));
+        mCompass = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
     }
 
     @Override
@@ -116,6 +121,7 @@ public class DebugConsole extends BasicActivity {
         sensorManager.registerListener(mDirectionListener, mDirectionVector, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(mDirectionListener, mGeomagneticDV, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(mGravityListener, mGyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, mCompass, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -135,6 +141,7 @@ public class DebugConsole extends BasicActivity {
         sensorManager.unregisterListener(mStepCounterListener);
         sensorManager.unregisterListener(mStepDetectorListener);
         sensorManager.unregisterListener(mDirectionListener);
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -142,5 +149,15 @@ public class DebugConsole extends BasicActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_debug_console, menu);
         return true;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

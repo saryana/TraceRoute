@@ -66,7 +66,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
     @Override
     public void register() {
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         Log.i(TAG, "Registered the bus");
         mBus.register(this);
     }
@@ -84,7 +84,6 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         float[] values = event.values;
         // Must add an extra dimension to the acceleration vector for multiplication later
         float accelVector[] = {values[0], values[1], values[2], 1};
-
         // Convert the acceleration vector from phone coordinates to world coordinates
         float[] invertedRotate = new float[16];
         float[] worldSpaceAccel = new float[4];
@@ -153,8 +152,9 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mTimestamp = event.timestamp;
         mOldAccel = worldSpaceAccel;
 
-        TextView tv = (TextView)mActivity.findViewById(R.id.walking_direction_value);
-        tv.setText(s + tv.getText());
+        //TextView tv = (TextView)mActivity.findViewById(R.id.walking_direction_value);
+        //tv.setText(s + tv.getText());
+        Log.i(TAG, s);
     }
 
     @Override

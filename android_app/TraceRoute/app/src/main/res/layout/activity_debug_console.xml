@@ -165,7 +165,59 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/max_alt"/>
     </RelativeLayout>
+        <!-- Compass View -->
+        <TextView android:text="@string/compass_text"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textSize="20sp"
+                  android:paddingTop="10dp"/>
+        <TextView android:text="@string/units"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" />
+        <TextView android:text="@string/acceleration_units"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" />
+        <RelativeLayout android:id="@+id/comp_vals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+            <!-- X-coordinate -->
+            <TextView android:id="@+id/comp_x"
+                      android:text="@string/x_coordinate"
+                      android:layout_width="200dp"
+                      android:layout_height="wrap_content"
+                />
+            <TextView android:id="@+id/comp_x_val"
+                      android:layout_width="100dp"
+                      android:layout_height="wrap_content"
+                      android:layout_toRightOf="@+id/comp_x"/>
 
+            <!-- Y-coordinate -->
+            <TextView android:id="@+id/comp_y"
+                      android:text="@string/y_coordinate"
+                      android:layout_width="200dp"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@+id/comp_x"
+                />
+            <TextView android:id="@+id/comp_y_val"
+                      android:layout_width="100dp"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@id/comp_x_val"
+                      android:layout_toRightOf="@+id/comp_y"/>
+
+            <!-- Z-coordinate -->
+            <TextView android:id="@+id/comp_z"
+                      android:text="@string/z_coordinate"
+                      android:layout_width="200dp"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@id/comp_y_val"
+                />
+            <TextView android:id="@+id/comp_z_val"
+                      android:layout_width="100dp"
+                      android:layout_height="wrap_content"
+                      android:layout_below="@+id/comp_y"
+                      android:layout_toRightOf="@+id/comp_z"
+                />
+        </RelativeLayout>
     <!-- Linear Acceleration View -->
     <TextView android:text="@string/linear_acceleration_text"
         android:layout_width="match_parent"
@@ -315,6 +367,8 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/steps_detect_text"/>
     </RelativeLayout>
+
+
 
     <!-- Direction vectors -->
     <TextView android:text="@string/direction_vector"
