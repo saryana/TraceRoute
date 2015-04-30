@@ -1,11 +1,14 @@
 package com.gps.capstone.traceroute.sensors.listeners;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -52,6 +55,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private float[] mVelocity;
     // Timestamp used to calculate change in velocity
     private long mTimestamp;
+    public float mHeading;
 
     public DirectionListener(Activity activity) {
         super(activity);
@@ -61,7 +65,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mRunningTotal = new float[3];
         mOldAccel = new float[4];
         mVelocity = new float[3];
-
+        mHeading = 0;
     }
 
     @Override
@@ -108,16 +112,14 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mRunningTotal[2] += worldSpaceAccel[2];
 
 
-
-
-        float average[] = {mRunningTotal[0]/mSamples.size(), mRunningTotal[1]/ mSamples.size(), mRunningTotal[2]/ mSamples.size()};
+        float average[] = {mRunningTotal[0] / mSamples.size(), mRunningTotal[1] / mSamples.size(), mRunningTotal[2] / mSamples.size()};
         // calculate change in velocity
         if (mTimestamp != 0) {
             // interpolate the change in acceleration to reduce error
             float[] averageAccel = new float[3];
-            averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0]+mOldAccel[0]) / 2;
-            averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1]+mOldAccel[1]) / 2;
-            averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2]+mOldAccel[2]) / 2;
+            averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0] + mOldAccel[0]) / 2;
+            averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1] + mOldAccel[1]) / 2;
+            averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2] + mOldAccel[2]) / 2;
 
             float deltaT = (event.timestamp - mTimestamp) * NS2S;
 
@@ -132,7 +134,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
         String s = "";
         if (magnitude(mVelocity) > THRESHOLD) {
-            s += "Heading: " + vectorToDirection(mVelocity) +"{" + mVelocity[0] + ", " + mVelocity[1] + ", " + mVelocity[2] + "}" + "\n";
+            s += "Heading: " + vectorToDirection(mVelocity) + "{" + mVelocity[0] + ", " + mVelocity[1] + ", " + mVelocity[2] + "}" + "\n";
             //s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
         }
         //for (int i = 0; i < values.length; i++) {
@@ -198,5 +200,13 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         }
 
         return (float) angleDegree;
+    }
+
+    public Notification getNotification() {
+        return mBuilder.setContentTitle("Heading")
+                .setContentText("Heading Direction " + mHeading)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
     }
 }

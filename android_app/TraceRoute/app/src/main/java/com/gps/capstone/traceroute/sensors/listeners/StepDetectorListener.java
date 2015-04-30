@@ -109,6 +109,8 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         // Lets calculate the the distance from the old/previous
         // step with this new info to get the new event
         float[] newLocation = new float[3];
+        // TODO integrate the direction into this. For now we can just do NESW and change just xyz
+        // accordingly
         newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
         newLocation[1] = mOldStepLocation[1];
         newLocation[2] = mOldStepLocation[2];
