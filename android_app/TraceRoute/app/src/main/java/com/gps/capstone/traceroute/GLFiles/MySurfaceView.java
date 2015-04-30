@@ -9,6 +9,7 @@ import com.gps.capstone.traceroute.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -60,9 +61,14 @@ public class MySurfaceView extends GLSurfaceView {
         setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing values
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+//        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         BusProvider.getInstance().register(this);
+    }
+
+    @Subscribe
+    public void onDataChange(NewStepEvent e) {
+        mRenderer.addFaces(e.oldFace, e.newFace);
     }
 
     @Subscribe

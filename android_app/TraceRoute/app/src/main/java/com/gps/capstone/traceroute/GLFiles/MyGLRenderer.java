@@ -3,9 +3,12 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
+
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,6 +17,8 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by saryana on 4/9/15.
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
+    private static final float THICKNESS = 0.01f;
+    private final String TAG = getClass().getSimpleName();
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -31,6 +36,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Path mPath;
     private RectangularPrism mRectPrism;
 
+//    float[] faceOne = {-0.3f, 0.1f, 0.1f};
+    float[] faceTwo = {0.0f, 0.0f, 0.0f};
+
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
         mGraphicsEnvironment = new ProgramManager();
@@ -44,10 +52,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPath = new Path(mGraphicsEnvironment);
         mRectPrism = new RectangularPrism(mGraphicsEnvironment);
 
-        float[] faceOne = {-0.3f, 0.0f, 0.0f};
-        float[] faceTwo = {0.3f, 0.0f, 0.0f};
-        mRectPrism.setDimensions(faceOne,faceTwo,.6f,.6f);
-
+        mRectPrism.setDimensions(faceTwo, faceTwo, THICKNESS, THICKNESS);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -77,15 +82,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
         mAxis.draw(scratch2);
-        // If we dont' want to use a shape that means
+        // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGL.USE_SHAPE) {
-
-        // Renders the mutlicolor cube
+            mRectPrism.draw(scratch2);
+            // Renders the mutlicolor cube
         } else if (OpenGL.USE_CUBE) {
             mCube.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
+
             mPrism.draw(scratch2);
         }
 
@@ -116,4 +122,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mRotationMatrix = r;
     }
 
+    public void addFaces(float[] oldFace, float[] newFace) {
+        Log.i(TAG, Arrays.toString(newFace));
+        mRectPrism.setDimensions(new float[]{0f, 0f, 0f}, newFace, THICKNESS, THICKNESS);
+    }
 }

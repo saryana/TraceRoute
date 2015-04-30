@@ -14,12 +14,16 @@ import android.widget.Toast;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 /**
  * Created by saryana on 4/25/15.
  */
 public class StepDetectorListener extends MySensorListener implements SensorEventListener {
+    private static final float OPENGL_SCALE = .0118f;
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -30,6 +34,11 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     // total distance for now
     private int mTotal;
     private Notification notification;
+    // We need to keep track of the old step
+    // and based off of the new step and direction
+    // we will calculate a new step location that we will send
+    // the view
+    private float[] mOldStepLocation;
 
     /**
      * The step detector will trigger a new event every time it detects a step.
@@ -39,6 +48,9 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     public StepDetectorListener(Context context) {
         super(context);
         mStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        mOldStepLocation = new float[3];
+        mOldStepLocation[1] = 0.1f;
+        mOldStepLocation[2] = 0.1f;
     }
 
     /**
@@ -94,6 +106,15 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
 
             mNotificationManager.notify(1, getNotification());
         }
+        // Lets calculate the the distance from the old/previous
+        // step with this new info to get the new event
+        float[] newLocation = new float[3];
+        newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
+        newLocation[1] = mOldStepLocation[1];
+        newLocation[2] = mOldStepLocation[2];
+        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
+        mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
+        mOldStepLocation = newLocation;
     }
 
     @Override

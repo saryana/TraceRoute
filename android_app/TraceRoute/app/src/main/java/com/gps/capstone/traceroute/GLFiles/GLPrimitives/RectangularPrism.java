@@ -54,11 +54,16 @@ public class RectangularPrism extends DrawableObject {
         float[] secondFace = calculateSecondFace(firstEndCoords, secondEndCoords, firstFace);
 
         // Set the
-        System.arraycopy(firstFace, 0, result, 0, firstFace.length);
+        for (int i = 0; i < firstFace.length; i++) {
+            result[i] = firstFace[i];
+        }
 
-        System.arraycopy(secondFace, 0, result, firstFace.length, secondFace.length);
+        for (int i = 0; i < secondFace.length; i++) {
+            result[i+firstFace.length] = secondFace[i];
+        }
 
         setVerticies(result);
+
     }
 
     /*
