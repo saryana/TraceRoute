@@ -1,7 +1,6 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.GLPoint;
-import com.gps.capstone.traceroute.GLFiles.ProgramManager;
+import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
 import java.util.ArrayList;
 import java.util.List;

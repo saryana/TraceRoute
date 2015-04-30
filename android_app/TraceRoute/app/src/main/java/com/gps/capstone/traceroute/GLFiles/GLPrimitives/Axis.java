@@ -2,8 +2,7 @@ package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
 import android.opengl.GLES20;
 
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
-import com.gps.capstone.traceroute.GLFiles.ProgramManager;
+import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
 /**
  * Created by keith619 on 4/9/15.

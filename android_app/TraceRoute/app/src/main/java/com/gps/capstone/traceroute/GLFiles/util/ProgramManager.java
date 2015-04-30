@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute.GLFiles;
+package com.gps.capstone.traceroute.GLFiles.util;
 
 import android.opengl.GLES20;
 
