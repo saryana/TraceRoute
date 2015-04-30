@@ -33,7 +33,10 @@
             android:defaultValue="true"
             android:title="Use the gyroscope to rotate the model"
             android:summary="If checked, it will use the gyroscope to rotate the model, otherwise it will use the rotation matrix from the accelerometer and compass" />
-
+        <SwitchPreference android:key="@string/pref_key_render_shape"
+            android:defaultValue="true"
+            android:title="Render shape for demo or show path"
+            android:summary="If true, it will render a shape (cube or prism) otherwise it will show the path."/>
         <SwitchPreference android:key="@string/pref_key_user_control"
             android:defaultValue="false"
             android:title="User Control"

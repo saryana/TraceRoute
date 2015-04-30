@@ -2,9 +2,13 @@ package com.gps.capstone.traceroute.settings;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,9 +18,13 @@ import com.gps.capstone.traceroute.DebugConsole;
 import com.gps.capstone.traceroute.GLFiles.OpenGL;
 import com.gps.capstone.traceroute.R;
 
-public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class Prefs1Frag extends PreferenceFragment implements OnSharedPreferenceChangeListener, OnPreferenceClickListener {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
+    // Preference that we can disable
+    private Preference mUseCube;
+    // Preference that we can disable
+    private SwitchPreference mUseRender;
 
     public Prefs1Frag() {
         // Required empty public constructor
@@ -36,12 +44,17 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
         setHasOptionsMenu(true);
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.fragmented_preferences);
+        mUseCube = findPreference(getString(R.string.pref_key_use_cube));
+        mUseRender = (SwitchPreference) findPreference(getString(R.string.pref_key_render_shape));
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+        // If the user does not want to render shape lets not give them the option
+        mUseRender.setOnPreferenceClickListener(this);
+        determineSwitch(mUseRender);
         // Make it so when we change any preferences we can see it here
         PreferenceManager.getDefaultSharedPreferences(getActivity())
                             .registerOnSharedPreferenceChangeListener(this);
@@ -110,5 +123,19 @@ public class Prefs1Frag extends PreferenceFragment implements SharedPreferences.
 //        } else {
 //            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
 //        }
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        determineSwitch(preference);
+        return false;
+    }
+
+    private void determineSwitch(Preference preference) {
+        if (!preference.getSharedPreferences().getBoolean(preference.getKey(), true)) {
+            mUseCube.setEnabled(false);
+        } else {
+            mUseCube.setEnabled(true);
+        }
     }
 }

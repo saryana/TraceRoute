@@ -48,5 +48,6 @@
     <string name="pref_key_use_gyroscope">prefKeyUseGyroscope</string>
     <string name="compass_text">Compass Values</string>
     <string name="pref_key_use_cube">prefKeyUseCube</string>
+    <string name="pref_key_render_shape">prefKeyRenderShape</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.gps.capstone.traceroute.GLFiles;
 
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ public class OpenGL extends BasicActivity {
     public static boolean USE_GYROSCOPE;
     // Flag to use cube for the render
     public static boolean USE_CUBE;
+    public static boolean USE_SHAPE;
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     // The view we are rendering
@@ -44,12 +46,12 @@ public class OpenGL extends BasicActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        USER_CONTROL = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_key_user_control), false);
-        USE_CUBE = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_key_use_cube), true);
-        USE_GYROSCOPE = PreferenceManager.getDefaultSharedPreferences(this)
-                .getBoolean(getString(R.string.pref_key_use_gyroscope), true);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        USER_CONTROL = sharedPreferences.getBoolean(getString(R.string.pref_key_user_control), false);
+        USE_CUBE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_cube), true);
+        USE_GYROSCOPE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_gyroscope), true);
+        USE_SHAPE = sharedPreferences.getBoolean(getString(R.string.pref_key_render_shape), true);
+
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
 
