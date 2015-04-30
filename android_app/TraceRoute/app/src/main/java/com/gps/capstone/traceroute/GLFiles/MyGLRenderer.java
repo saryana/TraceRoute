@@ -5,6 +5,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Path;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 

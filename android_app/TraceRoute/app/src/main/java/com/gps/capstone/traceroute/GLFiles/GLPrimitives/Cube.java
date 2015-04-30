@@ -1,8 +1,9 @@
-package com.gps.capstone.traceroute.GLFiles;
+package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
 import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
+import com.gps.capstone.traceroute.GLFiles.ProgramManager;
 
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
