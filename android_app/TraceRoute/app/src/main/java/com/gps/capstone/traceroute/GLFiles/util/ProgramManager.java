@@ -1,18 +1,9 @@
 package com.gps.capstone.traceroute.GLFiles.util;
 
+import android.app.Activity;
 import android.opengl.GLES20;
-import android.util.Log;
 
-import com.gps.capstone.traceroute.BasicActivity;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.InputStreamReader;
+import com.gps.capstone.traceroute.R;
 
 /**
  * Stores the master OpenGL shader and program code, and allows user to fetch
@@ -36,10 +27,9 @@ public class ProgramManager {
     /**
      * Initializes a program manager.
      */
-    public ProgramManager(BasicActivity activity) {
-        vertexShaderCode = R.string.vertex_shader;
-        fragmentShaderCode = R.string.fragment_shader;
-
+    public ProgramManager(Activity activity) {
+        vertexShaderCode = activity.getString(R.string.vertex_shader);
+        fragmentShaderCode = activity.getString(R.string.fragment_shader);
     }
 
     /**
