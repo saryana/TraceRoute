@@ -37,9 +37,13 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     // Accelerometer that we will be using to get direction
     private Sensor mAccelerometer;
     // Threshold for how far a movement we have to go until we register it
-    private static final float THRESHOLD = 0.5f;
+    private static final float THRESHOLD = 1.5f;
+    // Threshold angle used to detect when two acceleration vectors differ too much in direction
+    private static final float THRESHOLD_ANGLE = 20.0f;
     // number of samples in rolling average
     private static final int NSAMPLES = 5;
+    // number of cardinal directions
+    private static final int NUMCARDINAL = 8;
     // Nano seconds to seconds
     private static final float NS2S = 1.0f / 1000000000.0f;
 
@@ -58,6 +62,16 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private long mTimestamp;
     public float mHeading;
 
+    // Used when a pulse in acceleration is detected
+    private boolean mPulseBegan;
+    // This is the direction of the current pulse
+    private float[] mPulseDirection;
+
+    // direction we are currently headed
+    private int mSector;
+    // are we moving?
+    private boolean mMoving;
+
     public DirectionListener(Context context) {
         super(context);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -66,6 +80,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mOldAccel = new float[4];
         mVelocity = new float[3];
         mHeading = 0;
+        mPulseBegan = false;
+        mPulseDirection = new float[4];
     }
 
     @Override
@@ -94,62 +110,92 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
             return;
         }
 
+
+        Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
+        Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
         // TODO KEITH Added the flag for now and separate the logic in some sense
         // at the end you can set the mHeading flag and add it to the notification for
         // debugging
         if (SensorDataProvider.USE_ACCELERATION) {
             // Using acceleration for direction
+
+            // If enough samples are in the running average, remove the oldest
+            if (mSamples.size() == NSAMPLES) {
+                float[] oldestData = mSamples.remove();
+                mRunningTotal[0] -= oldestData[0];
+                mRunningTotal[1] -= oldestData[1];
+                mRunningTotal[2] -= oldestData[2];
+            }
+
+            // add most recent data
+            mSamples.add(worldSpaceAccel);
+            mRunningTotal[0] += worldSpaceAccel[0];
+            mRunningTotal[1] += worldSpaceAccel[1];
+            mRunningTotal[2] += worldSpaceAccel[2];
+
+            // Compute the current average acceleration
+            float average[] = {mRunningTotal[0] / mSamples.size(), mRunningTotal[1] / mSamples.size(), mRunningTotal[2] / mSamples.size()};
+
+            if (mPulseBegan) {
+                // analyse the average to see if it belongs to the current pulse
+                if (magnitude(average) > THRESHOLD) {
+                    // check if the average is going in the same direction as the initial pulse direction
+                    if (angleBetweenVectors(average, mPulseDirection) > THRESHOLD_ANGLE) {
+                        mPulseBegan = false;
+                    }
+                } else {
+                    // magnitude is below threshold. the pulse has ended
+                    mPulseBegan = false;
+
+                }
+
+                if (!mPulseBegan) {
+                    // The pulse has just ended, figure out the direction of the pulse
+                    float direction = vectorToDirection(mPulseDirection);
+                    if (mMoving) {
+                        int currentHeadingSector = directionToSector(mHeading, NUMCARDINAL);
+                        int pulseSector = directionToSector(direction, NUMCARDINAL);
+                    } else {
+
+                    }
+                }
+                //TODO average out the direction of the pulse?
+            } else if (magnitude(average) > THRESHOLD)  {
+                // This is the beginning of a pulse
+                mPulseBegan = true;
+                mPulseDirection = average;
+            }
         } else {
             // Using the velocity derived from acceleration for direction
+            // calculate change in velocity
+            if (mTimestamp != 0) {
+                // interpolate the change in acceleration to reduce error
+                float[] averageAccel = new float[3];
+                averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0] + mOldAccel[0]) / 2;
+                averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1] + mOldAccel[1]) / 2;
+                averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2] + mOldAccel[2]) / 2;
+
+                float deltaT = (event.timestamp - mTimestamp) * NS2S;
+
+                mVelocity[0] += averageAccel[0] * deltaT;
+                mVelocity[1] += averageAccel[1] * deltaT;
+                mVelocity[2] += averageAccel[2] * deltaT;
+            }
         }
         // If we find this inaccurate we can put restrictions on the user and
         // and possibly use the compass. For now the restrictions include
 
 
-        Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
-        Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
-
-        // If enough samples are in the running average, remove the oldest
-        if (mSamples.size() == NSAMPLES) {
-            float[] oldestData = mSamples.remove();
-            mRunningTotal[0] -= oldestData[0];
-            mRunningTotal[1] -= oldestData[1];
-            mRunningTotal[2] -= oldestData[2];
-        }
-
-        // add most recent data
-        mSamples.add(worldSpaceAccel);
-        mRunningTotal[0] += worldSpaceAccel[0];
-        mRunningTotal[1] += worldSpaceAccel[1];
-        mRunningTotal[2] += worldSpaceAccel[2];
-
-
-        float average[] = {mRunningTotal[0] / mSamples.size(), mRunningTotal[1] / mSamples.size(), mRunningTotal[2] / mSamples.size()};
-        // calculate change in velocity
-        if (mTimestamp != 0) {
-            // interpolate the change in acceleration to reduce error
-            float[] averageAccel = new float[3];
-            averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0] + mOldAccel[0]) / 2;
-            averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1] + mOldAccel[1]) / 2;
-            averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2] + mOldAccel[2]) / 2;
-
-            float deltaT = (event.timestamp - mTimestamp) * NS2S;
-
-            mVelocity[0] += averageAccel[0] * deltaT;
-            mVelocity[1] += averageAccel[1] * deltaT;
-            mVelocity[2] += averageAccel[2] * deltaT;
-        }
-
         // TODO detect when possibly stopped?
         // TODO filter out insignificant accelerations
 
 
-        String s = "";
-        if (magnitude(mVelocity) > THRESHOLD) {
-            mHeading = vectorToDirection(mVelocity);
-            s += "Heading: " + vectorToDirection(mVelocity) + "{" + mVelocity[0] + ", " + mVelocity[1] + ", " + mVelocity[2] + "}" + "\n";
+//        String s = "";
+//        if (magnitude(average) > THRESHOLD) {
+//            mHeading = vectorToDirection(average);
+            //s += "Heading: " + vectorToDirection(average) + "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" + "\n";
             //s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
-        }
+//        }
         //for (int i = 0; i < values.length; i++) {
             /*if (Math.abs(values[i]) > THRESHOLD) {
 
@@ -199,7 +245,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         return (float) Math.sqrt(magSquared);
     }
 
-    //
+    // Converts the x and y components in given vector {x,y,z} to compass degrees
     public static float vectorToDirection(float[] v) {
         //float magnitude = magnitude(v);
         //float normalized[] = {v[0]/magnitude, v[1]/magnitude, v[2]/magnitude};
@@ -215,6 +261,34 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         }
 
         return (float) angleDegree;
+    }
+
+    // Converts the given direction (in compass degrees) to a sector on a compass.
+    // Must specify the number of sectors the compass has. Using values other than 4, 8, 16, 32 do not map to cardinal directions well.
+    // The returned sector number has a 0 based index
+    public static int directionToSector(float direction, int sectors) {
+        // figure out the size of each sector
+        float sectorSize = 360f / sectors;
+
+        // Shift the direction value over by half a sector because sectors on a compass
+        float shiftedDirection = direction + sectorSize / 2;
+
+        // direction that map to sector 0 with high degree will go over 360 so wrap it back
+        shiftedDirection %= 360;
+        return (int) (shiftedDirection / sectorSize);
+    }
+
+    // Calculates the angle between the two given vectors. returned value is in degrees
+    public static float angleBetweenVectors(float[] v1, float[] v2) {
+        float v1Dotv2 = v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2];
+        float cosineTheta = v1Dotv2 / (magnitude(v1) * magnitude(v2));
+        if (cosineTheta > 1) {
+            cosineTheta = 1;
+        } else if (cosineTheta < -1) {
+            cosineTheta = -1;
+        }
+        double theta = (float) Math.acos(cosineTheta);
+        return (float) (theta / Math.PI * 180);
     }
 
     public Notification getNotification() {
