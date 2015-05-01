@@ -1,6 +1,16 @@
 package com.gps.capstone.traceroute.GLFiles.util;
 
 import android.opengl.GLES20;
+import android.util.Log;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 
 /**
  * Stores the master OpenGL shader and program code, and allows user to fetch
@@ -16,25 +26,54 @@ public class ProgramManager {
     private Integer fragmentShader;
 
     // Vertex Shader
-    private final String vertexShaderCode =
-            "uniform mat4 uMVPMatrix;" +
-            "uniform float uThickness;" +
-            "attribute vec4 a_Position;" +
-            "attribute vec4 a_Color;" +
-            "varying vec4 v_Color;" +
-            "void main() {" +
-            "  v_Color = a_Color;" +
-            "  gl_PointSize = uThickness;" +
-            "  gl_Position = uMVPMatrix * a_Position;" +
-            "}";
+    private String vertexShaderCode;
 
     // Fragment Shader
-    private final String fragmentShaderCode =
-            "precision mediump float;" +
-            "varying vec4 v_Color;" +
-            "void main() {" +
-            "  gl_FragColor = v_Color;" +
-            "}";
+    private String fragmentShaderCode;
+
+    /**
+     * Initializes a program manager.
+     */
+    public ProgramManager() {
+        vertexShaderCode = "";
+        fragmentShaderCode = "";
+        grabShaders();
+    }
+
+    // Load the shaders from disk.
+    private void grabShaders() {
+        File vertexShader = new File("shaders/vertexShader.c");
+        File fragmentShader = new File("shaders/fragmentShader.c");
+        if (!vertexShader.exists() || !fragmentShader.exists()) {
+            Log.i(getClass().getSimpleName(), "Failed to load shaders!");
+        } else {
+            // Prepare the files for reading.
+            BufferedReader reader1 = null;
+            BufferedReader reader2 = null;
+            try {
+                reader1 = new BufferedReader(new FileReader(vertexShader));
+                reader2 = new BufferedReader(new FileReader(fragmentShader));
+            } catch (FileNotFoundException e) {}
+
+            try {
+                // read in both files.
+                String cur = reader1.readLine();
+                while (cur != null) {
+                    vertexShaderCode += cur;
+                    cur = reader1.readLine();
+                }
+                cur = reader2.readLine();
+                while (cur != null) {
+                    fragmentShaderCode += cur;
+                    cur = reader2.readLine();
+                }
+            } catch (IOException e) {
+                Log.i(getClass().getSimpleName(), "File Read Failure!");
+            }
+            
+
+        }
+    }
 
     /**
      *

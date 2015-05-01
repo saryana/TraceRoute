@@ -1,0 +1,54 @@
+Collaberative Drawing
+Uses google cardboard to have a community drawing board.
+Feasible? Probably. Useful? Maybe.
+
+SonarON?
+Uses sonar to detect whether or not somebody is in bed. An
+alarm that's only active when somebody's in bed. Uses sonar to detect
+movement I like this idea. 
+Feasible? Yes. 
+
+iSwitch
+Turn off devices by looking at them. Uses an AR headset to detect what
+you're looking at. Uses custom hardware to receive signal to shut a TV down.
+Feasible? Yes, but this will require a lot of work across multiple devices,
+and will require some algorithm design for recognising 
+devices that have these recievers.
+Useful? Yes, very. A good, non-intrusive AR application.
+
+Talent/Service Locator?
+Feasible? Yes, using AWS to post what jobs are needed. The GPS data is
+reasonably accurate, so it should work reasonably well.
+Useful? Probably. The exact goal of the application is
+still unclear to me. 
+
+Enhanced E-Reader - Use the device camera to blur areas of the screen where
+you're not supposed to be looking. Uses some openCV and maching learning to 
+do eye detection and appropriate screen blurring
+Feasible: Yes. All of the tech here is reliable, and it's been
+used in similar circumstances. 
+Useful? Yes. It's has a focused purpose of increasing 
+
+Name Recogniser - Putting names to faces. Uses the eye tracker
+and camera to recognise faces. Uses openVR and openCV. Pulls data
+from social networks to help in face recognition. Uses an interface
+on the laptop to tell professors what it thinks the face you're looking
+at is.
+
+Feasible? Most likely. This is really experimental stuff, but
+it's promising.
+
+Useful? Yes, in a classroom setting. It has some scary implications
+outside of the classroom, though.
+
+Automatic Unlocker using the cell phone - 
+Feasible? Yes. NFC technology is well delveloped. The only problem
+with this is the propriary lock technology. This has some security concerns 
+as well, since your phone can unlock things without unlocking the phone itself.
+
+Cloud Gaming Service -
+Stream your games online. Play local multiplayer games online.
+
+ 
+
+Useful? Yes
