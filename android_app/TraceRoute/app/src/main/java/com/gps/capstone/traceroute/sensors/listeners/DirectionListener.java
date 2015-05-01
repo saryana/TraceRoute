@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.Direction;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
@@ -37,7 +38,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     // Accelerometer that we will be using to get direction
     private Sensor mAccelerometer;
     // Threshold for how far a movement we have to go until we register it
-    private static final float THRESHOLD = 1.5f;
+    private static final float THRESHOLD = 1.0f;
     // Threshold angle used to detect when two acceleration vectors differ too much in direction
     private static final float THRESHOLD_ANGLE = 20.0f;
     // number of samples in rolling average
@@ -68,7 +69,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private float[] mPulseDirection;
 
     // direction we are currently headed
-    private int mSector;
+    private int mMovementSector;
     // are we moving?
     private boolean mMoving;
 
@@ -82,6 +83,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mHeading = 0;
         mPulseBegan = false;
         mPulseDirection = new float[4];
+        mMoving = false;
     }
 
     @Override
@@ -146,17 +148,27 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
                 } else {
                     // magnitude is below threshold. the pulse has ended
                     mPulseBegan = false;
-
                 }
 
                 if (!mPulseBegan) {
                     // The pulse has just ended, figure out the direction of the pulse
-                    float direction = vectorToDirection(mPulseDirection);
+                    float pulseDirection = vectorToDirection(mPulseDirection);
+                    int pulseSector = directionToSector(pulseDirection, NUMCARDINAL);
                     if (mMoving) {
+                        // If we are currently moving in a particular direction
                         int currentHeadingSector = directionToSector(mHeading, NUMCARDINAL);
-                        int pulseSector = directionToSector(direction, NUMCARDINAL);
-                    } else {
 
+                        // check if the pulses are in opposite directions
+                        if (Math.abs(currentHeadingSector - pulseSector) == NUMCARDINAL/2) {
+                            mMoving = false;
+                        } else {
+                            mHeading = pulseDirection;
+                            mMovementSector = pulseSector;
+                        }
+                    } else {
+                        mHeading = pulseDirection;
+                        mMoving = true;
+                        mMovementSector = pulseSector;
                     }
                 }
                 //TODO average out the direction of the pulse?
@@ -218,6 +230,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         // As a tip if you want a new notification change the first parameter to something new.
         // 1 is used for step stuff, 2 for direction....
         mNotificationManager.notify(2, getNotification());
+        mNotificationManager.notify(3, getMovementNotification());
     }
 
     @Override
@@ -294,6 +307,14 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     public Notification getNotification() {
         return mBuilder.setContentTitle("Heading")
                 .setContentText("Heading Direction " + mHeading)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
+    }
+
+    public Notification getMovementNotification() {
+        return mBuilder.setContentTitle("Movement")
+                .setContentText("Moving: " + mMoving + " Direction: " + Direction.values()[mMovementSector])
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
