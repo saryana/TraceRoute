@@ -1,6 +1,7 @@
 package com.gps.capstone.traceroute.GLFiles.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.R;
@@ -27,9 +28,9 @@ public class ProgramManager {
     /**
      * Initializes a program manager.
      */
-    public ProgramManager(Activity activity) {
-        vertexShaderCode = activity.getString(R.string.vertex_shader);
-        fragmentShaderCode = activity.getString(R.string.fragment_shader);
+    public ProgramManager(Context context) {
+        vertexShaderCode = context.getString(R.string.vertex_shader);
+        fragmentShaderCode = context.getString(R.string.fragment_shader);
     }
 
     /**

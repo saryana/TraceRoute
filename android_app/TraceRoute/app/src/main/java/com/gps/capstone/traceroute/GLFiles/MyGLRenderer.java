@@ -1,5 +1,6 @@
 package com.gps.capstone.traceroute.GLFiles;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
@@ -43,9 +44,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 //    float[] faceOne = {-0.3f, 0.1f, 0.1f};
     float[] faceTwo = {0.0f, 0.0f, 0.0f};
 
+    public MyGLRenderer(Context context) {
+        // Does this break if it is here instead of onSurfaceCreated?
+        mGraphicsEnvironment = new ProgramManager(context);
+    }
+
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // create the shader manager object for loading shaders.
-        mGraphicsEnvironment = new ProgramManager();
+//        mGraphicsEnvironment = new ProgramManager();
 
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
