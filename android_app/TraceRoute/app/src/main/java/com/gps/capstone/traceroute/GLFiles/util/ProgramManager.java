@@ -3,6 +3,8 @@ package com.gps.capstone.traceroute.GLFiles.util;
 import android.opengl.GLES20;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.BasicActivity;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,45 +36,10 @@ public class ProgramManager {
     /**
      * Initializes a program manager.
      */
-    public ProgramManager() {
-        vertexShaderCode = "";
-        fragmentShaderCode = "";
-        grabShaders();
-    }
+    public ProgramManager(BasicActivity activity) {
+        vertexShaderCode = R.string.vertex_shader;
+        fragmentShaderCode = R.string.fragment_shader;
 
-    // Load the shaders from disk.
-    private void grabShaders() {
-        File vertexShader = new File("shaders/vertexShader.c");
-        File fragmentShader = new File("shaders/fragmentShader.c");
-        if (!vertexShader.exists() || !fragmentShader.exists()) {
-            Log.i(getClass().getSimpleName(), "Failed to load shaders!");
-        } else {
-            // Prepare the files for reading.
-            BufferedReader reader1 = null;
-            BufferedReader reader2 = null;
-            try {
-                reader1 = new BufferedReader(new FileReader(vertexShader));
-                reader2 = new BufferedReader(new FileReader(fragmentShader));
-            } catch (FileNotFoundException e) {}
-
-            try {
-                // read in both files.
-                String cur = reader1.readLine();
-                while (cur != null) {
-                    vertexShaderCode += cur;
-                    cur = reader1.readLine();
-                }
-                cur = reader2.readLine();
-                while (cur != null) {
-                    fragmentShaderCode += cur;
-                    cur = reader2.readLine();
-                }
-            } catch (IOException e) {
-                Log.i(getClass().getSimpleName(), "File Read Failure!");
-            }
-            
-
-        }
     }
 
     /**
