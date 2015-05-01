@@ -42,3 +42,11 @@ pedometer algorithm for cars
 6 degrees of freedom - x, y, z, roll, pitch, yaw
 
 Overview of what we might have to do. Linear acceleratino is very difficult. We can get a lot of infromation from all of the phone sensors but have to be picky on what we actually use. For example, if we use the the accelerometer and gyroscope we can detect the basic position and movement of the phone; however, when combining that with the compass and the step tracker we can get an understanding of distance and direciton.
+
+
+Threads:
+http://pastebin.com/QuHd0LNU
+http://developer.android.com/reference/android/os/Handler.html
+http://developer.android.com/reference/android/hardware/SensorManager.html#registerListener(android.hardware.SensorEventListener, android.hardware.Sensor, int, int, android.os.Handler)
+http://developer.android.com/guide/components/processes-and-threads.html
+
