@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.gps.capstone.traceroute.BusProvider;
+import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
@@ -73,6 +73,10 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewDataEvent e) {
+        if (!OpenGLActivity.USE_SHAPE) {
+            // We will eventually want to prevent this
+            // better yet we want to unregister the listener
+        }
         switch (e.type) {
             case ROTATION_MATRIX_CHANGE:
                 mRenderer.setRotationMatrix(e.values);

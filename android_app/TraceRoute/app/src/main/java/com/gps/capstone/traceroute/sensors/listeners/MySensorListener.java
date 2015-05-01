@@ -2,11 +2,10 @@ package com.gps.capstone.traceroute.sensors.listeners;
 
 import android.content.Context;
 import android.hardware.SensorManager;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.gps.capstone.traceroute.BusProvider;
+import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.squareup.otto.Bus;
 
 /**

@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by keith619 on 4/19/15.
  */
+@Deprecated
 public class Path {
 
     // List of all points on the path

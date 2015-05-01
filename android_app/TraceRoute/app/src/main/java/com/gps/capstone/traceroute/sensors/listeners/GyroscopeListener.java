@@ -7,9 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
-import com.squareup.otto.Produce;
 
 /**
  * Created by saryana on 4/18/15.

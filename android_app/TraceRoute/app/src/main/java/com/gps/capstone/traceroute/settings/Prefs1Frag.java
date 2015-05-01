@@ -14,8 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.gps.capstone.traceroute.DebugConsole;
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
+import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
+import com.gps.capstone.traceroute.debugConsole.DebugConsole;
 import com.gps.capstone.traceroute.R;
 
 public class Prefs1Frag extends PreferenceFragment implements OnSharedPreferenceChangeListener, OnPreferenceClickListener {
@@ -85,7 +85,7 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
         Intent i = null;
         switch (id) {
             case R.id.open_gl_view:
-                i = new Intent(getActivity(), OpenGL.class);
+                i = new Intent(getActivity(), OpenGLActivity.class);
                 break;
             case R.id.debug_console:
                 i = new Intent(getActivity(), DebugConsole.class);
@@ -110,19 +110,6 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
             // Put the total height in the pref
             sharedPreferences.edit().putInt(getString(R.string.pref_key_total_height_in), height).apply();
         }
-//        } else if (key.equals(getString(R.string.pref_key_user_control))) {
-//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, false));
-//            OpenGL.USER_CONTROL = true;
-//        } else if (key.equals(getString(R.string.pref_key_use_gyroscope))) {
-//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getBoolean(key, true));
-//            // set the variable
-//        } else if (key.equals(getString(R.string.pref_key_alpha))) {
-//            float newAlpha = Float.valueOf(sharedPreferences.getString(key, ".02f"));
-//            Log.i(TAG, "Alpha change " + newAlpha);
-//            AccelerometerCompassListener.ALPHA = newAlpha;
-//        } else {
-//            Log.i(TAG, "Key " + key + " value is now " + sharedPreferences.getString(key, "-1"));
-//        }
     }
 
     @Override

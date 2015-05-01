@@ -7,12 +7,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
@@ -99,6 +98,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
+        Log.d(TAG, event.timestamp + " ");
         if (mHeight == 0) {
             Log.e(TAG, "User height not defined");
         } else {

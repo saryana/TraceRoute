@@ -7,7 +7,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.WindowManager.LayoutParams;
 
-import com.gps.capstone.traceroute.GLFiles.OpenGL;
+import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
+import com.gps.capstone.traceroute.debugConsole.DebugConsole;
 import com.gps.capstone.traceroute.settings.UserSettings;
 
 /**
@@ -39,7 +40,7 @@ public abstract class BasicActivity extends ActionBarActivity {
         Intent i = null;
         switch (id) {
             case R.id.open_gl_view:
-                i = new Intent(this, OpenGL.class);
+                i = new Intent(this, OpenGLActivity.class);
                 break;
             case R.id.debug_console:
                 i = new Intent(this, DebugConsole.class);

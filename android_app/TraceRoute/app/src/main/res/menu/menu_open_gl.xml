@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.gps.capstone.traceroute.GLFiles.OpenGL">
+    tools:context="com.gps.capstone.traceroute.GLFiles.OpenGLActivity">
     <item android:id="@+id/debug_console"
         android:title="@string/action_debug_console"
         android:icon="@drawable/ic_action_computer"

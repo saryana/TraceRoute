@@ -1,11 +1,13 @@
 package com.gps.capstone.traceroute.sensors;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.listeners.AccelerometerCompassListener;
+import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 import com.gps.capstone.traceroute.sensors.listeners.MySensorListener;
 import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
@@ -18,7 +20,7 @@ import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
 public class SensorDataProvider {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
-
+    public static boolean USE_ACCELERATION;
     // Marker for knowing whether or not to use the gyroscope as our source of data
     private boolean mUseGyroscope;
 
@@ -26,8 +28,12 @@ public class SensorDataProvider {
     private MySensorListener mSensorListener;
     // We need to keep track of the step detector for the entire period
     private StepDetectorListener mStepDetector;
+    // Direction Listener
+    private DirectionListener mDirectionDeterminer;
     // Context we got called from
     private Context mContext;
+    // Shared prefrences
+    private SharedPreferences mSharedPrefs;
 
     /**
      * Sets up the basic utilities to make this work
@@ -38,6 +44,8 @@ public class SensorDataProvider {
         mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
                                 .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
         mStepDetector = new StepDetectorListener(context);
+        mDirectionDeterminer = new DirectionListener(context);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         determineListener();
     }
 
@@ -68,7 +76,8 @@ public class SensorDataProvider {
             this.mUseGyroscope = useGyroscope;
             determineListener();
         }
-
+        USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
+        mDirectionDeterminer.register();
         mSensorListener.register();
         mStepDetector.register();
         // If we have user control we might have to change it here
@@ -80,6 +89,7 @@ public class SensorDataProvider {
     public void unregister() {
         mSensorListener.unregister();
         mStepDetector.unregister();
+        mDirectionDeterminer.unregister();
     }
 
 

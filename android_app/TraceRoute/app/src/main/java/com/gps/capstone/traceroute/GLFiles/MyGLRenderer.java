@@ -73,7 +73,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] scratch2 = new float[16];
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
-        if (OpenGL.USER_CONTROL) {
+        if (OpenGLActivity.USER_CONTROL) {
             Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
             //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         } else {
@@ -88,10 +88,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAxis.draw(scratch2);
         // If we don't want to use a shape that means
         // we are drawing a path!
-        if (!OpenGL.USE_SHAPE) {
+        if (!OpenGLActivity.USE_SHAPE) {
             mRectPrism.draw(scratch2);
             // Renders the mutlicolor cube
-        } else if (OpenGL.USE_CUBE) {
+        } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
         // Renders the mutlicolor prism
         } else {

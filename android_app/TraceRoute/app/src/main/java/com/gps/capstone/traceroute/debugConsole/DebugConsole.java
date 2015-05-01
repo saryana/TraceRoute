@@ -1,4 +1,4 @@
-package com.gps.capstone.traceroute;
+package com.gps.capstone.traceroute.debugConsole;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -7,19 +7,20 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gps.capstone.traceroute.listeners.AccelerometerListener;
-import com.gps.capstone.traceroute.listeners.BarometerListener;
-import com.gps.capstone.traceroute.listeners.DirectionListener;
-import com.gps.capstone.traceroute.listeners.GravityListener;
-import com.gps.capstone.traceroute.listeners.GyroscopeListner;
-import com.gps.capstone.traceroute.listeners.LinearAccelerationListener;
-import com.gps.capstone.traceroute.listeners.StepCounterListener;
-import com.gps.capstone.traceroute.listeners.StepDetectorListener;
+import com.gps.capstone.traceroute.BasicActivity;
+import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.debugConsole.AccelerometerListener;
+import com.gps.capstone.traceroute.debugConsole.BarometerListener;
+import com.gps.capstone.traceroute.debugConsole.DirectionListener;
+import com.gps.capstone.traceroute.debugConsole.GravityListener;
+import com.gps.capstone.traceroute.debugConsole.GyroscopeListner;
+import com.gps.capstone.traceroute.debugConsole.LinearAccelerationListener;
+import com.gps.capstone.traceroute.debugConsole.StepCounterListener;
+import com.gps.capstone.traceroute.debugConsole.StepDetectorListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 
 public class DebugConsole extends BasicActivity implements SensorEventListener {

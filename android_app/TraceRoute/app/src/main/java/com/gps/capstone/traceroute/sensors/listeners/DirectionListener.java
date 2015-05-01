@@ -2,6 +2,7 @@ package com.gps.capstone.traceroute.sensors.listeners;
 
 import android.app.Activity;
 import android.app.Notification;
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
 
@@ -34,7 +36,6 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private final String TAG = getClass().getSimpleName();
     // Accelerometer that we will be using to get direction
     private Sensor mAccelerometer;
-    private Activity mActivity;
     // Threshold for how far a movement we have to go until we register it
     private static final float THRESHOLD = 0.5f;
     // number of samples in rolling average
@@ -57,9 +58,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     private long mTimestamp;
     public float mHeading;
 
-    public DirectionListener(Activity activity) {
-        super(activity);
-        mActivity = activity;
+    public DirectionListener(Context context) {
+        super(context);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mSamples = new LinkedList<float[]>();
         mRunningTotal = new float[3];
@@ -79,7 +79,6 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     public void unregister() {
         mSensorManager.unregisterListener(this);
         mBus.unregister(this);
-        ((TextView)mActivity.findViewById(R.id.walking_direction_value)).setText("");
     }
 
 
@@ -94,6 +93,19 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         if (mCurrentRotation == null) {
             return;
         }
+
+        // TODO KEITH Added the flag for now and separate the logic in some sense
+        // at the end you can set the mHeading flag and add it to the notification for
+        // debugging
+        if (SensorDataProvider.USE_ACCELERATION) {
+            // Using acceleration for direction
+        } else {
+            // Using the velocity derived from acceleration for direction
+        }
+        // If we find this inaccurate we can put restrictions on the user and
+        // and possibly use the compass. For now the restrictions include
+
+
         Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
         Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
 
@@ -134,6 +146,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
         String s = "";
         if (magnitude(mVelocity) > THRESHOLD) {
+            mHeading = vectorToDirection(mVelocity);
             s += "Heading: " + vectorToDirection(mVelocity) + "{" + mVelocity[0] + ", " + mVelocity[1] + ", " + mVelocity[2] + "}" + "\n";
             //s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
         }
@@ -154,9 +167,11 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         mTimestamp = event.timestamp;
         mOldAccel = worldSpaceAccel;
 
-        //TextView tv = (TextView)mActivity.findViewById(R.id.walking_direction_value);
-        //tv.setText(s + tv.getText());
-        Log.i(TAG, s);
+        // TODO KEITH this is where you can throw things into the notification bar
+        // so we can be testing in the OpenGL part of the app and not the debug console.
+        // As a tip if you want a new notification change the first parameter to something new.
+        // 1 is used for step stuff, 2 for direction....
+        mNotificationManager.notify(2, getNotification());
     }
 
     @Override

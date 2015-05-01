@@ -2,7 +2,7 @@ package com.gps.capstone.traceroute.sensors.events;
 
 import android.hardware.SensorEvent;
 
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 
 /**
  * Created by saryana on 4/16/15.

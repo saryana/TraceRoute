@@ -8,10 +8,10 @@ import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.BusProvider;
+import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
-import com.gps.capstone.traceroute.sensors.SensorUtil.EventType;
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 
 /**
  * Created by saryana on 4/11/15.

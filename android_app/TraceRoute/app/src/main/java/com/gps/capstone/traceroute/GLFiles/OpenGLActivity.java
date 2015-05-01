@@ -14,7 +14,7 @@ import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 
 
-public class OpenGL extends BasicActivity {
+public class OpenGLActivity extends BasicActivity {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -27,17 +27,12 @@ public class OpenGL extends BasicActivity {
     public static boolean USE_SHAPE;
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
-    // The view we are rendering
-    private GLSurfaceView mGLSurface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGLSurface = new MySurfaceView(this);
-        FrameLayout mFrameLayout = (FrameLayout)findViewById(R.id.frame);
-//        mFrameLayout.addView(mGLSurface);
-//        setContentView(R.layout.activity_open_gl);
+        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(mGLSurface);
         mDataProvider = new SensorDataProvider(this);
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
