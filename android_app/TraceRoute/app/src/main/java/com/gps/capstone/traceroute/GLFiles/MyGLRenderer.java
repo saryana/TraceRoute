@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
@@ -90,7 +91,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
-            mRectangularPrism.draw(scratch2);
+//            mRectangularPrism.draw(scratch2);
             if (mInit) {
                 mPath.draw(scratch2);
             }
