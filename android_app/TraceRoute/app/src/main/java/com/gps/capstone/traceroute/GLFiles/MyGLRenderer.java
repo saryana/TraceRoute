@@ -134,6 +134,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param newFace Face to add
      */
     public void addFaces(float[] newFace) {
+        Log.e(TAG, "ADDING PATH");
         mPath.addPoint(newFace);
     }
 }
