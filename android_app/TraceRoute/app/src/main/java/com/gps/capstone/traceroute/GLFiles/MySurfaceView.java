@@ -68,7 +68,7 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewStepEvent e) {
-        mRenderer.addFaces(e.newFace);
+        mRenderer.addFaces(e.oldFace, e.newFace);
     }
 
     @Subscribe

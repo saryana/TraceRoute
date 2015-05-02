@@ -13,6 +13,9 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -39,10 +42,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private PrismPath mPath;
     private RectangularPrism mRectangularPrism;
     private boolean mInit;
+    private List<RectangularPrism> mPathTest;
 
     public MyGLRenderer(Context context) {
         // Does this break if it is here instead of onSurfaceCreated?
         mGraphicsEnvironment = new ProgramManager(context);
+        mPathTest = new LinkedList<>();
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -93,7 +98,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (!OpenGLActivity.USE_SHAPE) {
 //            mRectangularPrism.draw(scratch2);
             if (mInit) {
-                mPath.draw(scratch2);
+//                mPath.draw(scratch2);
+                for (int i = 0; i < mPathTest.size(); i++) {
+                    mPathTest.get(i).draw(scratch2);
+                }
             }
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
@@ -135,13 +143,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * Adds a new face to the path
      * @param newFace Face to add
      */
-    public void addFaces(float[] newFace) {
+    public void addFaces(float[] oldFaces, float[] newFace) {
         mInit = true;
-        mRectangularPrism.setDimensions(new float[3], newFace, THICKNESS, THICKNESS);
+        mRectangularPrism.setDimensions(oldFaces, newFace, THICKNESS, THICKNESS);
         float[] opposite = new float[3];
         for (int i = 0; i < newFace.length; i++) {
             opposite[i] = -newFace[i];
         }
         mPath.addPoint(opposite);
+        mPathTest.add(mRectangularPrism);
     }
 }

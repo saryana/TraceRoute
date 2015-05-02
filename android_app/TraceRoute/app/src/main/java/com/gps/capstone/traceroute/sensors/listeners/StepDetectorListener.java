@@ -114,7 +114,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         newLocation[1] = mOldStepLocation[1] + .1f;
         newLocation[2] = mOldStepLocation[2] + .1f;
 //        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
-        mBus.post(new NewStepEvent(newLocation));
+        mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
         mOldStepLocation = newLocation;
     }
 
