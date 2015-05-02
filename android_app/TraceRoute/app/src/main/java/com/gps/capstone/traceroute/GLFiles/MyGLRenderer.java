@@ -151,6 +151,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             opposite[i] = -newFace[i];
         }
         mPath.addPoint(opposite);
+//        RectangularPrism rp = new RectangularPrism(mGraphicsEnvironment);
+//        rp.setDimensions(oldFaces, newFace, THICKNESS, THICKNESS);
+//        mPathTest.add(mRectangularPrism.clone());
+        // My hunch is that since we are changeling mRectangularPrism that the reference in the
+        // list is getting updated too so we have just a list of the same objects.
+        // As far as why PrismPath isn't working is beyond me that suspicion was based off of
+        // nested draw calls that Andrew doesn't think is a problem.
         mPathTest.add(mRectangularPrism);
     }
 }
