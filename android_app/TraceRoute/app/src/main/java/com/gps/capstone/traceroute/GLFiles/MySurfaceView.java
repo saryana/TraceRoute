@@ -84,7 +84,7 @@ public class MySurfaceView extends GLSurfaceView {
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
-//                Log.i(TAG, "DATA FROM ROTATIN MATRIX");
+//                Log.i(TAG, "DATA FROM ROTATION MATRIX");
                 mRenderer.setRotationMatrix(e.values);
                 break;
             default:

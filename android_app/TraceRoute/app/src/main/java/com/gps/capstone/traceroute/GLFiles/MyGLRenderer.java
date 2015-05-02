@@ -8,6 +8,7 @@ import android.opengl.Matrix;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
@@ -35,6 +36,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Cube mCube;
     private TriangularPrism mPrism;
     private PrismPath mPath;
+    private RectangularPrism mRectangularPrism;
 
 //    float[] faceOne = {-0.3f, 0.1f, 0.1f};
     float[] faceTwo = {0.0f, 0.0f, 0.0f};
@@ -55,6 +57,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
+        mRectangularPrism = new RectangularPrism(mGraphicsEnvironment);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -129,6 +132,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param newFace Face to add
      */
     public void addFaces(float[] newFace) {
+        mRectangularPrism.setDimensions(new float[3], newFace, THICKNESS, THICKNESS);
         mPath.addPoint(newFace);
     }
 }
