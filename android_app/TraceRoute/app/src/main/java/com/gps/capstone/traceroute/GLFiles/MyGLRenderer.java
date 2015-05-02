@@ -19,7 +19,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by saryana on 4/9/15.
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private static final float THICKNESS = 0.01f;
+    private static final float THICKNESS = 0.3f;
     private final String TAG = getClass().getSimpleName();
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
