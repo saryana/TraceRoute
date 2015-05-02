@@ -19,7 +19,7 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by saryana on 4/9/15.
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private static final float THICKNESS = 0.01f;
+    private static final float THICKNESS = 0.1f;
     private final String TAG = getClass().getSimpleName();
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
@@ -37,6 +37,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private TriangularPrism mPrism;
     private PrismPath mPath;
     private RectangularPrism mRectangularPrism;
+    private boolean mInit;
 
     public MyGLRenderer(Context context) {
         // Does this break if it is here instead of onSurfaceCreated?
@@ -56,6 +57,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPath = new PrismPath(mGraphicsEnvironment);
         mRectangularPrism = new RectangularPrism(mGraphicsEnvironment);
         mRectangularPrism.setDimensions(new float[3], new float[3], THICKNESS, THICKNESS);
+        mInit = false;
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -89,7 +91,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             mRectangularPrism.draw(scratch2);
-//            mPath.draw(scratch2);
+            if (mInit) {
+                mPath.draw(scratch2);
+            }
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
@@ -131,7 +135,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param newFace Face to add
      */
     public void addFaces(float[] newFace) {
+        mInit = true;
         mRectangularPrism.setDimensions(new float[3], newFace, THICKNESS, THICKNESS);
-        mPath.addPoint(newFace);
+        float[] opposite = new float[3];
+        for (int i = 0; i < newFace.length; i++) {
+            opposite[i] = -newFace[i];
+        }
+        mPath.addPoint(opposite);
     }
 }
