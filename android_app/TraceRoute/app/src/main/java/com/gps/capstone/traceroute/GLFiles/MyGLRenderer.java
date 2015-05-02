@@ -8,6 +8,7 @@ import android.opengl.Matrix;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
@@ -36,8 +37,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private TriangularPrism mPrism;
     private PrismPath mPath;
 
-//    float[] faceOne = {-0.3f, 0.1f, 0.1f};
-    float[] faceTwo = {0.0f, 0.0f, 0.0f};
+    private RectangularPrism rectPrism;
+
+    float[] firstFace = {-0.3f, 0.0f, 0.0f};
+    float[] secondFace = {0.3f, 0.0f, 0.0f};
 
     public MyGLRenderer(Context context) {
         // Does this break if it is here instead of onSurfaceCreated?
@@ -55,6 +58,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
+        rectPrism = new RectangularPrism(mGraphicsEnvironment);
+        rectPrism.setDimensions(firstFace, secondFace, 0.6f, 0.6f);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -90,7 +95,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
-            mCube.draw(scratch2);
+            //mCube.draw(scratch2);
+            rectPrism.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
 
