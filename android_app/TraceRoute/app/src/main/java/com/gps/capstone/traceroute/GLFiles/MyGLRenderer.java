@@ -38,9 +38,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private PrismPath mPath;
     private RectangularPrism mRectangularPrism;
 
-//    float[] faceOne = {-0.3f, 0.1f, 0.1f};
-    float[] faceTwo = {0.0f, 0.0f, 0.0f};
-
     public MyGLRenderer(Context context) {
         // Does this break if it is here instead of onSurfaceCreated?
         mGraphicsEnvironment = new ProgramManager(context);
@@ -58,6 +55,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
         mRectangularPrism = new RectangularPrism(mGraphicsEnvironment);
+        mRectangularPrism.setDimensions(new float[3], new float[3], THICKNESS, THICKNESS);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -90,6 +88,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
+            mRectangularPrism.draw(scratch2);
             mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
