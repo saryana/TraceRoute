@@ -133,22 +133,20 @@ public class RectangularPrism extends DrawableObject {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(programHandle);
 
+        // Enable a handle to the axis vertices
+        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
 
         // Prepare the triangle coordinate values
         GLES20.glVertexAttribPointer(mVertexPositionHandle, DrawableObject.DIMENSIONS,
                 GLES20.GL_FLOAT, false,
                 DrawableObject.FLOAT_SIZE * DrawableObject.DIMENSIONS, vertexData);
 
-        // Enable a handle to the axis vertices
-        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
         // Colors?!
         FloatBuffer compatibleColors = convertFloatArray(colors);
         GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
                 DrawableObject.FLOAT_SIZE * 4, compatibleColors);
-
-        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
-
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);

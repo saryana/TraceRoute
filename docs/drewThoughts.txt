@@ -1,54 +1,72 @@
-Collaberative Drawing
-Uses google cardboard to have a community drawing board.
-Feasible? Probably. Useful? Maybe.
+Andrew Gammon
 
-SonarON?
-Uses sonar to detect whether or not somebody is in bed. An
-alarm that's only active when somebody's in bed. Uses sonar to detect
-movement I like this idea. 
-Feasible? Yes. 
+NOTICE:
+I'm part of the TraceRoute team, so I will not rank mine amongst these.
 
-iSwitch
+1. iSwitch
 Turn off devices by looking at them. Uses an AR headset to detect what
 you're looking at. Uses custom hardware to receive signal to shut a TV down.
 Feasible? Yes, but this will require a lot of work across multiple devices,
 and will require some algorithm design for recognising 
 devices that have these recievers.
-Useful? Yes, very. A good, non-intrusive AR application.
+Useful? Yes, very. A good, non-intrusive AR application that
+has a multitude of use cases for the disabled.
 
-Talent/Service Locator?
-Feasible? Yes, using AWS to post what jobs are needed. The GPS data is
-reasonably accurate, so it should work reasonably well.
-Useful? Probably. The exact goal of the application is
-still unclear to me. 
+2. Sonar Alarm - 
+Uses sonar to detect whether or not somebody is in bed. An
+alarm that's only active when somebody's in bed. Uses sonar to detect
+movement. I like this idea. 
+Feasible? Yes. 
+Useful? I have a hard time getting out of bed, so yes.
 
-Enhanced E-Reader - Use the device camera to blur areas of the screen where
+3. Enhanced E-Reader - Use the device camera to blur areas of the screen where
 you're not supposed to be looking. Uses some openCV and maching learning to 
 do eye detection and appropriate screen blurring
 Feasible: Yes. All of the tech here is reliable, and it's been
 used in similar circumstances. 
-Useful? Yes. It's has a focused purpose of increasing 
+Useful? Yes. It's something that I really want - my reading comprehension
+on the computer is really bad, and I'm excited to see how this will help. 
 
-Name Recogniser - Putting names to faces. Uses the eye tracker
+4. Name Recogniser - Putting names to faces. Uses the eye tracker
 and camera to recognise faces. Uses openVR and openCV. Pulls data
 from social networks to help in face recognition. Uses an interface
 on the laptop to tell professors what it thinks the face you're looking
-at is.
-
-Feasible? Most likely. This is really experimental stuff, but
-it's promising.
-
+at.
+Feasible? Yes. This is using proven technology, and the idea is
+well-formed.
 Useful? Yes, in a classroom setting. It has some scary implications
 outside of the classroom, though.
 
-Automatic Unlocker using the cell phone - 
+5. Automatic Unlocker using the cell phone - 
 Feasible? Yes. NFC technology is well delveloped. The only problem
 with this is the propriary lock technology. This has some security concerns 
 as well, since your phone can unlock things without unlocking the phone itself.
+Useful? I think so. They have to address the security concerns, though.
 
-Cloud Gaming Service -
+
+6. Collaberative Drawing
+Uses google cardboard to have a community drawing board.
+Feasible? Probable. I'm not aware of the technical limitations
+of Google cardboard, though. Useful? Maybe. This stuff has been done before.
+
+7. Cloud Gaming Service -
 Stream your games online. Play local multiplayer games online.
+Feasible? Questionable. There's a lot of infrastructure
+work that will have to go into this.
+Useful? Yes - low-latency cloud gaming would be revolutionary
+for the games industry. 
+
+8. Talent/Service Locator -
+It was hard for me to understand what they were pitching.
+Feasible? Yes, using AWS to post what jobs are needed in
+a geographic area. The GPS data is
+reasonably accurate, so it should work well.
+Useful? Probably. The exact goal of the application is
+unclear to me. 
+
+
+
+
 
  
 
-Useful? Yes
