@@ -155,8 +155,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         // so we can be testing in the OpenGL part of the app and not the debug console.
         // As a tip if you want a new notification change the first parameter to something new.
         // 1 is used for step stuff, 2 for direction....
-        mNotificationManager.notify(2, getNotification());
-        mNotificationManager.notify(3, getMovementNotification());
+//        mNotificationManager.notify(2, getNotification());
+//        mNotificationManager.notify(3, getMovementNotification());
     }
 
     /**

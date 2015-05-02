@@ -104,7 +104,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         } else {
             mTotal += mHeight * .41;
 
-            mNotificationManager.notify(1, getNotification());
+//            mNotificationManager.notify(1, getNotification());
         }
         // Lets calculate the the distance from the old/previous
         // step with this new info to get the new event
