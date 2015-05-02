@@ -5,9 +5,9 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
+import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
@@ -68,7 +68,7 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewStepEvent e) {
-        mRenderer.addFaces(e.oldFace, e.newFace);
+        mRenderer.addFaces(e.newFace);
     }
 
     @Subscribe

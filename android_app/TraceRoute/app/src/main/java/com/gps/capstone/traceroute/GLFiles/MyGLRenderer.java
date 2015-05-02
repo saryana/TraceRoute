@@ -9,6 +9,7 @@ import android.util.Log;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Path;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
@@ -38,8 +39,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Axis mAxis;
     private Cube mCube;
     private TriangularPrism mPrism;
-    private Path mPath;
-    private RectangularPrism mRectPrism;
+    private PrismPath mPath;
 
 //    float[] faceOne = {-0.3f, 0.1f, 0.1f};
     float[] faceTwo = {0.0f, 0.0f, 0.0f};
@@ -59,10 +59,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
-        mPath = new Path(mGraphicsEnvironment);
-        mRectPrism = new RectangularPrism(mGraphicsEnvironment);
-
-        mRectPrism.setDimensions(faceTwo, faceTwo, THICKNESS, THICKNESS);
+        mPath = new PrismPath(mGraphicsEnvironment);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -95,8 +92,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
-            mRectPrism.draw(scratch2);
-            // Renders the mutlicolor cube
+            mPath.draw(scratch2);
+        // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
         // Renders the mutlicolor prism
@@ -132,8 +129,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mRotationMatrix = r;
     }
 
-    public void addFaces(float[] oldFace, float[] newFace) {
-        Log.i(TAG, Arrays.toString(newFace));
-        mRectPrism.setDimensions(new float[]{0f, 0f, 0f}, newFace, THICKNESS, THICKNESS);
+    /**
+     * Adds a new face to the path
+     * @param newFace Face to add
+     */
+    public void addFaces(float[] newFace) {
+        mPath.addPoint(newFace);
     }
 }

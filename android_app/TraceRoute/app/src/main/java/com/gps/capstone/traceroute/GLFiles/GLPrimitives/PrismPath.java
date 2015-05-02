@@ -2,8 +2,6 @@ package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
-import org.apache.http.impl.conn.ProxySelectorRoutePlanner;
-
 import java.util.ArrayList;
 
 /**

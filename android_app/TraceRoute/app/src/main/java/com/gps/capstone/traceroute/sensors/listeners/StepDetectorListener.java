@@ -112,10 +112,10 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         // TODO integrate the direction into this. For now we can just do NESW and change just xyz
         // accordingly
         newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
-        newLocation[1] = mOldStepLocation[1];
-        newLocation[2] = mOldStepLocation[2];
+        newLocation[1] = mOldStepLocation[1] + .1f;
+        newLocation[2] = mOldStepLocation[2] + .1f;
         Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
-        mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
+        mBus.post(new NewStepEvent(newLocation));
         mOldStepLocation = newLocation;
     }
 
