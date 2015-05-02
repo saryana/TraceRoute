@@ -89,7 +89,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             mRectangularPrism.draw(scratch2);
-            mPath.draw(scratch2);
+//            mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
