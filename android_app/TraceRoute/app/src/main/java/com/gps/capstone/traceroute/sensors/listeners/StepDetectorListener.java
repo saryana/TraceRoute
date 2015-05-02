@@ -98,7 +98,6 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, event.timestamp + " ");
         if (mHeight == 0) {
             Log.e(TAG, "User height not defined");
         } else {
@@ -114,7 +113,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
         newLocation[1] = mOldStepLocation[1] + .1f;
         newLocation[2] = mOldStepLocation[2] + .1f;
-        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
+//        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
         mBus.post(new NewStepEvent(newLocation));
         mOldStepLocation = newLocation;
     }

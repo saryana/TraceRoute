@@ -1,8 +1,11 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.util.Log;
+
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by gammoa on 5/2/15.
@@ -30,6 +33,7 @@ public class PrismPath {
      * @param coords
      */
     public void addPoint(float[] coords) {
+        Log.d("AH", "ADDING POINT " + Arrays.toString(coords));
         RectangularPrism end = new RectangularPrism(graphicsEnv);
         end.setDimensions(previousPoint, coords, SIZE, SIZE);
         path.add(end);
@@ -41,8 +45,8 @@ public class PrismPath {
      * @param mvpMatrix
      */
     public void draw(float[] mvpMatrix) {
-        for (RectangularPrism cur : path) {
-            cur.draw(mvpMatrix);
+        for (int i = 0; i < path.size(); i++) {
+            path.get(i).draw(mvpMatrix);
         }
     }
 }

@@ -126,7 +126,7 @@ public class RectangularPrism extends DrawableObject {
         result.addAll(toArrayList(topRight));
         result.addAll(toArrayList(topLeft));
         // return this bad boy.
-        return floatToFloat(result.toArray(new Float[0]));
+        return floatToFloat(result.toArray(new Float[result.size()]));
     }
 
     public void draw(float[] mvpMatrix) {

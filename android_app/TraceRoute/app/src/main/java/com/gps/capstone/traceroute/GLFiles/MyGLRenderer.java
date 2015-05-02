@@ -4,17 +4,12 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Path;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
-
-import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -134,7 +129,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param newFace Face to add
      */
     public void addFaces(float[] newFace) {
-        Log.e(TAG, "ADDING PATH");
         mPath.addPoint(newFace);
     }
 }
