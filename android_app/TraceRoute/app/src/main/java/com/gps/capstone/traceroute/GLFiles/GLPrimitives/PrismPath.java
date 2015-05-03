@@ -20,13 +20,11 @@ public class PrismPath {
     private static final float SIZE = 0.3f;
 
     private ArrayList<RectangularPrism> path;
-    private RectangularPrism p;
 
     public PrismPath(ProgramManager graphicsEnv) {
         this.graphicsEnv = graphicsEnv;
         previousPoint = new float[3];
         path = new ArrayList<RectangularPrism>();
-        p = new RectangularPrism(graphicsEnv);
     }
 
     /**
@@ -40,7 +38,6 @@ public class PrismPath {
         end.setDimensions(previousPoint, coords, SIZE, SIZE);
         path.add(end);
         previousPoint = coords;
-        p = end;
     }
 
     /**
@@ -48,9 +45,9 @@ public class PrismPath {
      * @param mvpMatrix
      */
     public void draw(float[] mvpMatrix) {
-//        for (int i = 0; i < path.size(); i++) {
-//            path.get(i).draw(mvpMatrix);
-//        }
-        p.draw(mvpMatrix);
+        for (int i = 0; i < path.size(); i++) {
+            RectangularPrism cur = path.get(i);
+            cur.draw(mvpMatrix);
+        }
     }
 }
