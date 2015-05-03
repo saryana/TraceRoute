@@ -8,6 +8,7 @@ import android.util.Log;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.listeners.AccelerometerCompassListener;
 import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
+import com.gps.capstone.traceroute.sensors.listeners.DirectionTestClass;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
 import com.gps.capstone.traceroute.sensors.listeners.MySensorListener;
 import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
@@ -21,6 +22,7 @@ public class SensorDataProvider {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
     public static boolean USE_ACCELERATION;
+    private final DirectionTestClass mDirectionTest;
     // Marker for knowing whether or not to use the gyroscope as our source of data
     private boolean mUseGyroscope;
 
@@ -46,6 +48,7 @@ public class SensorDataProvider {
         mStepDetector = new StepDetectorListener(context);
         mDirectionDeterminer = new DirectionListener(context);
         mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mDirectionTest = new DirectionTestClass(context);
         determineListener();
     }
 
@@ -80,6 +83,7 @@ public class SensorDataProvider {
         mDirectionDeterminer.register();
         mSensorListener.register();
         mStepDetector.register();
+        mDirectionTest.register();
         // If we have user control we might have to change it here
     }
 
@@ -90,6 +94,7 @@ public class SensorDataProvider {
         mSensorListener.unregister();
         mStepDetector.unregister();
         mDirectionDeterminer.unregister();
+        mDirectionTest.unregister();
     }
 
 
