@@ -21,4 +21,64 @@
           gl_FragColor = v_Color;
         }
     </string>
+
+    <!-- FOR DIFFUSE SHADING -->
+    <string name="light_vertex_shader">
+        uniform mat4 uMVPMatrix;
+        attribute vec4 a_Position;
+        void main() {
+            gl_Position = uMVPMatrix * a_Position;
+            gl_PointSize = 5.0;
+        }
+    </string>
+
+    <string name="light_fragment_shader">
+        precision mediump float;
+        void main() {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    </string>
+
+    <string name="vertex_shader_diffuse">
+        uniform mat4 uMVPMatrix;
+        uniform mat4 uMVMatrix;
+        uniform vec3 u_LightPos;
+
+        uniform float uThickness;
+
+        attribute vec4 a_Position;
+        attribute vec4 a_Color;
+        attribute vec3 a_Normal;
+
+        varying vec4 v_Color;
+
+        void main() {
+        <!-- Transform the vertex into eye space. -->
+        vec3 modelViewVertex = vec3(uMVMatrix * a_Position);
+
+        <!-- Translate the normal into eye space. -->
+        vec3 modelViewNormal = vec3(uMVMatrix * vec4(a_Normal, 0.0));
+
+        <!-- Compute the distance between the light position and the vertex.-->
+        float distance = length(u_LightPos - modelViewVertex);
+
+        <!-- Get a lighting direction vector from the light to the vertex. -->
+        vec3 lightVector = normalize(u_LightPos - modelViewVertex);
+
+        <!-- caluclate the dot product to get the angle bewteen the
+        surface normal and the light, and do a constraint calculation
+        to get the lambert factor. -->
+        float diffuse = max(dot(modelViewNormal, lightVector), 0.1);
+
+        <!-- Take the distance into consideration now. -->
+        diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));
+
+        <!-- Set the final vertex color to be the raw color times the
+        lambert factor. -->
+        v_Color = a_Color * diffuse;
+
+           gl_PointSize = uThickness;
+           gl_Position = uMVPMatrix;
+        }
+    </string>
 </resources>
