@@ -261,7 +261,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
                 mCurrentRotation = e.values;
                 break;
             default:
-                Log.e(TAG, "Event that we cannot handle");
+//                Log.e(TAG, "Event that we cannot handle");
+                // Event that we aren't handling
 
         }
     }

@@ -88,8 +88,8 @@ public class MySurfaceView extends GLSurfaceView {
                 mRenderer.setRotationMatrix(e.values);
                 break;
             default:
-                Log.e(TAG, "Event that we cannot handle");
-
+//                Log.e(TAG, "Event that we cannot handle");
+                // Event that we aren't handling
         }
         requestRender();
     }

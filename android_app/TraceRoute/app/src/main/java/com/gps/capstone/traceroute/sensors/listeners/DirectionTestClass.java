@@ -7,6 +7,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
+import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+
 /**
  * Created by saryana on 5/3/15.
  */
@@ -54,12 +57,12 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
                 SensorManager.getRotationMatrix(rotationMatrix, inclinationMatrix, mGravValues, mMagneticValues);
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(rotationMatrix, orientation);
-                float heading = (float) (orientation[0] / Math.PI * 180f);
+                final float heading = (float) (orientation[0] / Math.PI * 180f);
                 String dir = headingToDir(heading);
                 if (!dir.equals(mCurrentDir)) {
                     mCurrentDir = dir;
-                    Log.e("DIR", "WE ARE HEADING " + mCurrentDir);
                 }
+                mBus.post(new NewDataEvent(new float[]{heading}, EventType.DIRECTION_CHANGE));
             }
         }
     }

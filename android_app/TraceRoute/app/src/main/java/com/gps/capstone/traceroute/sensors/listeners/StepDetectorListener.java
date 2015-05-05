@@ -38,6 +38,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     // we will calculate a new step location that we will send
     // the view
     private float[] mOldStepLocation;
+    private float mHeading;
 
     /**
      * The step detector will trigger a new event every time it detects a step.
@@ -85,9 +86,8 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     @Subscribe
     public void onDataChange(NewDataEvent event) {
         if (event.type == EventType.DIRECTION_CHANGE) {
-            // set the direction here so we can grab the direction
-            // and tag on the distance
-            Log.i(TAG, "DIRECTION CHANGE");
+            // Update the current heading we have
+            mHeading = event.values[0];
         }
     }
 

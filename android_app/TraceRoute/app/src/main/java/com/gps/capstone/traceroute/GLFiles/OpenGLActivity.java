@@ -1,20 +1,22 @@
 package com.gps.capstone.traceroute.GLFiles;
 
 import android.content.SharedPreferences;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.Utils.BusProvider;
+import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
+import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.squareup.otto.Subscribe;
+
+import java.util.Arrays;
 
 
 public class OpenGLActivity extends BasicActivity {
@@ -52,7 +54,7 @@ public class OpenGLActivity extends BasicActivity {
 
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
-
+        BusProvider.getInstance().register(this);
         mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
     }
 
@@ -60,6 +62,7 @@ public class OpenGLActivity extends BasicActivity {
     protected void onPause() {
         super.onPause();
         mDataProvider.unregister();
+        BusProvider.getInstance().unregister(this);
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
@@ -68,5 +71,12 @@ public class OpenGLActivity extends BasicActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_open_gl, menu);
         return true;
+    }
+
+    @Subscribe
+    public void onDataChange(NewDataEvent newDataEvent) {
+        if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
+            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + newDataEvent.values[0]);
+        }
     }
 }
