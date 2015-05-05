@@ -140,7 +140,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
             if (mPulseBegan) {
                 // analyse the average to see if it belongs to the current pulse
-                if (magnitude(average) > THRESHOLD) {
+                if (magnitude2D(average) > THRESHOLD) {
                     // check if the average is going in the same direction as the initial pulse direction
                     if (angleBetweenVectors(average, mPulseDirection) > THRESHOLD_ANGLE) {
                         mPulseBegan = false;
@@ -172,7 +172,7 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
                     }
                 }
                 //TODO average out the direction of the pulse?
-            } else if (magnitude(average) > THRESHOLD)  {
+            } else if (magnitude2D(average) > THRESHOLD)  {
                 // This is the beginning of a pulse
                 mPulseBegan = true;
                 mPulseDirection = average;
@@ -255,6 +255,11 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
     public static float magnitude(float[] v) {
         float magSquared = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
+        return (float) Math.sqrt(magSquared);
+    }
+
+    public static float magnitude2D(float[] v) {
+        float magSquared = v[0]*v[0] + v[1]*v[1];
         return (float) Math.sqrt(magSquared);
     }
 
