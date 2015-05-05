@@ -275,6 +275,11 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         return (float) Math.sqrt(magSquared);
     }
 
+    public static float magnitude2D(float[] v) {
+        float magSquared = v[0]*v[0] + v[1]*v[1];
+        return (float) Math.sqrt(magSquared);
+    }
+
     // Converts the x and y components in given vector {x,y,z} to compass degrees
     public static float vectorToDirection(float[] v) {
         //float magnitude = magnitude(v);
