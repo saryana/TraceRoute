@@ -1,6 +1,5 @@
 package com.gps.capstone.traceroute.sensors.listeners;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.content.Context;
 import android.hardware.Sensor;
@@ -9,12 +8,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.Matrix;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationCompat.Builder;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.gps.capstone.traceroute.R;
-import com.gps.capstone.traceroute.sensors.Direction;
+import com.gps.capstone.traceroute.Utils.SensorUtil.Direction;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.squareup.otto.Subscribe;
@@ -76,7 +73,8 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
     public DirectionListener(Context context) {
         super(context);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        mSamples = new LinkedList<float[]>();
+        // Android claims in java 1.7 the diamond operator works
+        mSamples = new LinkedList<>();
         mRunningTotal = new float[3];
         mOldAccel = new float[4];
         mVelocity = new float[3];
@@ -112,87 +110,14 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
             return;
         }
 
-
         Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
         Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
-        // TODO KEITH Added the flag for now and separate the logic in some sense
-        // at the end you can set the mHeading flag and add it to the notification for
-        // debugging
+        // Do we want to use the accelerometer?
         if (SensorDataProvider.USE_ACCELERATION) {
-            // Using acceleration for direction
-
-            // If enough samples are in the running average, remove the oldest
-            if (mSamples.size() == NSAMPLES) {
-                float[] oldestData = mSamples.remove();
-                mRunningTotal[0] -= oldestData[0];
-                mRunningTotal[1] -= oldestData[1];
-                mRunningTotal[2] -= oldestData[2];
-            }
-
-            // add most recent data
-            mSamples.add(worldSpaceAccel);
-            mRunningTotal[0] += worldSpaceAccel[0];
-            mRunningTotal[1] += worldSpaceAccel[1];
-            mRunningTotal[2] += worldSpaceAccel[2];
-
-            // Compute the current average acceleration
-            float average[] = {mRunningTotal[0] / mSamples.size(), mRunningTotal[1] / mSamples.size(), mRunningTotal[2] / mSamples.size()};
-
-            if (mPulseBegan) {
-                // analyse the average to see if it belongs to the current pulse
-                if (magnitude2D(average) > THRESHOLD) {
-                    // check if the average is going in the same direction as the initial pulse direction
-                    if (angleBetweenVectors(average, mPulseDirection) > THRESHOLD_ANGLE) {
-                        mPulseBegan = false;
-                    }
-                } else {
-                    // magnitude is below threshold. the pulse has ended
-                    mPulseBegan = false;
-                }
-
-                if (!mPulseBegan) {
-                    // The pulse has just ended, figure out the direction of the pulse
-                    float pulseDirection = vectorToDirection(mPulseDirection);
-                    int pulseSector = directionToSector(pulseDirection, NUMCARDINAL);
-                    if (mMoving) {
-                        // If we are currently moving in a particular direction
-                        int currentHeadingSector = directionToSector(mHeading, NUMCARDINAL);
-
-                        // check if the pulses are in opposite directions
-                        if (Math.abs(currentHeadingSector - pulseSector) == NUMCARDINAL/2) {
-                            mMoving = false;
-                        } else {
-                            mHeading = pulseDirection;
-                            mMovementSector = pulseSector;
-                        }
-                    } else {
-                        mHeading = pulseDirection;
-                        mMoving = true;
-                        mMovementSector = pulseSector;
-                    }
-                }
-                //TODO average out the direction of the pulse?
-            } else if (magnitude2D(average) > THRESHOLD)  {
-                // This is the beginning of a pulse
-                mPulseBegan = true;
-                mPulseDirection = average;
-            }
+            directionFromAcceleration(worldSpaceAccel);
+        // Lets use velocity
         } else {
-            // Using the velocity derived from acceleration for direction
-            // calculate change in velocity
-            if (mTimestamp != 0) {
-                // interpolate the change in acceleration to reduce error
-                float[] averageAccel = new float[3];
-                averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0] + mOldAccel[0]) / 2;
-                averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1] + mOldAccel[1]) / 2;
-                averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2] + mOldAccel[2]) / 2;
-
-                float deltaT = (event.timestamp - mTimestamp) * NS2S;
-
-                mVelocity[0] += averageAccel[0] * deltaT;
-                mVelocity[1] += averageAccel[1] * deltaT;
-                mVelocity[2] += averageAccel[2] * deltaT;
-            }
+            directoinFromVelocity(mTimestamp, worldSpaceAccel);
         }
         // If we find this inaccurate we can put restrictions on the user and
         // and possibly use the compass. For now the restrictions include
@@ -229,8 +154,96 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         // so we can be testing in the OpenGL part of the app and not the debug console.
         // As a tip if you want a new notification change the first parameter to something new.
         // 1 is used for step stuff, 2 for direction....
-        mNotificationManager.notify(2, getNotification());
-        mNotificationManager.notify(3, getMovementNotification());
+//        mNotificationManager.notify(2, getNotification());
+//        mNotificationManager.notify(3, getMovementNotification());
+    }
+
+    /**
+     * Essentially integrate acceleration to get velocity to determine direction
+     * @param worldSpaceAccel Acceleration in world space location
+     */
+    private void directoinFromVelocity(float timestamp, float[] worldSpaceAccel) {
+        // Using the velocity derived from acceleration for direction
+        // calculate change in velocity
+        if (mTimestamp != 0) {
+            // interpolate the change in acceleration to reduce error
+            float[] averageAccel = new float[3];
+            averageAccel[0] = /*mOldAccel[0] +*/ (worldSpaceAccel[0] + mOldAccel[0]) / 2;
+            averageAccel[1] = /*mOldAccel[1] +*/ (worldSpaceAccel[1] + mOldAccel[1]) / 2;
+            averageAccel[2] = /*mOldAccel[2] +*/ (worldSpaceAccel[2] + mOldAccel[2]) / 2;
+
+            float deltaT = (timestamp - mTimestamp) * NS2S;
+
+            mVelocity[0] += averageAccel[0] * deltaT;
+            mVelocity[1] += averageAccel[1] * deltaT;
+            mVelocity[2] += averageAccel[2] * deltaT;
+        }
+    }
+
+    /**
+     * Determines the direction based off of the linear acceleration sensor (acceleration - gravity)
+     * by determining an average in a given pulse
+     * @param worldSpaceAccel Acceleration in world space location
+     */
+    private void directionFromAcceleration(float[] worldSpaceAccel) {
+        // Using acceleration for direction
+
+        // If enough samples are in the running average, remove the oldest
+        if (mSamples.size() == NSAMPLES) {
+            float[] oldestData = mSamples.remove();
+            mRunningTotal[0] -= oldestData[0];
+            mRunningTotal[1] -= oldestData[1];
+            mRunningTotal[2] -= oldestData[2];
+        }
+
+        // add most recent data
+        mSamples.add(worldSpaceAccel);
+        mRunningTotal[0] += worldSpaceAccel[0];
+        mRunningTotal[1] += worldSpaceAccel[1];
+        mRunningTotal[2] += worldSpaceAccel[2];
+
+        // Compute the current average acceleration
+        float average[] = {mRunningTotal[0] / mSamples.size(), mRunningTotal[1] / mSamples.size(), mRunningTotal[2] / mSamples.size()};
+
+        if (mPulseBegan) {
+            // analyse the average to see if it belongs to the current pulse
+            if (magnitude(average) > THRESHOLD) {
+                // check if the average is going in the same direction as the initial pulse direction
+                if (angleBetweenVectors(average, mPulseDirection) > THRESHOLD_ANGLE) {
+                    mPulseBegan = false;
+                }
+            } else {
+                // magnitude is below threshold. the pulse has ended
+                mPulseBegan = false;
+            }
+
+            if (!mPulseBegan) {
+                // The pulse has just ended, figure out the direction of the pulse
+                float pulseDirection = vectorToDirection(mPulseDirection);
+                int pulseSector = directionToSector(pulseDirection, NUMCARDINAL);
+                if (mMoving) {
+                    // If we are currently moving in a particular direction
+                    int currentHeadingSector = directionToSector(mHeading, NUMCARDINAL);
+
+                    // check if the pulses are in opposite directions
+                    if (Math.abs(currentHeadingSector - pulseSector) == NUMCARDINAL/2) {
+                        mMoving = false;
+                    } else {
+                        mHeading = pulseDirection;
+                        mMovementSector = pulseSector;
+                    }
+                } else {
+                    mHeading = pulseDirection;
+                    mMoving = true;
+                    mMovementSector = pulseSector;
+                }
+            }
+            //TODO average out the direction of the pulse?
+        } else if (magnitude(average) > THRESHOLD)  {
+            // This is the beginning of a pulse
+            mPulseBegan = true;
+            mPulseDirection = average;
+        }
     }
 
     @Override
@@ -253,6 +266,10 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         }
     }
 
+    /**
+     * This need to be moved into a util class. I believe we are using magnitude
+     * in the OpenGL files as well
+     */
     public static float magnitude(float[] v) {
         float magSquared = v[0]*v[0] + v[1]*v[1] + v[2]*v[2];
         return (float) Math.sqrt(magSquared);

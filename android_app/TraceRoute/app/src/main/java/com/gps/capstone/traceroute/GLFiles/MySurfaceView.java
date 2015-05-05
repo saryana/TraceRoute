@@ -5,9 +5,9 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
+import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
@@ -84,7 +84,7 @@ public class MySurfaceView extends GLSurfaceView {
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
-//                Log.i(TAG, "DATA FROM ROTATIN MATRIX");
+//                Log.i(TAG, "DATA FROM ROTATION MATRIX");
                 mRenderer.setRotationMatrix(e.values);
                 break;
             default:

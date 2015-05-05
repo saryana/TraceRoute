@@ -15,13 +15,13 @@ public class RectangularPrism extends DrawableObject {
 
     private float[] colors = {
         1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        0.0f, 0.0f, 1.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 0.0f, 1.0f
+        1.0f, 1.0f, 1.0f, 1.0f
     };
 
     // The draw order for this prism.
@@ -29,6 +29,8 @@ public class RectangularPrism extends DrawableObject {
         // Front Face                                                         Rear Face
         2,1,0, 0,3,2, 3,0,4, 4,7,3, 0,1,5, 5,4,0, 6,5,1, 1,2,6, 6,2,3, 3,7,6, 7,4,5, 5,6,7
     };
+    private float[] mFirstEnd;
+    private float[] mSecondEnd;
 
     /**
      * Create a new rectangular prism in the given graphics environment.
@@ -48,19 +50,17 @@ public class RectangularPrism extends DrawableObject {
      */
     public void setDimensions(float[] firstEndCoords, float[] secondEndCoords,
                                 float baseXWidth, float baseHeight) {
+        mFirstEnd = firstEndCoords;
+        mSecondEnd = secondEndCoords;
+
         float[] result = new float[24];
         // calculate coordinate data for both faces.
         float[] firstFace = calculateFace(firstEndCoords, secondEndCoords, baseXWidth, baseHeight);
         float[] secondFace = calculateSecondFace(firstEndCoords, secondEndCoords, firstFace);
 
-        // Set the
-        for (int i = 0; i < firstFace.length; i++) {
-            result[i] = firstFace[i];
-        }
-
-        for (int i = 0; i < secondFace.length; i++) {
-            result[i+firstFace.length] = secondFace[i];
-        }
+        // copy the contents of both arrays into the result array.
+        System.arraycopy(firstFace, 0, result, 0, firstFace.length);
+        System.arraycopy(secondFace, 0, result, firstFace.length, secondFace.length);
 
         setVerticies(result);
 
@@ -126,12 +126,13 @@ public class RectangularPrism extends DrawableObject {
         result.addAll(toArrayList(topRight));
         result.addAll(toArrayList(topLeft));
         // return this bad boy.
-        return floatToFloat(result.toArray(new Float[0]));
+        return floatToFloat(result.toArray(new Float[result.size()]));
     }
 
     public void draw(float[] mvpMatrix) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(programHandle);
+
 
 
         // Prepare the triangle coordinate values
@@ -142,13 +143,14 @@ public class RectangularPrism extends DrawableObject {
         // Enable a handle to the axis vertices
         GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
 
+
+
         // Colors?!
         FloatBuffer compatibleColors = convertFloatArray(colors);
         GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
                 DrawableObject.FLOAT_SIZE * 4, compatibleColors);
 
         GLES20.glEnableVertexAttribArray(mVertexColorHandle);
-
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
@@ -227,5 +229,10 @@ public class RectangularPrism extends DrawableObject {
     }
 
 
-
+    @Override
+    public RectangularPrism clone() {
+        RectangularPrism rp = new RectangularPrism(mGraphicsEnv);
+        rp.setDimensions(mFirstEnd, mSecondEnd, 0.3f, 0.3f);
+        return  rp;
+    }
 }

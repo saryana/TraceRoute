@@ -3,6 +3,7 @@ package com.gps.capstone.traceroute.GLFiles.util;
 import android.app.Activity;
 import android.content.Context;
 import android.opengl.GLES20;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.R;
 

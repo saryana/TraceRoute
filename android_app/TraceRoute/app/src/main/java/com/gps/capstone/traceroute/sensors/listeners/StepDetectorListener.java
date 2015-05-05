@@ -98,13 +98,12 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
      */
     @Override
     public void onSensorChanged(SensorEvent event) {
-        Log.d(TAG, event.timestamp + " ");
         if (mHeight == 0) {
             Log.e(TAG, "User height not defined");
         } else {
             mTotal += mHeight * .41;
 
-            mNotificationManager.notify(1, getNotification());
+//            mNotificationManager.notify(1, getNotification());
         }
         // Lets calculate the the distance from the old/previous
         // step with this new info to get the new event
@@ -112,9 +111,9 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         // TODO integrate the direction into this. For now we can just do NESW and change just xyz
         // accordingly
         newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
-        newLocation[1] = mOldStepLocation[1];
-        newLocation[2] = mOldStepLocation[2];
-        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
+        newLocation[1] = mOldStepLocation[1] + .1f;
+        newLocation[2] = mOldStepLocation[2] + .1f;
+//        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
         mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
         mOldStepLocation = newLocation;
     }

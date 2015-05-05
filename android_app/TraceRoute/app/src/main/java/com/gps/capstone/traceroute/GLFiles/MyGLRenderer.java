@@ -8,12 +8,13 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Path;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
-import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -22,36 +23,40 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by saryana on 4/9/15.
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
-    private static final float THICKNESS = 0.01f;
+    private Context context;
+
+    private static final float THICKNESS = 0.1f;
     private final String TAG = getClass().getSimpleName();
+
+    // All of the matricies for rendering objects to our viewport.
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
     private final float[] mViewMatrix = new float[16];
     private float[] mRotationMatrix = new float[16];
-
     private float[] mGyroRotationMatrix = new float[16];
     private boolean mHaveInitialOrientation = false;
 
     private ProgramManager mGraphicsEnvironment;
 
+    // All of the geometric primitives that can
+    // be drawn to the screen.
     private Axis mAxis;
     private Cube mCube;
     private TriangularPrism mPrism;
-    private Path mPath;
-    private RectangularPrism mRectPrism;
-
-//    float[] faceOne = {-0.3f, 0.1f, 0.1f};
-    float[] faceTwo = {0.0f, 0.0f, 0.0f};
+    private PrismPath mPath;
+    private RectangularPrism mRectangularPrism;
+    private boolean mInit;
+    private List<RectangularPrism> mPathTest;
 
     public MyGLRenderer(Context context) {
-        // Does this break if it is here instead of onSurfaceCreated?
-        mGraphicsEnvironment = new ProgramManager(context);
+        mPathTest = new LinkedList<>();
+        this.context = context;
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        // create the shader manager object for loading shaders.
-//        mGraphicsEnvironment = new ProgramManager();
+        // Does this break if it is in the constructor? Yes - we get an OpenGL error.
+        mGraphicsEnvironment = new ProgramManager(context);
 
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -59,10 +64,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
         mPrism = new TriangularPrism(mGraphicsEnvironment);
-        mPath = new Path(mGraphicsEnvironment);
-        mRectPrism = new RectangularPrism(mGraphicsEnvironment);
-
-        mRectPrism.setDimensions(faceTwo, faceTwo, THICKNESS, THICKNESS);
+        mPath = new PrismPath(mGraphicsEnvironment);
+        mRectangularPrism = new RectangularPrism(mGraphicsEnvironment);
+        mRectangularPrism.setDimensions(new float[3], new float[3], THICKNESS, THICKNESS);
+        mInit = false;
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -81,9 +86,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // This determines if the user is taking control or it is based off of the orientation of the phone
         if (OpenGLActivity.USER_CONTROL) {
             Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
-            //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
-        } else {
-            //Matrix.invertM(scratch, 0, mRotationMatrix, 0);
         }
 
         // Combine the rotation matrix with the projection and camera view
@@ -95,17 +97,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
-            mRectPrism.draw(scratch2);
-            // Renders the mutlicolor cube
+            mPath.draw(scratch2);
+        // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
-
             mPrism.draw(scratch2);
         }
-
-//        mPath.draw(scratch2);
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height) {
@@ -132,8 +131,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mRotationMatrix = r;
     }
 
-    public void addFaces(float[] oldFace, float[] newFace) {
-        Log.i(TAG, Arrays.toString(newFace));
-        mRectPrism.setDimensions(new float[]{0f, 0f, 0f}, newFace, THICKNESS, THICKNESS);
+    /**
+     * Adds a new face to the path
+     * @param newFace Face to add
+     */
+    public void addFaces(float[] oldFaces, float[] newFace) {
+        mInit = true;
+        mRectangularPrism.setDimensions(oldFaces, newFace, THICKNESS, THICKNESS);
+        float[] opposite = new float[3];
+        for (int i = 0; i < newFace.length; i++) {
+            opposite[i] = -newFace[i];
+        }
+        mPath.addPoint(opposite);
+        // My hunch is that since we are changeling mRectangularPrism that the reference in the
+        // list is getting updated too so we have just a list of the same objects.
+        // As far as why PrismPath isn't working is beyond me that suspicion was based off of
+        // nested draw calls that Andrew doesn't think is a problem.
+        mPathTest.add(mRectangularPrism);
     }
 }
