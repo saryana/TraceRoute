@@ -112,11 +112,10 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
         Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
         Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
-        // TODO KEITH Added the flag for now and separate the logic in some sense
-        // at the end you can set the mHeading flag and add it to the notification for
-        // debugging
+        // Do we want to use the accelerometer?
         if (SensorDataProvider.USE_ACCELERATION) {
             directionFromAcceleration(worldSpaceAccel);
+        // Lets use velocity
         } else {
             directoinFromVelocity(mTimestamp, worldSpaceAccel);
         }
