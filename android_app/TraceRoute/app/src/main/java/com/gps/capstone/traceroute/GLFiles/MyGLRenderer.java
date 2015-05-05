@@ -4,12 +4,12 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
@@ -43,11 +43,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // be drawn to the screen.
     private Axis mAxis;
     private Cube mCube;
-    private TriangularPrism mPrism;
+    private TriangularPrism mTriangularPrism;
     private PrismPath mPath;
-    private RectangularPrism mRectangularPrism;
+    private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
-    private List<RectangularPrism> mPathTest;
+    private List<SmartRectangularPrism> mPathTest;
 
     public MyGLRenderer(Context context) {
         mPathTest = new LinkedList<>();
@@ -63,10 +63,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         mAxis = new Axis(mGraphicsEnvironment);
         mCube = new Cube(mGraphicsEnvironment);
-        mPrism = new TriangularPrism(mGraphicsEnvironment);
+        mTriangularPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
-        mRectangularPrism = new RectangularPrism(mGraphicsEnvironment);
-        mRectangularPrism.setDimensions(new float[3], new float[3], THICKNESS, THICKNESS);
+        mRectangularPrism = new SmartRectangularPrism(mGraphicsEnvironment);
+        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+        mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
     }
 
@@ -100,10 +102,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
-            mCube.draw(scratch2);
+            //mCube.draw(scratch2);
+            mRectangularPrism.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
-            mPrism.draw(scratch2);
+            mTriangularPrism.draw(scratch2);
         }
     }
 
@@ -137,7 +140,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void addFaces(float[] oldFaces, float[] newFace) {
         mInit = true;
-        mRectangularPrism.setDimensions(oldFaces, newFace, THICKNESS, THICKNESS);
+        mRectangularPrism.setDimensions(oldFaces, newFace);
         float[] opposite = new float[3];
         for (int i = 0; i < newFace.length; i++) {
             opposite[i] = -newFace[i];

@@ -9,8 +9,10 @@ import java.nio.ShortBuffer;
 import java.util.ArrayList;
 
 /**
- * Defines a rectangular prism class that can be used to draw the the path.
+ * Defines a rectangular prism class that can be used to draw the the path. This class
+ * is to be used as a reference for matrix math.
  */
+@Deprecated
 public class RectangularPrism extends DrawableObject {
 
     private float[] colors = {

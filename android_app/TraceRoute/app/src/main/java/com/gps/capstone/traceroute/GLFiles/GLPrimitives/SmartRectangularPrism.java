@@ -1,9 +1,14 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.opengl.GLES20;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
+
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 /**
  * Defines a smart rectangular prism, that doesn't depend on tons
@@ -13,7 +18,21 @@ import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 public class SmartRectangularPrism extends DrawableObject {
     // The thickness of the rectangular prism. I made this an internal object
     //
-    private static final float SIZE = 0.1f;
+    private static final float SIZE = 0.3f;
+
+    // colors for the face.
+    private float[] colors = {
+            1.0f, 0.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f
+    };
+
+    private final short[] drawOrder = {0,1,2, 2,3,0, 7,0,3, 3,4,7, 4,3,2, 2,5,4, 5,2,1, 1,6,5, 6,1,0, 0,7,6, 4,5,6, 6,7,4};
 
     public SmartRectangularPrism(ProgramManager graphicsEnv) {
         super(graphicsEnv);
@@ -35,9 +54,63 @@ public class SmartRectangularPrism extends DrawableObject {
         float[] result = {0, SIZE, -SIZE, 0, -SIZE, -SIZE, 0, -SIZE, SIZE, 0, SIZE, SIZE,
                 // SECOND FACE
                 length, SIZE, SIZE, length, -SIZE, SIZE, length, -SIZE, -SIZE, length, SIZE, -SIZE};
+        // xz angle (y-axis rotation)
         float angleOne = (float)Math.atan(directionVector[2] / directionVector[0]);
-        float angleTwo = (float)Math.atan(directionVector[1] / directionVector[1]);
-        
+        // convert this shit to degrees.
+        angleOne = (float)((angleOne / (2 * Math.PI)) * 360);
+        // xy angle (z axis rotation)
+        float angleTwo = (float)Math.atan(directionVector[1] / directionVector[0]);
+        // convert this to degrees.
+        angleTwo = (float)((angleTwo / (2 * Math.PI)) * 360);
+        Log.d("ANGLE", "Y angle: " + angleOne);
+        Log.d("ANGLE", "Z angle: " + angleTwo);
+
+        // y axis rotation
+        Matrix.rotateM(result, 0, angleOne, 0, 100, 0);
+
+        // z axis rotation
+        Matrix.rotateM(result, 0, angleTwo, 0, 0, 100);
+
+        // transposition into the correct location.
+        for (int i = 0 ; i < result.length; i++) {
+            result[i] += firstFace[i % 3];
+        }
+
+        setVerticies(result);
+    }
+
+    public void draw(float[] mvpMatrix) {
+        // Add program to OpenGL ES environment
+        GLES20.glUseProgram(programHandle);
+
+        // Prepare the triangle coordinate values
+        GLES20.glVertexAttribPointer(mVertexPositionHandle, DrawableObject.DIMENSIONS,
+                GLES20.GL_FLOAT, false,
+                DrawableObject.FLOAT_SIZE * DrawableObject.DIMENSIONS, vertexData);
+
+        // Enable a handle to the axis vertices
+        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
+
+        // Colors?!
+        FloatBuffer compatibleColors = convertFloatArray(colors);
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
+                DrawableObject.FLOAT_SIZE * 4, compatibleColors);
+
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
+
+        // Pass the projection and view transformation to the shader
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+
+        ShortBuffer drawListBuffer = convertShortArray(drawOrder);
+        // Draw the prism
+        GLES20.glDrawElements(
+                GLES20.GL_TRIANGLES, drawOrder.length,
+                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+
+
+        // Disable vertex attribute arrays.
+        GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
     }
 
 
