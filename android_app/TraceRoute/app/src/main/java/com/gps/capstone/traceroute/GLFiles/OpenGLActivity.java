@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.R;
@@ -32,8 +35,8 @@ public class OpenGLActivity extends BasicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        GLSurfaceView mGLSurface = new MySurfaceView(this);
-        setContentView(mGLSurface);
+//        GLSurfaceView mGLSurface = new MySurfaceView(this);
+        setContentView(R.layout.activity_open_gl);
         mDataProvider = new SensorDataProvider(this);
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }

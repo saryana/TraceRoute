@@ -23,7 +23,7 @@ public abstract class BasicActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get status bar color somehow
-        getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     /**
