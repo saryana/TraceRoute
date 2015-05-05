@@ -1,6 +1,6 @@
 package com.gps.capstone.traceroute.sensors;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -33,22 +33,22 @@ public class SensorDataProvider {
     // Direction Listener
     private DirectionListener mDirectionDeterminer;
     // Context we got called from
-    private Context mContext;
+    private Activity mActivity;
     // Shared prefrences
     private SharedPreferences mSharedPrefs;
 
     /**
      * Sets up the basic utilities to make this work
-     * @param context Context we got called in
+     * @param activity Context we got called in
      */
-    public SensorDataProvider(Context context) {
-        mContext = context;
-        mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
-                                .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
-        mStepDetector = new StepDetectorListener(context);
-        mDirectionDeterminer = new DirectionListener(context);
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-        mDirectionTest = new DirectionTestClass(context);
+    public SensorDataProvider(Activity activity) {
+        this.mActivity = activity;
+        mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(activity)
+                                .getBoolean(activity.getString(R.string.pref_key_use_gyroscope), true);
+        mStepDetector = new StepDetectorListener(activity);
+        mDirectionDeterminer = new DirectionListener(activity);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.mActivity);
+        mDirectionTest = new DirectionTestClass(activity);
         determineListener();
     }
 
@@ -59,10 +59,10 @@ public class SensorDataProvider {
     private void determineListener() {
         if (mUseGyroscope) {
             Log.i(TAG, "SETTING GYROSCOPE LISTENER");
-            mSensorListener = new GyroscopeListener(mContext);
+            mSensorListener = new GyroscopeListener(mActivity);
         } else {
             Log.i(TAG, "SETTING MATRIX LISTENER");
-            mSensorListener = new AccelerometerCompassListener(mContext);
+            mSensorListener = new AccelerometerCompassListener(mActivity);
         }
     }
 
@@ -79,7 +79,7 @@ public class SensorDataProvider {
             this.mUseGyroscope = useGyroscope;
             determineListener();
         }
-        USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
+        USE_ACCELERATION = mSharedPrefs.getBoolean(mActivity.getString(R.string.pref_key_use_acceleration), true);
         mDirectionDeterminer.register();
         mSensorListener.register();
         mStepDetector.register();

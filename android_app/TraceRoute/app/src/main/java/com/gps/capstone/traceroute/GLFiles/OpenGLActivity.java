@@ -61,7 +61,6 @@ public class OpenGLActivity extends BasicActivity {
         super.onPause();
         mDataProvider.unregister();
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
-
     }
 
     @Override

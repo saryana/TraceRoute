@@ -28,7 +28,7 @@ public class OpenGLFragment extends Fragment {
      * @return A new instance of fragment OpenGLFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static OpenGLFragment newInstance(String param1, String param2) {
+    public static OpenGLFragment newInstance() {
         return new OpenGLFragment();
     }
 
