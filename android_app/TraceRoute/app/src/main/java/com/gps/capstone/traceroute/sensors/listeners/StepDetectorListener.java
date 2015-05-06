@@ -16,8 +16,6 @@ import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
 
-import java.util.Arrays;
-
 /**
  * Created by saryana on 4/25/15.
  */
@@ -39,6 +37,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     // we will calculate a new step location that we will send
     // the view
     private float[] mOldStepLocation;
+    // Heading value in radians
     private float mHeading;
 
     /**
@@ -113,11 +112,13 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         // accordingly
 
         // Get unit vector of heading
-        float[] xy = getVectorFromDirection(mHeading);
+        float[] xy = getVectorFromAngle(mHeading);
 
         // scale the vector to stride length and add to old location
-        newLocation[0] = mOldStepLocation[0] + xy[0] * mHeight*STRIDE_RATIO*OPENGL_SCALE;
-        newLocation[1] = mOldStepLocation[1] + xy[1] * mHeight*STRIDE_RATIO*OPENGL_SCALE;
+        float strideLength = mHeight * STRIDE_RATIO * OPENGL_SCALE;
+        newLocation[0] = mOldStepLocation[0] + xy[0] * strideLength;
+        newLocation[1] = mOldStepLocation[1] + xy[1] * strideLength;
+        // Need to figure out how to get vertical data
         newLocation[2] = mOldStepLocation[2] + 0.1f;
 //        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
         mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
@@ -142,18 +143,15 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
 
     /**
      * Converts the given direction to a unit vector in the xy plane.
-     * @param direction the direction to convert
+     * @param theta the direction to convert
      * @return an array of floats representing vector {x, y}
      */
-    public static float[] getVectorFromDirection (float direction) {
-        // convert to radians
-        double theta = direction / 180 * Math.PI;
+    public static float[] getVectorFromAngle(float theta) {
 
         // calculate a unit vector in xy plane that points in the given direction
         double x = Math.sin(theta);
         double y = Math.cos(theta);
-        float vector[] = {(float) x, (float) y};
 
-        return vector;
+        return new float[]{(float) x, (float) y};
     }
 }

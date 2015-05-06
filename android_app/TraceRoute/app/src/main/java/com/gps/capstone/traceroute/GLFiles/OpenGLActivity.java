@@ -78,7 +78,11 @@ public class OpenGLActivity extends BasicActivity {
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + newDataEvent.values[0]);
+            float heading = (float) (newDataEvent.values[0] * 180f / Math.PI);
+            if (heading < 0) {
+                heading += 360;
+            }
+            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + heading);
         }
     }
 }
