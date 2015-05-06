@@ -4,11 +4,11 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.RectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
@@ -25,7 +25,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Context context;
 
-    private static final float THICKNESS = 0.1f;
+    private static final float THICKNESS = 0.01f;
     private final String TAG = getClass().getSimpleName();
 
     // All of the matricies for rendering objects to our viewport.
@@ -48,9 +48,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
     private List<SmartRectangularPrism> mPathTest;
-
+    private int inits;
     public MyGLRenderer(Context context) {
-        mPathTest = new LinkedList<>();
         this.context = context;
     }
 
@@ -69,7 +68,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] faceOne = {-0.3f, 0.5f, 1.0f};
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
+        mPathTest = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            SmartRectangularPrism sr = new SmartRectangularPrism(mGraphicsEnvironment);
+            sr.setDimensions(new float[]{0, 0, 0}, new float[]{0, 0, 0});
+            mPathTest.add(sr);
+        }
         mInit = false;
+        inits = 0;
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -114,6 +120,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             mPath.draw(scratch2);
+            for (int i = 0; i < inits; i++) {
+                mPathTest.get(i).draw(scratch2);
+            }
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             //mCube.draw(scratch2);
@@ -164,6 +173,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // list is getting updated too so we have just a list of the same objects.
         // As far as why PrismPath isn't working is beyond me that suspicion was based off of
         // nested draw calls that Andrew doesn't think is a problem.
-        mPathTest.add(mRectangularPrism);
+//        mPathTest.set(inits, ));
+        mPathTest.get(inits).setDimensions(oldFaces, newFace);
+        inits++;
     }
 }

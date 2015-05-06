@@ -18,7 +18,10 @@ import java.nio.ShortBuffer;
 public class SmartRectangularPrism extends DrawableObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
-    private static final float SIZE = 0.3f;
+    private static final float SIZE = 0.03f;
+    private float[] mff;
+    private float[] msf;
+    private ProgramManager ge;
 
     // colors for the face.
     private float[] colors = {
@@ -36,9 +39,12 @@ public class SmartRectangularPrism extends DrawableObject {
 
     public SmartRectangularPrism(ProgramManager graphicsEnv) {
         super(graphicsEnv);
+        ge = graphicsEnv;
     }
 
     public void setDimensions(float[] firstFace, float[] secondFace) {
+        mff = firstFace;
+        msf = secondFace;
         // This direction vector can be used to compute a quaternion with a 0 degree rotation.
         // This can be used to move all of the verticies into the right orientation, and I can use the coordinates
         // of the first face to move it into the right position. This method makes it much easier to compute surface normals,
@@ -132,5 +138,11 @@ public class SmartRectangularPrism extends DrawableObject {
         GLES20.glDisableVertexAttribArray(mVertexColorHandle);
     }
 
+    @Override
+    public SmartRectangularPrism clone() {
+        SmartRectangularPrism srp = new SmartRectangularPrism(ge);
+        srp.setDimensions(mff, msf);
+        return srp;
+    }
 
 }
