@@ -143,6 +143,8 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
                         .build();
     }
 
+
+    // TODO this method might not be correct. I forgot that cardinal direction degrees is different from trig degrees
     /**
      * Converts the given direction to a unit vector in the xy plane.
      * @param theta the direction to convert

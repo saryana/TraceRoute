@@ -96,10 +96,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        // TODO Have rotation take into account of current heading direction in the path
-        // and translate model so the end of the path is not out of the screen
+        // TODO rotation is not entirely correct, need to handle some edge cases
         float[] scratch;
         if (/*OpenGLActivity.FOLLOW_PATH &&*/ !OpenGLActivity.USE_SHAPE && mInit) {
+
             // xy angle (z axis rotation)
             float angle = -(float)Math.atan(mPrevStepDirection[1] / mPrevStepDirection[0]);
             // convert this to degrees.
