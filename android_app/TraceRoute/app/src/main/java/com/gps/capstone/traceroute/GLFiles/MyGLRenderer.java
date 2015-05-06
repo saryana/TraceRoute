@@ -164,18 +164,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void addFaces(float[] oldFaces, float[] newFace) {
         mInit = true;
         mRectangularPrism.setDimensions(oldFaces, newFace);
-        float[] opposite = new float[3];
-        for (int i = 0; i < newFace.length; i++) {
-            opposite[i] = -newFace[i];
-        }
-        mPath.addPoint(opposite);
+        // Still not working because of the issue of adding things on fly with opengl
+//        mPath.addPoint(opposite);
+
         // My hunch is that since we are changeling mRectangularPrism that the reference in the
         // list is getting updated too so we have just a list of the same objects.
         // As far as why PrismPath isn't working is beyond me that suspicion was based off of
         // nested draw calls that Andrew doesn't think is a problem.
-//        mPathTest.set(inits, ));
-        if (inits > mPathTest.size()) return;
-        mPathTest.get(inits).setDimensions(oldFaces, newFace);
-        inits++;
+        if (inits < mPathTest.size()) {
+            // Hunch among other things was correct, the old list was referencing the same
+            // object and we aren't able to add things on the fly (i.e. cloning the object)
+            // but we are able to edit current objects that we do already know about.
+            mPathTest.get(inits).setDimensions(oldFaces, newFace);
+            inits++;
+        }
     }
 }
