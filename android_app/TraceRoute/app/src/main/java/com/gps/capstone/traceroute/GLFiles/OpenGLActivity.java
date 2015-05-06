@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.gps.capstone.traceroute.BasicActivity;
@@ -14,6 +16,7 @@ import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
 
 import java.util.Arrays;
@@ -34,6 +37,7 @@ public class OpenGLActivity extends BasicActivity {
     public static boolean USE_SHAPE;
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
+    private int mStepCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,7 @@ public class OpenGLActivity extends BasicActivity {
         setContentView(R.layout.activity_open_gl);
         mDataProvider = new SensorDataProvider(this);
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mStepCount = 0;
     }
 
     @Override
@@ -84,5 +89,15 @@ public class OpenGLActivity extends BasicActivity {
             }
             ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + heading);
         }
+    }
+
+    @Subscribe
+    public void onStepDetected(NewStepEvent newStepEvent) {
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
+        TextView tv = new TextView(this);
+        tv.setText(String.format("Step %d at <%f, %f, %f>", mStepCount,
+                newStepEvent.newFace[0], newStepEvent.newFace[1], newStepEvent.newFace[2]));
+        linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        mStepCount++;
     }
 }
