@@ -132,14 +132,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
-            mPath.draw(scratch2);
+            // Proper path drawing currently not working
+//            mPath.draw(scratch2);
+            // Fakey path drawing is working.. Need to look into adding objects
+            // to openGL on the fly since these have been pre-generated
             for (int i = 0; i < inits; i++) {
                 mPathTest.get(i).draw(scratch2);
             }
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
-            //mCube.draw(scratch2);
-            mRectangularPrism.draw(scratch2);
+            mCube.draw(scratch2);
+//            mRectangularPrism.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
             mTriangularPrism.draw(scratch2);
@@ -193,7 +196,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             inits++;
         }
         mPrevStepLocation = newFace;
-        float direction[] = {newFace[0] - oldFaces[0], newFace[1] - oldFaces[1], newFace[2] - oldFaces[2]};
-        mPrevStepDirection = direction;
+        mPrevStepDirection = new float[]{newFace[0] - oldFaces[0], newFace[1] - oldFaces[1], newFace[2] - oldFaces[2]};
     }
 }
