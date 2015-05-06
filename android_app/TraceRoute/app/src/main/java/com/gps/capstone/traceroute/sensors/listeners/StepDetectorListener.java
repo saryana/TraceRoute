@@ -49,8 +49,6 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         super(context);
         mStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         mOldStepLocation = new float[3];
-        mOldStepLocation[1] = 0.1f;
-        mOldStepLocation[2] = 0.1f;
     }
 
     /**
