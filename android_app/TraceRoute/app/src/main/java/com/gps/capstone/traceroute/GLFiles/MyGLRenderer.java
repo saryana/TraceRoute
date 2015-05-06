@@ -66,7 +66,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTriangularPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
         mRectangularPrism = new SmartRectangularPrism(mGraphicsEnvironment);
-        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+        float[] faceOne = {-0.3f, 0.5f, 1.0f};
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
@@ -91,7 +91,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                calculate rotation matrix from direction to be used
                calculate translation matrix based on recent point
                MVPmatrix X translation X rotation
-               
+
 
                          */
         }
