@@ -69,7 +69,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mPathTest = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 30; i++) {
             SmartRectangularPrism sr = new SmartRectangularPrism(mGraphicsEnvironment);
             sr.setDimensions(new float[]{0, 0, 0}, new float[]{0, 0, 0});
             mPathTest.add(sr);
@@ -174,6 +174,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // As far as why PrismPath isn't working is beyond me that suspicion was based off of
         // nested draw calls that Andrew doesn't think is a problem.
 //        mPathTest.set(inits, ));
+        if (inits > mPathTest.size()) return;
         mPathTest.get(inits).setDimensions(oldFaces, newFace);
         inits++;
     }
