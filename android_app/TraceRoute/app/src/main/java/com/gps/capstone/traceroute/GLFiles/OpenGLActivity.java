@@ -25,6 +25,8 @@ public class OpenGLActivity extends BasicActivity {
 
     // Defines whether the user is in control of the map or not
     public static boolean USER_CONTROL;
+    // Defines whether the camera follows path
+    public static boolean FOLLOW_PATH;
     // Defines whether to use the gyro scope or the rotation matrix
     public static boolean USE_GYROSCOPE;
     // Flag to use cube for the render
