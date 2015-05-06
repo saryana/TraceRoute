@@ -60,18 +60,7 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
                 SensorManager.getOrientation(rotationMatrix, orientation);
                 // Posting the radian value we are getting
                 mBus.post(new NewDataEvent(new float[]{orientation[0]}, EventType.DIRECTION_CHANGE));
-//                // the data we get is from (-180, 180) with north as 0 south in the divide of -180 and 180
-//                float heading = (float) (orientation[0] * 180f / Math.PI);
-//                // Scale it to be from [0, 360)
-//                if (heading < 0) {
-//                    heading += 360f;
-//                }
-//
-//                String dir = headingToDir(heading);
-//                if (!dir.equals(mCurrentDir)) {
-//                    mCurrentDir = dir;
-//                    Log.d("DIR", mCurrentDir);
-//                }
+
 //                // TODO NOTE TO KEITH: It may not be an idea to sector it up since the data readings still
 //                // jump around a bit we can have a pretty small sector size, but i'm not sure if that
 //                // actually helps anything

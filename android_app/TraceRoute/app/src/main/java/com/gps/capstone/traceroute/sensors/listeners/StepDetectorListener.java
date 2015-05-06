@@ -116,9 +116,13 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         float strideLength = mHeight * STRIDE_RATIO * OPENGL_SCALE;
         newLocation[0] = mOldStepLocation[0] + xy[0] * strideLength;
         newLocation[1] = mOldStepLocation[1] + xy[1] * strideLength;
-        // Need to figure out how to get vertical data
+        // TODO: Need to figure out how to get vertical data
 //        newLocation[2] = mOldStepLocation[2] + 0.1f;
-//        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
+
+        // TODO: The data is still pretty jump and that is probably based off of the
+        // compass as our form of heading which isn't super accurate... There is also
+        // a weird issue when walking in a half circle and walking back it doesn't do things
+        // in the proper return route, Compass reversed somehow? not getting negative?
         mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
         mOldStepLocation = newLocation;
     }
