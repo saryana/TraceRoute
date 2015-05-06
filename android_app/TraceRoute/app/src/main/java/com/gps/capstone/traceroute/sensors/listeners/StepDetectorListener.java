@@ -119,7 +119,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         newLocation[0] = mOldStepLocation[0] + xy[0] * strideLength;
         newLocation[1] = mOldStepLocation[1] + xy[1] * strideLength;
         // Need to figure out how to get vertical data
-        newLocation[2] = mOldStepLocation[2] + 0.1f;
+//        newLocation[2] = mOldStepLocation[2] + 0.1f;
 //        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
         mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
         mOldStepLocation = newLocation;
