@@ -12,6 +12,7 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
+import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +50,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private boolean mInit;
     private List<SmartRectangularPrism> mPathTest;
     private int inits;
+
+    private float[] mPrevStepLocation;
+    private float[] mPrevStepDirection;
+
     public MyGLRenderer(Context context) {
         this.context = context;
     }
@@ -65,7 +70,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTriangularPrism = new TriangularPrism(mGraphicsEnvironment);
         mPath = new PrismPath(mGraphicsEnvironment);
         mRectangularPrism = new SmartRectangularPrism(mGraphicsEnvironment);
-        float[] faceOne = {-0.3f, 0.5f, 1.0f};
+        float[] faceOne = {-0.3f, 0.0f, 0.0f};
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mPathTest = new LinkedList<>();
@@ -76,6 +81,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         mInit = false;
         inits = 0;
+
+        mPrevStepLocation = new float[3];
+        mPrevStepDirection = new float[3];
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -90,19 +98,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // TODO Have rotation take into account of current heading direction in the path
         // and translate model so the end of the path is not out of the screen
-        if (OpenGLActivity.FOLLOW_PATH) {
-            /*
-               Get most recent path direction
-               Get most recent point added to path
-               calculate rotation matrix from direction to be used
-               calculate translation matrix based on recent point
-               MVPmatrix X translation X rotation
-
-
-                         */
+        float[] scratch;
+        if (/*OpenGLActivity.FOLLOW_PATH &&*/ !OpenGLActivity.USE_SHAPE && mInit) {
+            // xy angle (z axis rotation)
+            float angle = -(float)Math.atan(mPrevStepDirection[1] / mPrevStepDirection[0]);
+            // convert this to degrees.
+            angle = (float)((angle / (2 * Math.PI)) * 360);
+            angle -= 90;
+            // create a new model matrix
+            float[] modelMatrix = new float[16];
+            // add rotation
+            Matrix.setRotateM(modelMatrix, 0, angle, 0, 0, 1);
+            // add translation
+            Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
+            scratch = modelMatrix;
+        } else {
+           scratch =  mRotationMatrix;
         }
 
-        float[] scratch =  mRotationMatrix; //new float[16];
         float[] scratch2 = new float[16];
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
@@ -177,5 +190,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (inits > mPathTest.size()) return;
         mPathTest.get(inits).setDimensions(oldFaces, newFace);
         inits++;
+
+        mPrevStepLocation = newFace;
+        float direction[] = {newFace[0] - oldFaces[0], newFace[1] - oldFaces[1], newFace[2] - oldFaces[2]};
+        mPrevStepDirection = direction;
     }
 }
