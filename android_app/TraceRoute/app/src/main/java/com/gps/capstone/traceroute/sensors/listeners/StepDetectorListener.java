@@ -23,6 +23,7 @@ import java.util.Arrays;
  */
 public class StepDetectorListener extends MySensorListener implements SensorEventListener {
     private static final float OPENGL_SCALE = .0118f;
+    private static final float STRIDE_RATIO = .41f;
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -101,7 +102,7 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         if (mHeight == 0) {
             Log.e(TAG, "User height not defined");
         } else {
-            mTotal += mHeight * .41;
+            mTotal += mHeight * STRIDE_RATIO;
 
 //            mNotificationManager.notify(1, getNotification());
         }
@@ -110,9 +111,14 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         float[] newLocation = new float[3];
         // TODO integrate the direction into this. For now we can just do NESW and change just xyz
         // accordingly
-        newLocation[0] = mOldStepLocation[0] - mHeight*.41f*OPENGL_SCALE;
-        newLocation[1] = mOldStepLocation[1] + .1f;
-        newLocation[2] = mOldStepLocation[2] + .1f;
+
+        // Get unit vector of heading
+        float[] xy = getVectorFromDirection(mHeading);
+
+        // scale the vector to stride length and add to old location
+        newLocation[0] = mOldStepLocation[0] + xy[0] * mHeight*STRIDE_RATIO*OPENGL_SCALE;
+        newLocation[1] = mOldStepLocation[1] + xy[1] * mHeight*STRIDE_RATIO*OPENGL_SCALE;
+        newLocation[2] = mOldStepLocation[2] + 0.1f;
 //        Log.i(TAG, "OLD " + Arrays.toString(mOldStepLocation) + " NEW " + Arrays.toString(newLocation));
         mBus.post(new NewStepEvent(mOldStepLocation, newLocation));
         mOldStepLocation = newLocation;
@@ -132,5 +138,22 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setPriority(NotificationCompat.PRIORITY_LOW)
                         .build();
+    }
+
+    /**
+     * Converts the given direction to a unit vector in the xy plane.
+     * @param direction the direction to convert
+     * @return an array of floats representing vector {x, y}
+     */
+    public static float[] getVectorFromDirection (float direction) {
+        // convert to radians
+        double theta = direction / 180 * Math.PI;
+
+        // calculate a unit vector in xy plane that points in the given direction
+        double x = Math.sin(theta);
+        double y = Math.cos(theta);
+        float vector[] = {(float) x, (float) y};
+
+        return vector;
     }
 }
