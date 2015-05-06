@@ -17,7 +17,7 @@ import java.nio.ShortBuffer;
  */
 public class SmartRectangularPrism extends DrawableObject {
     // The thickness of the rectangular prism. I made this an internal object
-    //
+    // field because it's not going to change very often.
     private static final float SIZE = 0.3f;
 
     // colors for the face.
@@ -65,11 +65,30 @@ public class SmartRectangularPrism extends DrawableObject {
         Log.d("ANGLE", "Y angle: " + angleOne);
         Log.d("ANGLE", "Z angle: " + angleTwo);
 
+        float[] rotationMat = new float[16];
+
+        // set up a rotation matrix.
+        Matrix.setIdentityM(rotationMat, 0);
+
         // y axis rotation
-        Matrix.rotateM(result, 0, angleOne, 0, 100, 0);
+        Matrix.rotateM(rotationMat, 0, angleOne, 0, 100, 0);
 
         // z axis rotation
-        Matrix.rotateM(result, 0, angleTwo, 0, 0, 100);
+        Matrix.rotateM(rotationMat, 0, angleTwo, 0, 0, 100);
+
+        // loop through and apply the rotation to each vertex.
+        /*for (int i = 0; i < result.length; i += 3) {
+            // grab the current vertex in 4-d space.
+            float[] curVec = {result[i], result[i+1], result[i+2], 0};
+            float[] resultVec = new float[4];
+
+            Matrix.multiplyMV(resultVec, 0, rotationMat, 0, curVec, 0);
+
+            // update the object array with the rotated vertex.
+            for (int j = 0; i < DrawableObject.DIMENSIONS; i++) {
+                result[i + j] = resultVec[j];
+            }
+        }*/
 
         // transposition into the correct location.
         for (int i = 0 ; i < result.length; i++) {
