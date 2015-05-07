@@ -163,6 +163,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void addFaces(float[] oldFaces, float[] newFace) {
         mInit = true;
+        // Random null pointer exception that crashed the app? just to note.
         mRectangularPrism.setDimensions(oldFaces, newFace);
         // Still not working because of the issue of adding things on fly with opengl
         mPath.addPoint(newFace);
