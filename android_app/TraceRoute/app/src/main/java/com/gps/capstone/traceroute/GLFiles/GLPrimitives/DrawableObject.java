@@ -20,15 +20,17 @@ import java.nio.ShortBuffer;
  */
 public abstract class DrawableObject {
     // Stores the graphics environment manager.
-    protected ProgramManager mGraphicsEnv;
-    protected int programHandle;
+    protected static ProgramManager mGraphicsEnv;
+
+    // the handle for the program
+    protected static int programHandle;
 
     // Various handles.
-    protected int mMVPMatrixHandle;
-    protected int mVertexColorHandle;
-    protected int mVertexPositionHandle;
-    protected int mFragmentColorHandle;
-    protected int mPointSizeHandle;
+    protected static int mMVPMatrixHandle;
+    protected static int mVertexColorHandle;
+    protected static int mVertexPositionHandle;
+    protected static int mFragmentColorHandle;
+    protected static int mPointSizeHandle;
 
     // The number of dimensions per vertex. (This should always be 3. We don't
     // support 2-D)
@@ -39,29 +41,23 @@ public abstract class DrawableObject {
     protected FloatBuffer vertexData;
 
     /**
-     * The constructor for this object.
+     * The 'constructor' for this class.
      * Takes in a graphics environment object that stores the
      * openGL runtime environment and a buffer for
      * vertex data that stores information about the shape.
-     * @param graphicsEnvironment The graphics environment where this shape is getting
+     * @param graphicsEnv The graphics environment where this shape is getting
      *                            drawn.
      */
-    public DrawableObject(ProgramManager graphicsEnvironment) {
-
+    public static void SetOpenGLEnvironment(ProgramManager graphicsEnv) {
         // OPEN GL SETUP
-
-        mGraphicsEnv = graphicsEnvironment;
-        // Compile the shaders and return the program handle.
-        programHandle = graphicsEnvironment.getProgram();
-
+        mGraphicsEnv = graphicsEnv;
+        programHandle = graphicsEnv.getProgram();
         // Grab various openGL handles. These will be used to pass in values to openGL.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mVertexColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
         mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
-
-
     }
 
     /**

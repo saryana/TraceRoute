@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
@@ -61,21 +62,25 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Does this break if it is in the constructor? Yes - we get an OpenGL error.
         mGraphicsEnvironment = new ProgramManager(context);
+        // THIS HAS TO BE THE SECOND CALL. Set all drawable objects
+        // to have a reference to various graphics environment handles.
+        DrawableObject.SetOpenGLEnvironment(mGraphicsEnvironment);
 
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
-        mAxis = new Axis(mGraphicsEnvironment);
-        mCube = new Cube(mGraphicsEnvironment);
-        mTriangularPrism = new TriangularPrism(mGraphicsEnvironment);
-        mPath = new PrismPath(mGraphicsEnvironment);
-        mRectangularPrism = new SmartRectangularPrism(mGraphicsEnvironment);
+
+        mAxis = new Axis();
+        mCube = new Cube();
+        mTriangularPrism = new TriangularPrism();
+        mPath = new PrismPath();
+        mRectangularPrism = new SmartRectangularPrism();
         float[] faceOne = {-0.3f, 0.0f, 0.0f};
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mPathTest = new LinkedList<>();
         for (int i = 0; i < 30; i++) {
-            SmartRectangularPrism sr = new SmartRectangularPrism(mGraphicsEnvironment);
+            SmartRectangularPrism sr = new SmartRectangularPrism();
             sr.setDimensions(new float[]{0, 0, 0}, new float[]{0, 0, 0});
             mPathTest.add(sr);
         }
@@ -142,7 +147,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
-//            mRectangularPrism.draw(scratch2);
         // Renders the mutlicolor prism
         } else {
             mTriangularPrism.draw(scratch2);

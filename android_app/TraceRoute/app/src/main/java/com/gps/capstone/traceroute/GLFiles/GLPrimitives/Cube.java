@@ -57,8 +57,7 @@ public class Cube extends DrawableObject {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.6f, 0.6f, 1f };
 
-    public Cube(ProgramManager graphicsEnv) {
-        super(graphicsEnv);
+    public Cube() {
         setVerticies(cubeCoords);
         // convert drawOrder into an openGL-compatible format.
         drawListBuffer = convertShortArray(drawOrder);

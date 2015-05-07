@@ -11,8 +11,6 @@ import java.util.Arrays;
  * Created by gammoa on 5/2/15.
  */
 public class PrismPath {
-    // Stores the graphics environment
-    private ProgramManager graphicsEnv;
     // stores the head of the path.
     private float[] previousPoint;
 
@@ -21,8 +19,7 @@ public class PrismPath {
 
     private ArrayList<SmartRectangularPrism> path;
 
-    public PrismPath(ProgramManager graphicsEnv) {
-        this.graphicsEnv = graphicsEnv;
+    public PrismPath() {
         previousPoint = new float[3];
         path = new ArrayList<SmartRectangularPrism>();
     }
@@ -34,7 +31,7 @@ public class PrismPath {
      */
     public void addPoint(float[] coords) {
         Log.d("AH", "ADDING POINT " + Arrays.toString(coords));
-        SmartRectangularPrism end = new SmartRectangularPrism(graphicsEnv);
+        SmartRectangularPrism end = new SmartRectangularPrism();
         end.setDimensions(previousPoint, coords);
         path.add(end);
         previousPoint = coords;

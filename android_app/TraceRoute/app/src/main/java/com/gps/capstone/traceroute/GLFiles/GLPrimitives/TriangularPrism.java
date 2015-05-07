@@ -51,10 +51,8 @@ public class TriangularPrism extends DrawableObject {
         0.0f, 1.0f, 0.0f, 1.0f
     };
 
-    public TriangularPrism(ProgramManager graphicsEnv) {
-        super(graphicsEnv);
+    public TriangularPrism() {
          setVerticies(coords);
-
     }
 
     public void draw(float[] mvpMatrix) {

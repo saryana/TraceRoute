@@ -34,10 +34,14 @@ public class SmartRectangularPrism extends DrawableObject {
 
     private final short[] drawOrder = {0,1,2, 2,3,0, 7,0,3, 3,4,7, 4,3,2, 2,5,4, 5,2,1, 1,6,5, 6,1,0, 0,7,6, 4,5,6, 6,7,4};
 
-    public SmartRectangularPrism(ProgramManager graphicsEnv) {
-        super(graphicsEnv);
-    }
 
+
+    /**
+     * Sets the coordinates of the rectangular prism based on SIZE and the position of the first
+     * and second face.
+     * @param firstFace
+     * @param secondFace
+     */
     public void setDimensions(float[] firstFace, float[] secondFace) {
         // This direction vector can be used to compute a quaternion with a 0 degree rotation.
         // This can be used to move all of the verticies into the right orientation, and I can use the coordinates

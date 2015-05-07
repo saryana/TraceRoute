@@ -35,14 +35,6 @@ public class RectangularPrism extends DrawableObject {
     private float[] mSecondEnd;
 
     /**
-     * Create a new rectangular prism in the given graphics environment.
-     * @param graphicsEnv
-     */
-    public RectangularPrism(ProgramManager graphicsEnv) {
-        super(graphicsEnv);
-    }
-
-    /**
      * Set up the dimensions and location for the rectangular prism.
      * @param firstEndCoords The location of one face of the rectangular prism
      * @param secondEndCoords The location of another face of the rectangular prism.
@@ -228,13 +220,5 @@ public class RectangularPrism extends DrawableObject {
     private float[] addVector(float[] vectorOne, float[] vectorTwo) {
         float[] result = {vectorOne[0]+vectorTwo[0],vectorOne[1]+vectorTwo[1],vectorOne[2]+vectorTwo[2]};
         return result;
-    }
-
-
-    @Override
-    public RectangularPrism clone() {
-        RectangularPrism rp = new RectangularPrism(mGraphicsEnv);
-        rp.setDimensions(mFirstEnd, mSecondEnd, 0.3f, 0.3f);
-        return  rp;
     }
 }

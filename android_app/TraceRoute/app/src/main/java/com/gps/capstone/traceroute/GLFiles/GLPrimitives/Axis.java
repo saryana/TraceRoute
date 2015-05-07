@@ -38,8 +38,7 @@ public class Axis extends DrawableObject {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.0f, 1f, 1.0f };
 
-    public Axis(ProgramManager graphicsEnv) {
-        super(graphicsEnv);
+    public Axis() {
         setVerticies(axisLineCoords);
 
     }
