@@ -164,10 +164,19 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
      * @return an array of floats representing vector {x, y}
      */
     public static float[] getVectorFromAngle(float theta) {
+        // convert cardinal angles to trig angles
+        double trigTheta;
+        if (theta >= 0 && theta <= Math.PI/2) {
+            trigTheta = Math.PI/2 - theta;
+        } else if (theta > Math.PI/2 && theta <= 3*Math.PI/2) {
+            trigTheta = -(theta - Math.PI/2);
+        } else {
+            trigTheta = Math.PI - (theta-3*Math.PI/2);
+        }
 
         // calculate a unit vector in xy plane that points in the given direction
-        double x = Math.sin(theta);
-        double y = Math.cos(theta);
+        double x = Math.sin(trigTheta);
+        double y = Math.cos(trigTheta);
 
         return new float[]{(float) x, (float) y};
     }

@@ -92,10 +92,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (/*OpenGLActivity.FOLLOW_PATH &&*/ !OpenGLActivity.USE_SHAPE && mInit) {
 
             // xy angle (z axis rotation)
-            float angle = -(float)Math.atan(mPrevStepDirection[1] / mPrevStepDirection[0]);
-            // convert this to degrees.
+            float x = mPrevStepDirection[0];
+            float y = mPrevStepDirection[1];
+
+            float angle = (float)Math.atan2(y, x);
+            angle -= Math.PI/2;
+
             angle = (float)((angle / (2 * Math.PI)) * 360);
-            angle -= 90;
             // create a new model matrix
             float[] modelMatrix = new float[16];
             // add rotation
