@@ -39,6 +39,9 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
     private float[] mOldStepLocation;
     // Heading value in radians
     private float mHeading;
+    // The current altitude recorded by the step
+    private float mAltitude;
+    private float mInitialAltitude;
 
     /**
      * The step detector will trigger a new event every time it detects a step.
@@ -49,6 +52,8 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         super(context);
         mStepDetector = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
         mOldStepLocation = new float[3];
+        mInitialAltitude = 0;
+        mAltitude = 0;
     }
 
     /**
@@ -86,6 +91,10 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         if (event.type == EventType.DIRECTION_CHANGE) {
             // Update the current heading we have
             mHeading = event.values[0];
+        } else if (event.type == EventType.ALTITUDE_CHANGE) {
+            // Write the current altitude so that it gets
+            // written on the next step
+            mAltitude = event.values[0];
         }
     }
 
@@ -116,8 +125,12 @@ public class StepDetectorListener extends MySensorListener implements SensorEven
         float strideLength = mHeight * STRIDE_RATIO * OPENGL_SCALE;
         newLocation[0] = mOldStepLocation[0] + xy[0] * strideLength;
         newLocation[1] = mOldStepLocation[1] + xy[1] * strideLength;
-        // TODO: Need to figure out how to get vertical data
-//        newLocation[2] = mOldStepLocation[2] + 0.1f;
+        // Lets set our first step as our initial altitude.
+        if (mInitialAltitude == 0) {
+            mInitialAltitude = mAltitude;
+        }
+        newLocation[2] = (mAltitude - mInitialAltitude) * OPENGL_SCALE;
+        Log.e("TAG", newLocation[2] + "");
 
         // TODO: The data is still pretty jump and that is probably based off of the
         // compass as our form of heading which isn't super accurate... There is also

@@ -1,12 +1,14 @@
 package com.gps.capstone.traceroute.sensors;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.sensors.listeners.AccelerometerCompassListener;
+import com.gps.capstone.traceroute.sensors.listeners.AltitudeListener;
 import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
 import com.gps.capstone.traceroute.sensors.listeners.DirectionTestClass;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
@@ -32,23 +34,26 @@ public class SensorDataProvider {
     private StepDetectorListener mStepDetector;
     // Direction Listener
     private DirectionListener mDirectionDeterminer;
+    // Altitude listener
+    private AltitudeListener mAltitudeListener;
     // Context we got called from
-    private Activity mActivity;
+    private Context mContext;
     // Shared prefrences
     private SharedPreferences mSharedPrefs;
 
     /**
      * Sets up the basic utilities to make this work
-     * @param activity Context we got called in
+     * @param context Context we got called in
      */
-    public SensorDataProvider(Activity activity) {
-        this.mActivity = activity;
-        mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(activity)
-                                .getBoolean(activity.getString(R.string.pref_key_use_gyroscope), true);
-        mStepDetector = new StepDetectorListener(activity);
-        mDirectionDeterminer = new DirectionListener(activity);
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.mActivity);
-        mDirectionTest = new DirectionTestClass(activity);
+    public SensorDataProvider(Context context) {
+        this.mContext = context;
+        mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
+                                .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
+        mStepDetector = new StepDetectorListener(mContext);
+        mDirectionDeterminer = new DirectionListener(mContext);
+        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mDirectionTest = new DirectionTestClass(mContext);
+        mAltitudeListener = new AltitudeListener(mContext);
         determineListener();
     }
 
@@ -59,10 +64,10 @@ public class SensorDataProvider {
     private void determineListener() {
         if (mUseGyroscope) {
             Log.i(TAG, "SETTING GYROSCOPE LISTENER");
-            mSensorListener = new GyroscopeListener(mActivity);
+            mSensorListener = new GyroscopeListener(mContext);
         } else {
             Log.i(TAG, "SETTING MATRIX LISTENER");
-            mSensorListener = new AccelerometerCompassListener(mActivity);
+            mSensorListener = new AccelerometerCompassListener(mContext);
         }
     }
 
@@ -79,11 +84,12 @@ public class SensorDataProvider {
             this.mUseGyroscope = useGyroscope;
             determineListener();
         }
-        USE_ACCELERATION = mSharedPrefs.getBoolean(mActivity.getString(R.string.pref_key_use_acceleration), true);
+        USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
         mDirectionDeterminer.register();
         mSensorListener.register();
         mStepDetector.register();
         mDirectionTest.register();
+        mAltitudeListener.register();
         // If we have user control we might have to change it here
     }
 
@@ -95,6 +101,7 @@ public class SensorDataProvider {
         mStepDetector.unregister();
         mDirectionDeterminer.unregister();
         mDirectionTest.unregister();
+        mAltitudeListener.unregister();
     }
 
 
