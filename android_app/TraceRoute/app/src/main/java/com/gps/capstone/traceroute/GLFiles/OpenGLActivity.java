@@ -79,10 +79,11 @@ public class OpenGLActivity extends BasicActivity {
         getMenuInflater().inflate(R.menu.menu_open_gl, menu);
         return true;
     }
-
+    private float mHeading;
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
+            mHeading = newDataEvent.values[0];
             float heading = (float) (newDataEvent.values[0] * 180f / Math.PI);
             if (heading < 0) {
                 heading += 360;
@@ -95,8 +96,11 @@ public class OpenGLActivity extends BasicActivity {
     public void onStepDetected(NewStepEvent newStepEvent) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
         TextView tv = new TextView(this);
-        tv.setText(String.format("Step %d at <%f, %f, %f>", mStepCount,
-                newStepEvent.newFace[0], newStepEvent.newFace[1], newStepEvent.newFace[2]));
+        tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f",
+                mStepCount,
+                newStepEvent.newFace[0], newStepEvent.newFace[1], newStepEvent.newFace[2],
+                Math.sin(mHeading), Math.cos(mHeading),
+                mHeading));
         linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         mStepCount++;
     }

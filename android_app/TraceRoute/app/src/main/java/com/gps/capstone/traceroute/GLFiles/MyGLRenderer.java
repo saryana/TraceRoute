@@ -4,7 +4,6 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
@@ -13,10 +12,6 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
-import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -49,8 +44,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private PrismPath mPath;
     private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
-    private List<SmartRectangularPrism> mPathTest;
-    private int inits;
 
     private float[] mPrevStepLocation;
     private float[] mPrevStepDirection;
@@ -78,14 +71,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] faceOne = {-0.3f, 0.0f, 0.0f};
         float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
-        mPathTest = new LinkedList<>();
-        for (int i = 0; i < 30; i++) {
-            SmartRectangularPrism sr = new SmartRectangularPrism();
-            sr.setDimensions(new float[]{0, 0, 0}, new float[]{0, 0, 0});
-            mPathTest.add(sr);
-        }
         mInit = false;
-        inits = 0;
 
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];
@@ -138,12 +124,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             // Proper path drawing currently not working
-//            mPath.draw(scratch2);
-            // Fakey path drawing is working.. Need to look into adding objects
-            // to openGL on the fly since these have been pre-generated
-            for (int i = 0; i < inits; i++) {
-                mPathTest.get(i).draw(scratch2);
-            }
+            mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             mCube.draw(scratch2);
@@ -161,7 +142,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // this projection matrix is applied to object coordinates
         // in the onDrawFrame() method
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 2, 7);
-
     }
 
     public volatile float mAngle;
@@ -185,20 +165,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mInit = true;
         mRectangularPrism.setDimensions(oldFaces, newFace);
         // Still not working because of the issue of adding things on fly with opengl
-//        mPath.addPoint(opposite);
+        mPath.addPoint(newFace);
 
-        // My hunch is that since we are changeling mRectangularPrism that the reference in the
-        // list is getting updated too so we have just a list of the same objects.
-        // As far as why PrismPath isn't working is beyond me that suspicion was based off of
-        // nested draw calls that Andrew doesn't think is a problem.
-
-        if (inits < mPathTest.size()) {
-            // Hunch among other things was correct, the old list was referencing the same
-            // object and we aren't able to add things on the fly (i.e. cloning the object)
-            // but we are able to edit current objects that we do already know about.
-            mPathTest.get(inits).setDimensions(oldFaces, newFace);
-            inits++;
-        }
         mPrevStepLocation = newFace;
         mPrevStepDirection = new float[]{newFace[0] - oldFaces[0], newFace[1] - oldFaces[1], newFace[2] - oldFaces[2]};
     }

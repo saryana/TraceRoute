@@ -19,7 +19,7 @@ public class GLPoint extends DrawableObject {
     private static float color[] = { 0.5f, 0.0f, 0.5f, 1.0f };
 
     public GLPoint(ProgramManager graphicsEnv, float x, float y, float z) {
-        super(graphicsEnv);
+//        super(graphicsEnv);
         // The coordinate of the point in 3-d space
 
         mPointCoords[0] = x;
