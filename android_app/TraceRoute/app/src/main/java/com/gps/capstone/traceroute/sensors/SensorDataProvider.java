@@ -20,10 +20,19 @@ import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.Arrays;
+
 /**
  * Created by saryana on 4/16/15.
  * This will help keep state of what we actually need to change and send as time goes on.
  * For now it will do a lot of book keeping until we can figure out what we actually need.
+ *
+ * This may be kind of confusing for now, but i'm keeping things like current and past seperate
+ * even though the current is short lived. I am hoping to potentially be holding a list of
+ * steps and detect something like steps and be able to hot swap values by keeping a reference to them
+ * this may be to optimistic but we're going with it for now.  This is almost god class but think
+ * of it as a giant state machine that needs to keep track of certain things and detects change in
+ * different cases
  */
 public class SensorDataProvider {
     // Tag for logging
@@ -67,9 +76,12 @@ public class SensorDataProvider {
     private float mHeading;
 
     // (x, y, z) in feet
+    private float[] mNewLocation;
     private float[] mOldLocation;
     // (x, y, z) in OpenGLUnits
     private float[] mOldLocationOGL;
+    private float[] mNewLocationOGL;
+    // Stride length = height * ratio
     private float mStrideLength;
 
     /**
@@ -90,6 +102,16 @@ public class SensorDataProvider {
         // Uses the compass
         mDirectionTest = new DirectionTestClass(mContext);
         mAltitudeListener = new AltitudeListener(mContext);
+
+        mInitalAltitude = 0;
+        mAltitude = 0;
+        mPrevAltitude = 0;
+        mHeading = 0;
+        mOldLocation = new float[3];
+        mNewLocation = new float[3];
+        mNewLocationOGL = new float[3];
+        mOldLocationOGL = new float[3];
+        mStrideLength = 0;
 
         determineOrientationListener();
     }
@@ -161,22 +183,20 @@ public class SensorDataProvider {
     private void handleStepChange() {
         // Get unit vector of heading
         float[] xy = SensorUtil.getVectorFromAngle1(mHeading);
-        float[] newLocation = new float[3];
         // scale the vector to stride length and add to old location
-        newLocation[0] = mOldLocation[0] + xy[0] * mStrideLength;
-        newLocation[1] = mOldLocation[1] + xy[1] * mStrideLength;
+        mNewLocation[0] = mOldLocation[0] + xy[0] * mStrideLength;
+        mNewLocation[1] = mOldLocation[1] + xy[1] * mStrideLength;
         // every time we record the altitude lets do it relative to
         // what the initial reading was.
-        newLocation[2] = mAltitude - mInitalAltitude;
+        mNewLocation[2] = mAltitude - mInitalAltitude;
 
+        // Woo! new data lets update the values
         updateView();
 
         // TODO: The data is still pretty jump and that is probably based off of the
         // compass as our form of heading which isn't super accurate... There is also
         // a weird issue when walking in a half circle and walking back it doesn't do things
         // in the proper return route, Compass reversed somehow? not getting negative?
-
-        mOldLocation = newLocation;
     }
 
     /**
@@ -192,7 +212,9 @@ public class SensorDataProvider {
             mInitalAltitude = mAltitude;
         // Are we breaking our threshold?
         } else if (Math.abs(mPrevAltitude - mAltitude) > ALTITUDE_THRESHOLD) {
-            mOldLocation[2] = mAltitude - mInitalAltitude;
+            mNewLocation[0] = mOldLocation[0];
+            mNewLocation[1] = mNewLocation[1];
+            mNewLocation[2] = mAltitude - mInitalAltitude;
             updateView();
         }
 
@@ -207,16 +229,29 @@ public class SensorDataProvider {
      * This simply updaes a couple states and sends the event
      */
     private void updateView() {
+        // mark this as the last altitude that we sent to the view
         mPrevAltitude = mAltitude;
+        // Calculate the new openGL values
         updateOpenGLvalues();
-        mBus.post(new NewLocationEvent(mOldLocationOGL));
+        // Post the new location with the new direction
+        mBus.post(new NewLocationEvent(mNewLocation, getDirectionVector()));
+        // Set the old values to the values we just read
+        mOldLocation = mNewLocation;
+        mOldLocationOGL = mNewLocationOGL;
     }
     /**
      * This is what we are going to be sending the view
      */
     private void updateOpenGLvalues() {
         for (int i = 0; i < mOldLocation.length; i++)
-            mOldLocationOGL[i] = mOldLocation[i] * OPENGL_SCALE;
+            mNewLocationOGL[i] = mNewLocation[i] * OPENGL_SCALE;
     }
 
+    public float[] getDirectionVector() {
+        float[] dv = new float[3];
+        for (int i = 0; i < dv.length; i++) {
+            dv[i] = mNewLocationOGL[i] - mOldLocationOGL[i];
+        }
+        return dv;
+    }
 }

@@ -9,7 +9,7 @@ import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
-import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
+import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
 import com.squareup.otto.Subscribe;
 
 /**
@@ -67,8 +67,8 @@ public class MySurfaceView extends GLSurfaceView {
     }
 
     @Subscribe
-    public void onDataChange(NewStepEvent e) {
-        mRenderer.addFaces(e.oldFace, e.newFace);
+    public void onDataChange(NewLocationEvent e) {
+        mRenderer.addNewFace(e.location, e.direction);
     }
 
     @Subscribe
@@ -77,21 +77,27 @@ public class MySurfaceView extends GLSurfaceView {
             // We will eventually want to prevent this
             // better yet we want to unregister the listener
         }
+        // TODO Need to clean this logic up honestly
+        boolean render = false;
         switch (e.type) {
             case ROTATION_MATRIX_CHANGE:
                 mRenderer.setRotationMatrix(e.values);
+                render = true;
                 break;
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
 //                Log.i(TAG, "DATA FROM ROTATION MATRIX");
                 mRenderer.setRotationMatrix(e.values);
+                render = true;
                 break;
             default:
 //                Log.e(TAG, "Event that we cannot handle");
                 // Event that we aren't handling
         }
-        requestRender();
+        if (render) {
+            requestRender();
+        }
     }
 
     @Override

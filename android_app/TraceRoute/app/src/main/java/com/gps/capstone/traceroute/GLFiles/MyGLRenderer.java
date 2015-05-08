@@ -42,7 +42,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private Cube mCube;
     private TriangularPrism mTriangularPrism;
     private PrismPath mPath;
-    private SmartRectangularPrism mRectangularPrism;
+//    private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
 
     private float[] mPrevStepLocation;
@@ -67,10 +67,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube();
         mTriangularPrism = new TriangularPrism();
         mPath = new PrismPath();
-        mRectangularPrism = new SmartRectangularPrism();
-        float[] faceOne = {-0.3f, 0.0f, 0.0f};
-        float[] faceTwo = {0.3f, 0.0f, 0.0f};
-        mRectangularPrism.setDimensions(faceOne, faceTwo);
+//        mRectangularPrism = new SmartRectangularPrism();
+//        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+//        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+//        mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
 
         mPrevStepLocation = new float[3];
@@ -164,14 +164,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * Adds a new face to the path
      * @param newFace Face to add
      */
-    public void addFaces(float[] oldFaces, float[] newFace) {
+    public void addNewFace(float[] newFace, float[] direction) {
         mInit = true;
         // Random null pointer exception that crashed the app? just to note.
-        mRectangularPrism.setDimensions(oldFaces, newFace);
+//        mRectangularPrism.setDimensions(oldFaces, newFace);
         // Still not working because of the issue of adding things on fly with opengl
         mPath.addPoint(newFace);
 
         mPrevStepLocation = newFace;
-        mPrevStepDirection = new float[]{newFace[0] - oldFaces[0], newFace[1] - oldFaces[1], newFace[2] - oldFaces[2]};
+        mPrevStepDirection = direction;
     }
 }
