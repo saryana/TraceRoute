@@ -104,7 +104,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // add rotation
             Matrix.setRotateM(modelMatrix, 0, angle, 0, 0, 1);
             // add translation
-//            Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
+            Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
             scratch = modelMatrix;
         } else {
            scratch =  mRotationMatrix;
@@ -175,6 +175,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPath.addPoint(newFace.clone());
 
         mPrevStepLocation = newFace.clone();
-        mPrevStepDirection = new float[3];
+        mPrevStepDirection = direction;
     }
 }
