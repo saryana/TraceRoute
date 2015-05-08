@@ -95,9 +95,7 @@ public class MySurfaceView extends GLSurfaceView {
 //                Log.e(TAG, "Event that we cannot handle");
                 // Event that we aren't handling
         }
-        if (render) {
-            requestRender();
-        }
+        requestRender();
     }
 
     @Override

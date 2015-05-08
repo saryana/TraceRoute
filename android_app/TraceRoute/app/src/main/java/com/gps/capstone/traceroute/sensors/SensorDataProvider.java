@@ -38,7 +38,7 @@ public class SensorDataProvider {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
     // Threshold for detecting a difference in sole altitude change
-    private static final float ALTITUDE_THRESHOLD = 4; // in feet
+    private static final float ALTITUDE_THRESHOLD = 5; // in feet
     // Scale for converting ft to openGL units, currently arbitrary value that looks good
     private static final float OPENGL_SCALE = .0118f;
     // https://www.walkingwithattitude.com/articles/features/how-to-measure-stride-or-step-length-for-your-pedometer
@@ -170,10 +170,16 @@ public class SensorDataProvider {
     @Subscribe
     public void onDataChange(NewDataEvent event) {
         switch (event.type) {
-            case ALTITUDE_CHANGE: handleAltitude(event.values[0]);
+            case ALTITUDE_CHANGE:
+                handleAltitude(event.values[0]);
+                break;
             // Set the new heading direction
-            case DIRECTION_CHANGE: mHeading = event.values[0];
-            case STEP_DETECTED: handleStepChange();
+            case DIRECTION_CHANGE:
+                mHeading = event.values[0];
+                break;
+            case STEP_DETECTED:
+                handleStepChange();
+                break;
         }
     }
 
@@ -229,12 +235,14 @@ public class SensorDataProvider {
      * This simply updaes a couple states and sends the event
      */
     private void updateView() {
+        Log.d(TAG, "Updating view " + Arrays.toString(mNewLocation));
         // mark this as the last altitude that we sent to the view
         mPrevAltitude = mAltitude;
         // Calculate the new openGL values
         updateOpenGLvalues();
+        Log.d("NewPint", Arrays.toString(mNewLocationOGL));
         // Post the new location with the new direction
-        mBus.post(new NewLocationEvent(mNewLocation, getDirectionVector()));
+        mBus.post(new NewLocationEvent(mNewLocationOGL, getDirectionVector()));
         // Set the old values to the values we just read
         mOldLocation = mNewLocation;
         mOldLocationOGL = mNewLocationOGL;

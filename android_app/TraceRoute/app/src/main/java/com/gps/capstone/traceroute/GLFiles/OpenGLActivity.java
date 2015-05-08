@@ -16,6 +16,7 @@ import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
+import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
 import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
 
@@ -96,12 +97,12 @@ public class OpenGLActivity extends BasicActivity {
     }
 
     @Subscribe
-    public void onStepDetected(NewStepEvent newStepEvent) {
+    public void onData(NewLocationEvent locationEvent) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
         TextView tv = new TextView(this);
         tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
                 mStepCount,
-                newStepEvent.newFace[0], newStepEvent.newFace[1], newStepEvent.newFace[2],
+                locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
                 Math.sin(mHeading), Math.cos(mHeading),
                 mHeading,
                 mAltitude));

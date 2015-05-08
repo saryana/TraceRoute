@@ -104,7 +104,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // add rotation
             Matrix.setRotateM(modelMatrix, 0, angle, 0, 0, 1);
             // add translation
-            Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
+//            Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
             scratch = modelMatrix;
         } else {
            scratch =  mRotationMatrix;
@@ -165,13 +165,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param newFace Face to add
      */
     public void addNewFace(float[] newFace, float[] direction) {
+        if (mPath == null) {
+            return;
+        }
         mInit = true;
         // Random null pointer exception that crashed the app? just to note.
 //        mRectangularPrism.setDimensions(oldFaces, newFace);
         // Still not working because of the issue of adding things on fly with opengl
-        mPath.addPoint(newFace);
+        mPath.addPoint(newFace.clone());
 
-        mPrevStepLocation = newFace;
-        mPrevStepDirection = direction;
+        mPrevStepLocation = newFace.clone();
+        mPrevStepDirection = new float[3];
     }
 }

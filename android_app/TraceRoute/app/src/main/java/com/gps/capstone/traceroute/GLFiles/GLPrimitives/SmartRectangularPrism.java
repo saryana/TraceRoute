@@ -7,8 +7,10 @@ import android.util.Log;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 
+import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.util.Arrays;
 
 /**
  * Defines a smart rectangular prism, that doesn't depend on tons
@@ -51,7 +53,7 @@ public class SmartRectangularPrism extends DrawableObject {
                 secondFace[2] - firstFace[2]};
         // get the length of the prism
         float length = VectorLibrary.vectorLength(directionVector);
-
+        Log.d("DATA", Arrays.toString(directionVector));
         // These are the result dimensions.
         // FIRST FACE
         // Top left, Bottom left, Bottom right, Top right
@@ -59,13 +61,19 @@ public class SmartRectangularPrism extends DrawableObject {
                 // SECOND FACE
                 length, SIZE, SIZE, length, -SIZE, SIZE, length, -SIZE, -SIZE, length, SIZE, -SIZE};
         // xz angle (y-axis rotation)
-        float angleOne = (float)Math.atan(directionVector[2] / directionVector[0]);
-        // convert this shit to degrees.
-        angleOne = (float)((angleOne / (2 * Math.PI)) * 360);
+        float angleOne = 0;
         // xy angle (z axis rotation)
-        float angleTwo = (float)Math.atan(directionVector[1] / directionVector[0]);
-        // convert this to degrees.
-        angleTwo = (float)((angleTwo / (2 * Math.PI)) * 360);
+        float angleTwo = 0;
+        if (directionVector[0] != 0) {
+            angleOne = (float)Math.atan(directionVector[2] / directionVector[0]);
+            // convert this shit to degrees.
+            angleOne = (float)((angleOne / (2 * Math.PI)) * 360);
+            angleTwo = (float)Math.atan(directionVector[1] / directionVector[0]);
+            // convert this to degrees.
+            angleTwo = (float)((angleTwo / (2 * Math.PI)) * 360);
+        }
+
+
         Log.d("ANGLE", "Y angle: " + angleOne);
         Log.d("ANGLE", "Z angle: " + angleTwo);
 
