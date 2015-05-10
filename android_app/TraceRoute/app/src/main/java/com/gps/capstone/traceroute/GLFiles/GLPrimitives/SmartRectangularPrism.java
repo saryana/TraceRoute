@@ -4,12 +4,9 @@ import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 
-import java.lang.reflect.Array;
 import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
 import java.util.Arrays;
 
 /**
@@ -34,13 +31,82 @@ public class SmartRectangularPrism extends DrawableObject {
             1.0f, 1.0f, 1.0f, 1.0f
     };
 
+    //   FRONT     TOP           RIGHT         BOTTOM        LEFT          BACK
     private final short[] drawOrder = {0,1,2, 2,3,0, 7,0,3, 3,4,7, 4,3,2, 2,5,4, 5,2,1, 1,6,5, 6,1,0, 0,7,6, 4,5,6, 6,7,4};
 
+    // The vetex normals, when the prism is in the default position. THIS ARRAY DEPENDS ON THE DRAWORDER. MAKE SURE YOU CHANGE
+    // THIS WHEN YOU MESS WITH THE DRAW ORDER.
+    private float[] normals = {
+            // FRONT
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            -1, 0, 0,
+            -1, 0, 0,
+            -1, 0, 0,
+
+            // TOP
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+
+            0, 1, 0,
+            0, 1, 0,
+            0, 1, 0,
+
+            // RIGHT
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            // BOTTOM
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0,
+
+            0, -1, 0,
+            0, -1, 0,
+            0, -1, 0,
+
+            // LEFT
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            0, 0, -1,
+            0, 0, -1,
+            0, 0, -1,
+
+            // BACK
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1,
+
+            0, 0, 1,
+            0, 0, 1,
+            0, 0, 1
+    };
+
+    private float[] verticies;
+
+    /**
+     * Constructs a rectangular prism.
+     * TODO: Add the first face and second face parameters back into the constructor.
+     */
+    public SmartRectangularPrism() {
+        colors = toStraightArray(colors, 4);
+    }
 
 
     /**
      * Sets the coordinates of the rectangular prism based on SIZE and the position of the first
      * and second face.
+     *
      * @param firstFace
      * @param secondFace
      */
@@ -51,26 +117,31 @@ public class SmartRectangularPrism extends DrawableObject {
         // as you can just take the standard unit vectors and multiply them by the quaternion to get surface normals.
         float[] directionVector = {secondFace[0] - firstFace[0], secondFace[1] - firstFace[1],
                 secondFace[2] - firstFace[2]};
+
         // get the length of the prism
         float length = VectorLibrary.vectorLength(directionVector);
         Log.d("DATA", Arrays.toString(directionVector));
-        // These are the result dimensions.
+
         // FIRST FACE
         // Top left, Bottom left, Bottom right, Top right
-        float[] result = {0, SIZE, -SIZE, 0, -SIZE, -SIZE, 0, -SIZE, SIZE, 0, SIZE, SIZE,
-                // SECOND FACE
+        // FRONT
+        float[] initialVerticies = {0, SIZE, -SIZE, 0, -SIZE, -SIZE, 0, -SIZE, SIZE, 0, SIZE, SIZE,
+                // BACK
                 length, SIZE, SIZE, length, -SIZE, SIZE, length, -SIZE, -SIZE, length, SIZE, -SIZE};
+
+        verticies = toStraightArray(initialVerticies, DrawableObject.DIMENSIONS);
+
         // xz angle (y-axis rotation)
         float angleOne = 0;
         // xy angle (z axis rotation)
         float angleTwo = 0;
         if (directionVector[0] != 0) {
-            angleOne = (float)Math.atan(directionVector[2] / directionVector[0]);
+            angleOne = (float) Math.atan(directionVector[2] / directionVector[0]);
             // convert this shit to degrees.
-            angleOne = (float)((angleOne / (2 * Math.PI)) * 360);
-            angleTwo = (float)Math.atan(directionVector[1] / directionVector[0]);
+            angleOne = (float) ((angleOne / (2 * Math.PI)) * 360);
+            angleTwo = (float) Math.atan(directionVector[1] / directionVector[0]);
             // convert this to degrees.
-            angleTwo = (float)((angleTwo / (2 * Math.PI)) * 360);
+            angleTwo = (float) ((angleTwo / (2 * Math.PI)) * 360);
         }
 
 
@@ -82,34 +153,43 @@ public class SmartRectangularPrism extends DrawableObject {
         // set up a rotation matrix.
         Matrix.setIdentityM(rotationMat, 0);
 
-        // y axis rotation
+        // apply y axis rotation
         Matrix.rotateM(rotationMat, 0, angleOne, 0, 100, 0);
 
-        // z axis rotation
+        // apply z axis rotation
         Matrix.rotateM(rotationMat, 0, angleTwo, 0, 0, 100);
 
-        // loop through and apply the rotation to each vertex.
-        for (int i = 0; i < result.length; i += 3) {
+        // apply the rotation to each vertex and each normal.
+        for (int i = 0; i < verticies.length; i += 3) {
             // grab the current vertex in 4-d space.
-            float[] curVec = {result[i], result[i+1], result[i+2], 0};
+            float[] curVec = {verticies[i], verticies[i + 1], verticies[i + 2], 0};
             float[] resultVec = new float[4];
+
+            // grab the current vertex normal.
+            float[] curNormalVec = {normals[i], normals[i + 1], normals[i + 2], 0};
+            float[] resultNormalVec = new float[4];
 
             Matrix.multiplyMV(resultVec, 0, rotationMat, 0, curVec, 0);
 
             // update the object array with the rotated vertex.
             for (int j = 0; j < DrawableObject.DIMENSIONS; j++) {
-                result[i + j] = resultVec[j];
+                verticies[i + j] = resultVec[j];
             }
         }
 
         // transposition into the correct location.
-        for (int i = 0 ; i < result.length; i++) {
-            result[i] += firstFace[i % 3];
+        for (int i = 0; i < verticies.length; i++) {
+            verticies[i] += firstFace[i % 3];
         }
 
-        setVerticies(result);
+        setVerticies(verticies);
     }
 
+    /**
+     * Draws the object to the openGL pane.
+     *
+     * @param mvpMatrix
+     */
     public void draw(float[] mvpMatrix) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(programHandle);
@@ -132,15 +212,39 @@ public class SmartRectangularPrism extends DrawableObject {
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        ShortBuffer drawListBuffer = convertShortArray(drawOrder);
+        //ShortBuffer drawListBuffer = convertShortArray(drawOrder);
         // Draw the prism
-        GLES20.glDrawElements(
-                GLES20.GL_TRIANGLES, drawOrder.length,
-                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticies.length / 3);
 
 
         // Disable vertex attribute arrays.
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
         GLES20.glDisableVertexAttribArray(mVertexColorHandle);
+    }
+
+
+    // PRIVATES
+
+    /*
+     * Converts an array of indicies into an array that can be drawn by a call
+     * to glDrawArrays. The order of the verticies in the array that's returned by
+     * this is dependent upon the draw order.
+     */
+    private float[] toStraightArray(float[] target, int strideLength) {
+        // create the new
+        float[] result = new float[drawOrder.length * DrawableObject.DIMENSIONS];
+        int resultCurIndex = 0;
+        for (int i = 0; i < drawOrder.length; i++) {
+            // grab the next vertex in target to copy over to result.
+            int targetIndex = drawOrder[i] * strideLength;
+
+            // append the next 3 values in target onto the end of result.
+            for (int j = 0; j < DrawableObject.DIMENSIONS; j++) {
+                result[resultCurIndex + j] = target[targetIndex + j];
+            }
+            resultCurIndex += 3;
+        }
+
+        return result;
     }
 }
