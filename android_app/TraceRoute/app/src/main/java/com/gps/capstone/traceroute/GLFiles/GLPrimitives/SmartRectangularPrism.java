@@ -1,5 +1,6 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.graphics.drawable.Drawable;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 import android.util.Log;
@@ -214,7 +215,7 @@ public class SmartRectangularPrism extends DrawableObject {
 
         //ShortBuffer drawListBuffer = convertShortArray(drawOrder);
         // Draw the prism
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticies.length / 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticies.length / DrawableObject.DIMENSIONS);
 
 
         // Disable vertex attribute arrays.
@@ -232,17 +233,17 @@ public class SmartRectangularPrism extends DrawableObject {
      */
     private float[] toStraightArray(float[] target, int strideLength) {
         // create the new
-        float[] result = new float[drawOrder.length * DrawableObject.DIMENSIONS];
+        float[] result = new float[drawOrder.length * strideLength];
         int resultCurIndex = 0;
         for (int i = 0; i < drawOrder.length; i++) {
             // grab the next vertex in target to copy over to result.
             int targetIndex = drawOrder[i] * strideLength;
 
             // append the next 3 values in target onto the end of result.
-            for (int j = 0; j < DrawableObject.DIMENSIONS; j++) {
+            for (int j = 0; j < strideLength; j++) {
                 result[resultCurIndex + j] = target[targetIndex + j];
             }
-            resultCurIndex += 3;
+            resultCurIndex += strideLength;
         }
 
         return result;
