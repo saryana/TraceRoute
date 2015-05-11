@@ -22,15 +22,19 @@ public abstract class DrawableObject {
     // Stores the graphics environment manager.
     protected static ProgramManager mGraphicsEnv;
 
-    // the handle for the program
+    // the handle for the raw color program
     protected static int programHandle;
 
-    // Various handles.
+    // Various handles for the raw color program.
     protected static int mMVPMatrixHandle;
     protected static int mVertexColorHandle;
     protected static int mVertexPositionHandle;
     protected static int mFragmentColorHandle;
     protected static int mPointSizeHandle;
+
+    protected static int diffuseProgramHandle;
+
+    protected static int lightProgramHandle;
 
     // The number of dimensions per vertex. (This should always be 3. We don't
     // support 2-D)
@@ -51,7 +55,7 @@ public abstract class DrawableObject {
     public static void SetOpenGLEnvironment(ProgramManager graphicsEnv) {
         // OPEN GL SETUP
         mGraphicsEnv = graphicsEnv;
-        programHandle = graphicsEnv.getProgram();
+        programHandle = graphicsEnv.getRawColorProgram();
         // Grab various openGL handles. These will be used to pass in values to openGL.
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");

@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class SmartRectangularPrism extends DrawableObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
-    private static final float SIZE = 0.03f;
+    private static final float SIZE = 0.3f;
 
     // colors for the face.
     private float[] colors = {
@@ -171,10 +171,12 @@ public class SmartRectangularPrism extends DrawableObject {
             float[] resultNormalVec = new float[4];
 
             Matrix.multiplyMV(resultVec, 0, rotationMat, 0, curVec, 0);
+            Matrix.multiplyMV(resultNormalVec, 0, rotationMat, 0, curNormalVec, 0);
 
             // update the object array with the rotated vertex.
             for (int j = 0; j < DrawableObject.DIMENSIONS; j++) {
                 verticies[i + j] = resultVec[j];
+                normals[i + j] = resultNormalVec[j];
             }
         }
 
