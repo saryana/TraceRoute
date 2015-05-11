@@ -24,7 +24,6 @@ public abstract class DrawableObject {
 
     // the handle for the raw color program
     protected static int programHandle;
-
     // Various handles for the raw color program.
     protected static int mMVPMatrixHandle;
     protected static int mVertexColorHandle;
@@ -32,36 +31,61 @@ public abstract class DrawableObject {
     protected static int mFragmentColorHandle;
     protected static int mPointSizeHandle;
 
+    // DIFFUSE PROGRAM
     protected static int diffuseProgramHandle;
+    // handles
+    protected static int mDiffuseMVPMatrixHandle;
+    protected static int mDiffuseVertexColorHandle;
+    protected static int mDiffuseVertexPositionHandle;
+    protected static int mDiffuseFragmentColorHandle;
+    protected static int mDiffuseVertexNormalHandler;
+    protected static int mDiffuseLightPosHandle;
+    protected static int mDiffusePointSizeHandle;
 
+    // LIGHT PROGRAM - unused.
     protected static int lightProgramHandle;
+    // handles
+    protected static int mLightMVPMatrixHandle;
+    protected static int mLightVertexPositionHandle;
+
+    // The position of the imaginary light for all objects.
+    protected final float[] lightPos = {0f, 0f, 0f, 1f};
 
     // The number of dimensions per vertex. (This should always be 3. We don't
-    // support 2-D)
+    // support 2-D.
     public static final int DIMENSIONS = 3;
-
     public static final int FLOAT_SIZE = 4;
-
+    // A buffer for the vertex position data.
     protected FloatBuffer vertexData;
 
     /**
      * The 'constructor' for this class.
      * Takes in a graphics environment object that stores the
-     * openGL runtime environment and a buffer for
-     * vertex data that stores information about the shape.
-     * @param graphicsEnv The graphics environment where this shape is getting
-     *                            drawn.
+     * openGL runtime environment
+     * @param graphicsEnv The graphics environment
      */
     public static void SetOpenGLEnvironment(ProgramManager graphicsEnv) {
         // OPEN GL SETUP
         mGraphicsEnv = graphicsEnv;
+        // PROGRAM HANDLES
         programHandle = graphicsEnv.getRawColorProgram();
-        // Grab various openGL handles. These will be used to pass in values to openGL.
+        diffuseProgramHandle = graphicsEnv.getDiffuseProgram();
+
+        // RAW LIGHTING MODEL
         mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
         mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
         mVertexColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
         mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
         mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
+
+        // DIFFUSE LIGHTING MODEL
+        mDiffuseMVPMatrixHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "uMVPMatrix");
+        mDiffuseVertexPositionHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Position");
+        mDiffuseVertexColorHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Color");
+        mDiffuseLightPosHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "u_LightPos");
+        mDiffuseFragmentColorHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "v_Color");
+        mDiffuseVertexNormalHandler = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Normal");
+        mDiffusePointSizeHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "uThickness");
     }
 
     /**

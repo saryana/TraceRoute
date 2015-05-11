@@ -67,10 +67,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mCube = new Cube();
         mTriangularPrism = new TriangularPrism();
         mPath = new PrismPath();
-        //mRectangularPrism = new SmartRectangularPrism();
-        //float[] faceOne = {-0.3f, 0.0f, 0.0f};
-        //float[] faceTwo = {0.3f, 0.0f, 0.0f};
-        //mRectangularPrism.setDimensions(faceOne, faceTwo);
+        mRectangularPrism = new SmartRectangularPrism();
+        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+        mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
 
         mPrevStepLocation = new float[3];
@@ -130,8 +130,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             mPath.draw(scratch2);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
-            mCube.draw(scratch2);
-            //mRectangularPrism.draw(scratch2);
+            //mCube.draw(scratch2);
+            mRectangularPrism.draw(scratch2);
         // Renders the mutlicolor triangular prism
         } else {
             mTriangularPrism.draw(scratch2);
