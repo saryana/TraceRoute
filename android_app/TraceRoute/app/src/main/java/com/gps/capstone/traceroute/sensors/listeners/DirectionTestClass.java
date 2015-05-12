@@ -53,13 +53,13 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
             mGravValues = event.values;
             if (mMagneticValues != null) {
                 float[] rotationMatrix = new float[9];
-                float[] R = new float[9];
                 SensorManager.getRotationMatrix(rotationMatrix, null, mGravValues, mMagneticValues);
 
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(rotationMatrix, orientation);
+                Log.d("DIRECTION", "" + orientation[2]);
                 // Posting the radian value we are getting
-                mBus.post(new NewDataEvent(new float[]{orientation[0]}, EventType.DIRECTION_CHANGE));
+                mBus.post(new NewDataEvent(new float[]{orientation[0], orientation[2]}, EventType.DIRECTION_CHANGE));
 
 //                // TODO NOTE TO KEITH: It may not be an idea to sector it up since the data readings still
 //                // jump around a bit we can have a pretty small sector size, but i'm not sure if that
