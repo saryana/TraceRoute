@@ -15,7 +15,7 @@ import java.util.Arrays;
  * of cross products to compute its position. This prism's default position
  * is centered at the origin along the x-axis. It uses a quaternion to get its position.
  */
-public class SmartRectangularPrism extends DrawableObject {
+public class SmartRectangularPrism extends BasicLightingObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
     private static final float SIZE = 0.6f;

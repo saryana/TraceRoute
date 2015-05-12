@@ -3,6 +3,7 @@ package com.gps.capstone.traceroute.GLFiles.util;
 import android.content.Context;
 import android.opengl.GLES20;
 
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DiffuseLightingObject;
 import com.gps.capstone.traceroute.R;
 
 /**

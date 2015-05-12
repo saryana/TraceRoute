@@ -9,7 +9,7 @@ import java.nio.FloatBuffer;
 /**
  * A test object to see if the draw order is screwed up or not.
  */
-public class TriangularPrism extends DrawableObject {
+public class TriangularPrism extends BasicLightingObject {
 
     private static final float[] coords = {
         // Front face

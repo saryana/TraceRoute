@@ -10,7 +10,7 @@ import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
  * This represents and draws a point in 3-d space.
  */
 @Deprecated
-public class GLPoint extends DrawableObject {
+public class GLPoint extends BasicLightingObject {
 
     float[] mPointCoords = new float[3];
 

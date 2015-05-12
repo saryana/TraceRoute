@@ -7,7 +7,7 @@ import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 /**
  * Created by keith619 on 4/9/15.
  */
-public class Axis extends DrawableObject {
+public class Axis extends BasicLightingObject {
 
 
     // number of coordinates per vertex in this array
