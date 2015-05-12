@@ -28,6 +28,8 @@ public abstract class DrawableObject {
     // A buffer for the vertex position data.
     protected FloatBuffer vertexData;
 
+    protected FloatBuffer colorData;
+
     /**
      * Initializes all different lighting objects
      * @param graphicsEnv
@@ -45,6 +47,10 @@ public abstract class DrawableObject {
     public void setVerticies(float[] verticies) {
         // This next segment converts the vertex data to a FloatBuffer.
         vertexData = convertFloatArray(verticies);
+    }
+
+    public void setColors(float[] colors) {
+        colorData = convertFloatArray(colors);
     }
 
     ///////////////////

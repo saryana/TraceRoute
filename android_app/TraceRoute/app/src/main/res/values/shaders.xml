@@ -71,7 +71,7 @@
             float diffuse = max(dot(modelViewNormal, lightVector), 0.1);
 
             <!-- Take the distance into consideration now. -->
-            diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));
+            <!--diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));-->
 
             <!-- Set the final vertex color to be the raw color times the
             lambert factor. -->

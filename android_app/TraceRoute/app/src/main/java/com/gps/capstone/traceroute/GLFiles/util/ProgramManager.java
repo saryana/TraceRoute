@@ -182,10 +182,10 @@ public class ProgramManager {
             mDiffuseProgram = GLES20.glCreateProgram();
 
             // add the vertex shader to program
-            GLES20.glAttachShader(mDiffuseProgram, getVertexShader());
+            GLES20.glAttachShader(mDiffuseProgram, getDiffuseVertexShader());
 
             // add the fragment shader to program
-            GLES20.glAttachShader(mDiffuseProgram, getFragmentShader());
+            GLES20.glAttachShader(mDiffuseProgram, getDiffuseFragmentShader());
 
             // Bind attributes
             GLES20.glBindAttribLocation(mDiffuseProgram, 0, "a_Position");

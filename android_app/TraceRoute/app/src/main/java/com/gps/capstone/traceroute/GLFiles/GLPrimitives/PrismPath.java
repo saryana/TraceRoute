@@ -43,10 +43,10 @@ public class PrismPath {
      * Draw the path using the given mvpMatrix.
      * @param mvpMatrix
      */
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] MVMatrix) {
         for (int i = 0; i < path.size(); i++) {
             SmartRectangularPrism cur = path.get(i);
-            cur.draw(mvpMatrix);
+            cur.draw(mvpMatrix, MVMatrix);
         }
     }
 }
