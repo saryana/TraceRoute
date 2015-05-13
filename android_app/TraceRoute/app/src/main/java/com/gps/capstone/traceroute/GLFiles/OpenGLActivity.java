@@ -161,6 +161,10 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         }
     }
 
+    /**
+     * Dialog box that will look through our filesystem and find a previously saved path
+     *
+     */
     private void loadAction() {
         AlertDialog.Builder builder = new Builder(this);
         builder.setTitle("Load Path from file:");
@@ -169,13 +173,13 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         builder.setAdapter(files, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.e(TAG, "" + which);
                 String pathName = files.getItem(which);
                 Log.d(TAG, "Loading path " + pathName);
                 FileInputStream fis;
                 try {
                     fis = openFileInput(pathName);
                     ObjectInputStream ois = new ObjectInputStream(fis);
+                    // Not sure how to get rid of such warning
                     ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
                     BusProvider.getInstance().post(new NewPathFromFile(path));
                     ois.close();
@@ -195,6 +199,9 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         builder.show();
     }
 
+    /**
+     * Dialog interface that will get the path name and save it to file
+     */
     private void saveAction() {
         AlertDialog.Builder builder = new Builder(this);
         builder.setTitle("Save Path to File Name:");
@@ -206,14 +213,12 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
             public void onClick(DialogInterface dialog, int which) {
                 String pathName = editText.getText().toString();
                 FileOutputStream fos;
-
                 try {
+                    // Don't need no snitches stealing our files
                     fos = openFileOutput(pathName, MODE_PRIVATE);
                     ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    // Ideally we would use parcelable, but lists are already serializable
                     oos.writeObject(mPath);
-                    for (float[] f : mPath) {
-                        Log.d("SAVING", Arrays.toString(f));
-                    }
                     oos.close();
                     fos.close();
                     Log.d(TAG, "Wrote path to file with name " + pathName);
