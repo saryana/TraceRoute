@@ -122,16 +122,23 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // for the matrix multiplication product to be correct.
         Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
 
+
+        float[] MVMatrix = new float[16];
+        // I'm assuming 'scratch' is the model matrix.
+        Matrix.multiplyMM(MVMatrix, 0, scratch, 0, mViewMatrix, 0);
+
+
         mAxis.draw(scratch2);
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             // Proper path drawing currently not working
-            mPath.draw(scratch2);
+            mPath.draw(scratch2, MVMatrix);
         // Renders the mutlicolor cube
         } else if (OpenGLActivity.USE_CUBE) {
             //mCube.draw(scratch2);
-            mRectangularPrism.draw(scratch2);
+
+            mRectangularPrism.draw(scratch2, MVMatrix);
         // Renders the mutlicolor triangular prism
         } else {
             mTriangularPrism.draw(scratch2);

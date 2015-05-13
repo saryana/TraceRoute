@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * is to be used as a reference for matrix math.
  */
 @Deprecated
-public class RectangularPrism extends DrawableObject {
+public class RectangularPrism extends BasicLightingObject {
 
     private float[] colors = {
         1.0f, 0.0f, 0.0f, 1.0f,

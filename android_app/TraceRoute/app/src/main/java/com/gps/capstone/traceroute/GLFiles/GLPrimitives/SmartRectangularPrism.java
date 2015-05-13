@@ -15,7 +15,7 @@ import java.util.Arrays;
  * of cross products to compute its position. This prism's default position
  * is centered at the origin along the x-axis. It uses a quaternion to get its position.
  */
-public class SmartRectangularPrism extends DrawableObject {
+public class SmartRectangularPrism extends DiffuseLightingObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
     private static final float SIZE = 0.06f;
@@ -32,7 +32,7 @@ public class SmartRectangularPrism extends DrawableObject {
             1.0f, 1.0f, 1.0f, 1.0f
     };
 
-    //   FRONT     TOP           RIGHT         BOTTOM        LEFT          BACK
+    //                                FRONT          TOP           RIGHT         BOTTOM        LEFT          BACK
     private final short[] drawOrder = {0,1,2, 2,3,0, 7,0,3, 3,4,7, 4,3,2, 2,5,4, 5,2,1, 1,6,5, 6,1,0, 0,7,6, 4,5,6, 6,7,4};
 
     // The vetex normals, when the prism is in the default position. THIS ARRAY DEPENDS ON THE DRAWORDER. MAKE SURE YOU CHANGE
@@ -93,15 +93,17 @@ public class SmartRectangularPrism extends DrawableObject {
             0, 0, 1
     };
 
-    private float[] verticies;
+    // Stores the length of the straigtened vertex array.
+    private int vertexArrayLength;
 
     /**
      * Constructs a rectangular prism.
      * TODO: Add the first face and second face parameters back into the constructor.
      */
     public SmartRectangularPrism() {
-        colors = toStraightArray(colors, 4);
+        setColors(toStraightArray(colors, 4));
     }
+
 
 
     /**
@@ -130,7 +132,8 @@ public class SmartRectangularPrism extends DrawableObject {
                 // BACK
                 length, SIZE, SIZE, length, -SIZE, SIZE, length, -SIZE, -SIZE, length, SIZE, -SIZE};
 
-        verticies = toStraightArray(initialVerticies, DrawableObject.DIMENSIONS);
+        float[] verticies = toStraightArray(initialVerticies, DrawableObject.DIMENSIONS);
+        vertexArrayLength = verticies.length;
 
         // xz angle (y-axis rotation)
         float angleOne = 0;
@@ -186,6 +189,7 @@ public class SmartRectangularPrism extends DrawableObject {
         }
 
         setVerticies(verticies);
+        setNormals(normals);
     }
 
     /**
@@ -193,7 +197,7 @@ public class SmartRectangularPrism extends DrawableObject {
      *
      * @param mvpMatrix
      */
-    public void draw(float[] mvpMatrix) {
+    public void draw(float[] mvpMatrix, float[] mvMatrix) {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(programHandle);
 
@@ -206,23 +210,35 @@ public class SmartRectangularPrism extends DrawableObject {
         GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
 
         // Colors?!
-        FloatBuffer compatibleColors = convertFloatArray(colors);
         GLES20.glVertexAttribPointer(mVertexColorHandle, 4, GLES20.GL_FLOAT, false,
-                DrawableObject.FLOAT_SIZE * 4, compatibleColors);
+                DrawableObject.FLOAT_SIZE * 4, colorData);
 
         GLES20.glEnableVertexAttribArray(mVertexColorHandle);
+
+
+
+        GLES20.glVertexAttribPointer(mVertexNormalHandle, DrawableObject.DIMENSIONS,
+                GLES20.GL_FLOAT, false,
+                DrawableObject.FLOAT_SIZE * DrawableObject.DIMENSIONS, normalData);
+
+        GLES20.glEnableVertexAttribArray(mVertexNormalHandle);
+
+        GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mvMatrix, 0);
 
         // Pass the projection and view transformation to the shader
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
-        //ShortBuffer drawListBuffer = convertShortArray(drawOrder);
+        GLES20.glUniform3f(mPointLightPos, lightPos[0], lightPos[1], lightPos[2]);
+
+
         // Draw the prism
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, verticies.length / DrawableObject.DIMENSIONS);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, vertexArrayLength / DrawableObject.DIMENSIONS);
 
 
         // Disable vertex attribute arrays.
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
         GLES20.glDisableVertexAttribArray(mVertexColorHandle);
+        GLES20.glDisableVertexAttribArray(mVertexNormalHandle);
     }
 
 

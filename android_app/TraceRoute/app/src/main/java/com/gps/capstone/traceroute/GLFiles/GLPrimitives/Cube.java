@@ -10,7 +10,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by keith619 on 4/14/15.
  */
-public class Cube extends DrawableObject {
+public class Cube extends BasicLightingObject {
 
 
     private final ShortBuffer drawListBuffer;

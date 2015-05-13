@@ -19,73 +19,24 @@ import java.nio.ShortBuffer;
  * coordinates, and it needs to be 3-d
  */
 public abstract class DrawableObject {
-    // Stores the graphics environment manager.
-    protected static ProgramManager mGraphicsEnv;
-
-    // the handle for the raw color program
-    protected static int programHandle;
-    // Various handles for the raw color program.
-    protected static int mMVPMatrixHandle;
-    protected static int mVertexColorHandle;
-    protected static int mVertexPositionHandle;
-    protected static int mFragmentColorHandle;
-    protected static int mPointSizeHandle;
-
-    // DIFFUSE PROGRAM
-    protected static int diffuseProgramHandle;
-    // handles
-    protected static int mDiffuseMVPMatrixHandle;
-    protected static int mDiffuseVertexColorHandle;
-    protected static int mDiffuseVertexPositionHandle;
-    protected static int mDiffuseFragmentColorHandle;
-    protected static int mDiffuseVertexNormalHandler;
-    protected static int mDiffuseLightPosHandle;
-    protected static int mDiffusePointSizeHandle;
-
-    // LIGHT PROGRAM - unused.
-    protected static int lightProgramHandle;
-    // handles
-    protected static int mLightMVPMatrixHandle;
-    protected static int mLightVertexPositionHandle;
-
-    // The position of the imaginary light for all objects.
-    protected final float[] lightPos = {0f, 0f, 0f, 1f};
 
     // The number of dimensions per vertex. (This should always be 3. We don't
     // support 2-D.
     public static final int DIMENSIONS = 3;
     public static final int FLOAT_SIZE = 4;
+
     // A buffer for the vertex position data.
     protected FloatBuffer vertexData;
 
+    protected FloatBuffer colorData;
+
     /**
-     * The 'constructor' for this class.
-     * Takes in a graphics environment object that stores the
-     * openGL runtime environment
-     * @param graphicsEnv The graphics environment
+     * Initializes all different lighting objects
+     * @param graphicsEnv
      */
     public static void SetOpenGLEnvironment(ProgramManager graphicsEnv) {
-        // OPEN GL SETUP
-        mGraphicsEnv = graphicsEnv;
-        // PROGRAM HANDLES
-        programHandle = graphicsEnv.getRawColorProgram();
-        diffuseProgramHandle = graphicsEnv.getDiffuseProgram();
-
-        // RAW LIGHTING MODEL
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix");
-        mVertexPositionHandle = GLES20.glGetAttribLocation(programHandle, "a_Position");
-        mVertexColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-        mFragmentColorHandle = GLES20.glGetUniformLocation(programHandle, "v_Color");
-        mPointSizeHandle = GLES20.glGetUniformLocation(programHandle, "uThickness");
-
-        // DIFFUSE LIGHTING MODEL
-        mDiffuseMVPMatrixHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "uMVPMatrix");
-        mDiffuseVertexPositionHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Position");
-        mDiffuseVertexColorHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Color");
-        mDiffuseLightPosHandle = GLES20.glGetAttribLocation(diffuseProgramHandle, "u_LightPos");
-        mDiffuseFragmentColorHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "v_Color");
-        mDiffuseVertexNormalHandler = GLES20.glGetAttribLocation(diffuseProgramHandle, "a_Normal");
-        mDiffusePointSizeHandle = GLES20.glGetUniformLocation(diffuseProgramHandle, "uThickness");
+        DiffuseLightingObject.SetOpenGLEnvironment(graphicsEnv);
+        BasicLightingObject.SetOpenGLEnvironment(graphicsEnv);
     }
 
     /**
@@ -98,21 +49,13 @@ public abstract class DrawableObject {
         vertexData = convertFloatArray(verticies);
     }
 
+    public void setColors(float[] colors) {
+        colorData = convertFloatArray(colors);
+    }
+
     ///////////////////
     // GETTERS
     ///////////////////
-
-    /**
-     * Returns the handle for the MVP matrix for this openGL session.
-     * @return the MVP matrix handle
-     */
-    public int getMVPMatrixHandle() {
-        return mMVPMatrixHandle;
-    }
-
-    public int getProgramHandle() { return programHandle; }
-
-
 
     /**
      * Returns the vertex data.
