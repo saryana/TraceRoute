@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class SmartRectangularPrism extends DrawableObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
-    private static final float SIZE = 0.6f;
+    private static final float SIZE = 0.06f;
 
     // colors for the face.
     private float[] colors = {

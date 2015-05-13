@@ -8,9 +8,12 @@ import android.view.MotionEvent;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.Utils.BusProvider;
+import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
 import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
 
 /**
  * Created by saryana on 4/9/15.
@@ -68,7 +71,7 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewLocationEvent e) {
-        mRenderer.addNewFace(e.location, e.direction);
+        mRenderer.addNewFace(e.location);
     }
 
     @Subscribe
@@ -96,6 +99,16 @@ public class MySurfaceView extends GLSurfaceView {
                 // Event that we aren't handling
         }
         requestRender();
+    }
+    @Subscribe
+    public void onNewPath(NewPathFromFile pathEvent) {
+        mRenderer.clearPath();
+        ArrayList<float[]> path = pathEvent.path;
+
+        for (int i = 0; i < path.size(); i++) {
+            mRenderer.addNewFace(path.get(i).clone());
+            requestRender();
+        }
     }
 
     @Override

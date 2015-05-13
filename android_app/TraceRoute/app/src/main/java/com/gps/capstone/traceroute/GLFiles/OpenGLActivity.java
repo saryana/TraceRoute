@@ -1,12 +1,21 @@
 package com.gps.capstone.traceroute.GLFiles;
 
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
-import android.view.ViewGroup;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,15 +24,20 @@ import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
+import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
-import com.gps.capstone.traceroute.sensors.events.NewStepEvent;
 import com.squareup.otto.Subscribe;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class OpenGLActivity extends BasicActivity {
+public class OpenGLActivity extends BasicActivity implements OnClickListener {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -39,6 +53,9 @@ public class OpenGLActivity extends BasicActivity {
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     private int mStepCount;
+    private Button mSaveButton;
+    private Button mLoadButton;
+    private ArrayList<float[]> mPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +64,25 @@ public class OpenGLActivity extends BasicActivity {
 //        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(R.layout.activity_open_gl);
         mDataProvider = new SensorDataProvider(this);
-        getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
         mStepCount = 0;
+        mSaveButton = (Button) findViewById(R.id.save_button);
+        mLoadButton = (Button) findViewById(R.id.load_button);
+        mPath = new ArrayList<>();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         USER_CONTROL = sharedPreferences.getBoolean(getString(R.string.pref_key_user_control), false);
         USE_CUBE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_cube), true);
         USE_GYROSCOPE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_gyroscope), true);
         USE_SHAPE = sharedPreferences.getBoolean(getString(R.string.pref_key_render_shape), true);
+
+        mSaveButton.setOnClickListener(this);
+        mLoadButton.setOnClickListener(this);
 
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
@@ -72,6 +96,20 @@ public class OpenGLActivity extends BasicActivity {
         mDataProvider.unregister();
         BusProvider.getInstance().unregister(this);
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!super.onOptionsItemSelected(item) && item.getItemId() == R.id.remove) {
+            for (String file: fileList()) {
+                if (deleteFile(file)) {
+                    Log.d(TAG, "removed " + file);
+                } else {
+                    Log.d(TAG, "Could not remove " + file);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -98,6 +136,8 @@ public class OpenGLActivity extends BasicActivity {
 
     @Subscribe
     public void onData(NewLocationEvent locationEvent) {
+        // Another reference issue
+        mPath.add(locationEvent.location.clone());
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
         TextView tv = new TextView(this);
         tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
@@ -108,5 +148,85 @@ public class OpenGLActivity extends BasicActivity {
                 mAltitude));
         linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         mStepCount++;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.save_button) {
+            saveAction();
+        } else if (v.getId() == R.id.load_button) {
+            loadAction();
+        } else {
+            Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
+        }
+    }
+
+    private void loadAction() {
+        AlertDialog.Builder builder = new Builder(this);
+        builder.setTitle("Load Path from file:");
+        final ArrayAdapter<String> files = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice);
+        files.addAll(fileList());
+        builder.setAdapter(files, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e(TAG, "" + which);
+                String pathName = files.getItem(which);
+                Log.d(TAG, "Loading path " + pathName);
+                FileInputStream fis;
+                try {
+                    fis = openFileInput(pathName);
+                    ObjectInputStream ois = new ObjectInputStream(fis);
+                    ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
+                    BusProvider.getInstance().post(new NewPathFromFile(path));
+                    ois.close();
+                    fis.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void saveAction() {
+        AlertDialog.Builder builder = new Builder(this);
+        builder.setTitle("Save Path to File Name:");
+        final EditText editText = new EditText(this);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(editText);
+        builder.setPositiveButton("Save Path!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String pathName = editText.getText().toString();
+                FileOutputStream fos;
+
+                try {
+                    fos = openFileOutput(pathName, MODE_PRIVATE);
+                    ObjectOutputStream oos = new ObjectOutputStream(fos);
+                    oos.writeObject(mPath);
+                    for (float[] f : mPath) {
+                        Log.d("SAVING", Arrays.toString(f));
+                    }
+                    oos.close();
+                    fos.close();
+                    Log.d(TAG, "Wrote path to file with name " + pathName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 }
