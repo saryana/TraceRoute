@@ -170,6 +170,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             return;
         }
         mInit = true;
+        // bizarre referencing issues reason for cloning objects.
+        // updates would overwrite the older data [1] => [2, 2] => [3, 3, 3]
         mPath.addPoint(newFace.clone());
         mPrevStepDirection = new float[]{newFace[0] - mPrevStepLocation[0],
                                         newFace[1] - mPrevStepLocation[1],
