@@ -68,14 +68,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTriangularPrism = new TriangularPrism();
         mPath = new PrismPath();
         mRectangularPrism = new SmartRectangularPrism();
-        float[] faceOne = {-0.3f, 0.0f, 0.0f};
-        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+        float[] faceOne = {0.0f, 0.0f, 0.0f};
+        float[] faceTwo = {-0.3f, 0.6f, 0.3f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
 
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];
     }
+
+    public void compile() {System.out.println("Blah");}
 
     public void onDrawFrame(GL10 unused) {
         // Redraw background color

@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class SmartRectangularPrism extends DiffuseLightingObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
-    private static final float SIZE = 0.6f;
+    private static final float SIZE = 0.1f;
 
     // colors for the face.
     private float[] colors = {
@@ -84,13 +84,13 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
             0, 0, -1,
 
             // BACK
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
+            0, 0, 0,
+            0, 0, 0,
+            0, 0, 0,
 
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0
     };
 
     // Stores the length of the straigtened vertex array.
@@ -139,14 +139,20 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
         float angleOne = 0;
         // xy angle (z axis rotation)
         float angleTwo = 0;
-        if (directionVector[0] != 0) {
-            angleOne = (float) Math.atan(directionVector[2] / directionVector[0]);
-            // convert this shit to degrees.
-            angleOne = (float) ((angleOne / (2 * Math.PI)) * 360);
-            angleTwo = (float) Math.atan(directionVector[1] / directionVector[0]);
-            // convert this to degrees.
-            angleTwo = (float) ((angleTwo / (2 * Math.PI)) * 360);
+
+
+        angleOne = (float) Math.atan2(directionVector[2], directionVector[0]);
+        // convert this shit to degrees.
+        angleOne = (float) ((angleOne / (2 * Math.PI)) * 360);
+        angleTwo = (float) Math.atan2(directionVector[1], directionVector[0]);
+        // convert this to degrees.
+        angleTwo = (float) ((angleTwo / (2 * Math.PI)) * 360);
+
+        // This is the nasty case.
+        if (directionVector[0] < 0) {
+            angleOne += 180;
         }
+
 
 
         Log.d("ANGLE", "Y angle: " + angleOne);
