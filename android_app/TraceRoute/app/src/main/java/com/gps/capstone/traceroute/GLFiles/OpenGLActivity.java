@@ -34,7 +34,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class OpenGLActivity extends BasicActivity implements OnClickListener {
@@ -55,6 +54,8 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
     private int mStepCount;
     private Button mSaveButton;
     private Button mLoadButton;
+    private Button mStartButton;
+    private Button mStopButton;
     private ArrayList<float[]> mPath;
 
     @Override
@@ -63,10 +64,12 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
 //        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(R.layout.activity_open_gl);
-        mDataProvider = new SensorDataProvider(this);
+        mDataProvider = null;
         mStepCount = 0;
         mSaveButton = (Button) findViewById(R.id.save_button);
         mLoadButton = (Button) findViewById(R.id.load_button);
+        mStartButton = (Button) findViewById(R.id.start_path_button);
+        mStopButton = (Button) findViewById(R.id.stop_path_button);
         mPath = new ArrayList<>();
     }
 
@@ -83,17 +86,23 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
         mSaveButton.setOnClickListener(this);
         mLoadButton.setOnClickListener(this);
+        mStartButton.setOnClickListener(this);
+        mStopButton.setOnClickListener(this);
 
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
         BusProvider.getInstance().register(this);
-        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
+        if (mDataProvider != null) {
+            mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mDataProvider.unregister();
+        if (mDataProvider != null) {
+            mDataProvider.unregister();
+        }
         BusProvider.getInstance().unregister(this);
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -152,13 +161,42 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.save_button) {
+        int id = v.getId();
+        if (id == R.id.save_button) {
             saveAction();
-        } else if (v.getId() == R.id.load_button) {
+        } else if (id == R.id.load_button) {
             loadAction();
+        } else if (id == R.id.start_path_button) {
+            startPath();
+        } else if (id == R.id.stop_path_button) {
+            stopPath();
         } else {
             Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
         }
+    }
+
+    /**
+     * Starts the path drawing and listening
+     */
+    private void startPath() {
+        // We can no longer start the path
+        mStartButton.setEnabled(false);
+        // They can now stop it
+        mStopButton.setEnabled(true);
+        mDataProvider = new SensorDataProvider(this);
+        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
+    }
+
+    /**
+     * Stops the path listening and allows for the 3d moving of the path
+     */
+    private void stopPath() {
+        // After they have stopped lets allow them to save it
+        mSaveButton.setEnabled(true);
+        mStopButton.setEnabled(false);
+        // No longer want to be getting data?
+        mDataProvider.unregister();
+        // This is where we would alert them if they want to save the path
     }
 
     /**
