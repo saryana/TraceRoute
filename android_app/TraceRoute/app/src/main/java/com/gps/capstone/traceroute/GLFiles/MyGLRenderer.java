@@ -174,17 +174,24 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * Adds a new face to the path
      * @param newFace Face to add
      */
-    public void addNewFace(float[] newFace, float[] direction) {
+    public void addNewFace(float[] newFace) {
         if (mPath == null) {
             return;
         }
         mInit = true;
-        // Random null pointer exception that crashed the app? just to note.
-//        mRectangularPrism.setDimensions(oldFaces, newFace);
-        // Still not working because of the issue of adding things on fly with opengl
+        // bizarre referencing issues reason for cloning objects.
+        // updates would overwrite the older data [1] => [2, 2] => [3, 3, 3]
         mPath.addPoint(newFace.clone());
-
+        mPrevStepDirection = new float[]{newFace[0] - mPrevStepLocation[0],
+                                        newFace[1] - mPrevStepLocation[1],
+                                        newFace[2] - mPrevStepLocation[2]};
         mPrevStepLocation = newFace.clone();
-        mPrevStepDirection = direction;
+
+    }
+    public void clearPath() {
+        mPath.clear();
+        mPath = new PrismPath();
+        mPrevStepLocation = new float[3];
+        mPrevStepDirection = new float[3];
     }
 }

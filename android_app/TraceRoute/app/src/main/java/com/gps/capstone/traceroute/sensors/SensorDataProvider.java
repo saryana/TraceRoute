@@ -242,7 +242,7 @@ public class SensorDataProvider {
         updateOpenGLvalues();
         Log.d("NewPint", Arrays.toString(mNewLocationOGL));
         // Post the new location with the new direction
-        mBus.post(new NewLocationEvent(mNewLocationOGL, getDirectionVector()));
+        mBus.post(new NewLocationEvent(mNewLocationOGL));
         // Set the old values to the values we just read
         mOldLocation = mNewLocation;
         mOldLocationOGL = mNewLocationOGL;
@@ -255,11 +255,4 @@ public class SensorDataProvider {
             mNewLocationOGL[i] = mNewLocation[i] * OPENGL_SCALE;
     }
 
-    public float[] getDirectionVector() {
-        float[] dv = new float[3];
-        for (int i = 0; i < dv.length; i++) {
-            dv[i] = mNewLocationOGL[i] - mOldLocationOGL[i];
-        }
-        return dv;
-    }
 }

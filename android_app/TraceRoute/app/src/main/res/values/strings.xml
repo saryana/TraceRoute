@@ -53,5 +53,11 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="finish_path_button_text">Finish Path</string>
+    <string name="start_path_button_text">Start Path</string>
+    <string name="save_path_button_text">Save Path</string>
+    <string name="load_path_button_text">Load Path</string>
+    <string name="step_coordinates_header">Step Coordinates</string>
+    <string name="compass_info_header">Compass Info</string>
 
 </resources>

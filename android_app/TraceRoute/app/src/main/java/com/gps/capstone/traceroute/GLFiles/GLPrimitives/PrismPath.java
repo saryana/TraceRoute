@@ -15,13 +15,13 @@ public class PrismPath {
     private float[] previousPoint;
 
     // The size of the path.
-    private static final float SIZE = 0.3f;
+    private static final float SIZE = 0.03f;
 
     private ArrayList<SmartRectangularPrism> path;
 
     public PrismPath() {
         previousPoint = new float[3];
-        path = new ArrayList<SmartRectangularPrism>();
+        path = new ArrayList<>();
     }
 
     /**
@@ -35,8 +35,6 @@ public class PrismPath {
         end.setDimensions(previousPoint.clone(), coords);
         path.add(end);
         previousPoint = coords;
-        Log.d("AH", "ADDED POINT " + Arrays.toString(coords) + " old value " + Arrays.toString(previousPoint));
-
     }
 
     /**
@@ -48,5 +46,11 @@ public class PrismPath {
             SmartRectangularPrism cur = path.get(i);
             cur.draw(mvpMatrix, MVMatrix);
         }
+    }
+
+    public void clear() {
+        path.clear();
+        path = new ArrayList<>();
+        previousPoint = new float[3];
     }
 }

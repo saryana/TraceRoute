@@ -57,7 +57,6 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
 
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(rotationMatrix, orientation);
-                Log.d("DIRECTION", "" + orientation[2]);
                 // Posting the radian value we are getting
                 mBus.post(new NewDataEvent(new float[]{orientation[0], orientation[2]}, EventType.DIRECTION_CHANGE));
 

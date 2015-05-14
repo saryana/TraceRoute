@@ -48,9 +48,8 @@ public abstract class BasicActivity extends ActionBarActivity {
             case R.id.user_settings:
                 i = new Intent(this, UserSettings.class);
                 break;
-            default:
-                Log.d(TAG, "Unknown menu action");
         }
+
         if (i != null) {
             // This disallows back press
             i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
