@@ -196,6 +196,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mStopButton.setEnabled(false);
         // No longer want to be getting data?
         mDataProvider.unregister();
+        mDataProvider = null;
         // This is where we would alert them if they want to save the path
     }
 
