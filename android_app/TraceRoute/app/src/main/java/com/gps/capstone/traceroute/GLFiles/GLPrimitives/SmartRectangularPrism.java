@@ -154,8 +154,6 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
             angleOne += 180;
         }
 
-
-
         Log.d("ANGLE", "Y angle: " + angleOne);
         Log.d("ANGLE", "Z angle: " + angleTwo);
 
