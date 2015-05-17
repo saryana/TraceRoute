@@ -52,7 +52,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     private int mStepCount;
-    private Button mSaveButton;
     private Button mLoadButton;
     private Button mStartButton;
     private Button mStopButton;
@@ -66,7 +65,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         setContentView(R.layout.activity_open_gl);
         mDataProvider = null;
         mStepCount = 0;
-        mSaveButton = (Button) findViewById(R.id.save_button);
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
         mStopButton = (Button) findViewById(R.id.stop_path_button);
@@ -84,7 +82,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         USE_GYROSCOPE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_gyroscope), true);
         USE_SHAPE = sharedPreferences.getBoolean(getString(R.string.pref_key_render_shape), true);
 
-        mSaveButton.setOnClickListener(this);
         mLoadButton.setOnClickListener(this);
         mStartButton.setOnClickListener(this);
         mStopButton.setOnClickListener(this);
@@ -110,7 +107,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (!super.onOptionsItemSelected(item) && item.getItemId() == R.id.remove) {
-            for (String file: fileList()) {
+            for (String file : fileList()) {
                 if (deleteFile(file)) {
                     Log.d(TAG, "removed " + file);
                 } else {
@@ -127,44 +124,14 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         getMenuInflater().inflate(R.menu.menu_open_gl, menu);
         return true;
     }
-    private float mHeading;
-    private float mAltitude;
-    @Subscribe
-    public void onDataChange(NewDataEvent newDataEvent) {
-        if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            float heading = (float) (newDataEvent.values[0] * 180f / Math.PI);
-            if (heading < 0) {
-                heading += 360;
-            }
-            mHeading = heading;
-            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + heading);
-        } else if (newDataEvent.type == EventType.ALTITUDE_CHANGE) {
-            mAltitude = newDataEvent.values[0];
-        }
-    }
-
-    @Subscribe
-    public void onData(NewLocationEvent locationEvent) {
-        // Another reference issue
-        mPath.add(locationEvent.location.clone());
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
-        TextView tv = new TextView(this);
-        tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
-                mStepCount,
-                locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
-                Math.sin(mHeading), Math.cos(mHeading),
-                mHeading,
-                mAltitude));
-        linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        mStepCount++;
-    }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.save_button) {
+        /*if (id == R.id.save_button) {
             saveAction();
-        } else if (id == R.id.load_button) {
+        } else*/
+        if (id == R.id.load_button) {
             loadAction();
         } else if (id == R.id.start_path_button) {
             startPath();
@@ -179,10 +146,13 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
      * Starts the path drawing and listening
      */
     private void startPath() {
-        // We can no longer start the path
-        mStartButton.setEnabled(false);
+        // We can no longer load a path
+        mStartButton.setVisibility(View.GONE);
+        // Can't load the path
+        mLoadButton.setVisibility(View.GONE);
         // They can now stop it
-        mStopButton.setEnabled(true);
+        mStopButton.setVisibility(View.VISIBLE);
+
         mDataProvider = new SensorDataProvider(this);
         mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
     }
@@ -192,17 +162,34 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
      */
     private void stopPath() {
         // After they have stopped lets allow them to save it
-        mSaveButton.setEnabled(true);
-        mStopButton.setEnabled(false);
+        mStartButton.setVisibility(View.VISIBLE);
+        mStartButton.setText(R.string.restart_path_button_text);
+        mLoadButton.setVisibility(View.VISIBLE);
+
+        mStopButton.setVisibility(View.GONE);
         // No longer want to be getting data?
         mDataProvider.unregister();
         mDataProvider = null;
         // This is where we would alert them if they want to save the path
+        AlertDialog.Builder builder = new Builder(this);
+        builder.setTitle("Path Complete! Save Path?");
+        builder.setPositiveButton("Save!!!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                saveAction();
+                dialog.dismiss();
+            }
+        }).setNegativeButton("NO!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
     }
 
     /**
      * Dialog box that will look through our filesystem and find a previously saved path
-     *
      */
     private void loadAction() {
         AlertDialog.Builder builder = new Builder(this);
@@ -212,6 +199,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         builder.setAdapter(files, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
                 String pathName = files.getItem(which);
                 Log.d(TAG, "Loading path " + pathName);
                 FileInputStream fis;
@@ -228,8 +216,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
                 }
 
             }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -273,4 +260,40 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         });
         builder.show();
     }
+
+    /* Data change listeners */
+
+    private float mHeading;
+    private float mAltitude;
+
+    @Subscribe
+    public void onDataChange(NewDataEvent newDataEvent) {
+        if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
+            float heading = (float) (newDataEvent.values[0] * 180f / Math.PI);
+            if (heading < 0) {
+                heading += 360;
+            }
+            mHeading = heading;
+            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + heading);
+        } else if (newDataEvent.type == EventType.ALTITUDE_CHANGE) {
+            mAltitude = newDataEvent.values[0];
+        }
+    }
+
+    @Subscribe
+    public void onData(NewLocationEvent locationEvent) {
+        // Another reference issue
+        mPath.add(locationEvent.location.clone());
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
+        TextView tv = new TextView(this);
+        tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
+                mStepCount,
+                locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
+                Math.sin(mHeading), Math.cos(mHeading),
+                mHeading,
+                mAltitude));
+        linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        mStepCount++;
+    }
+
 }

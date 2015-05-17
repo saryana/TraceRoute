@@ -108,6 +108,12 @@ public class MySurfaceView extends GLSurfaceView {
         for (int i = 0; i < path.size(); i++) {
             mRenderer.addNewFace(path.get(i).clone());
             requestRender();
+            int z = 0;
+            // Draws the path slowly by doing things on the main thread
+            for (int j = 0; j< 90_099_999; j++) {
+                z *= j * i;
+            }
+            Log.e(TAG, "" + z);
         }
     }
 
