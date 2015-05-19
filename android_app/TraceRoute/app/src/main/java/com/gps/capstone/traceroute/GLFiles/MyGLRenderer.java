@@ -6,11 +6,9 @@ import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Cube;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
-import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TriangularPrism;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -20,31 +18,29 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by saryana on 4/9/15.
  */
 public class MyGLRenderer implements GLSurfaceView.Renderer {
+    // ANDROID UTILITIES
     private Context context;
-
-    private static final float THICKNESS = 0.01f;
     private final String TAG = getClass().getSimpleName();
 
-    // All of the matricies for rendering objects to our viewport.
+    // GLOBAL MATRICIES
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
-    private final float[] mMVPMatrix = new float[16];
-    private final float[] mProjectionMatrix = new float[16];
-    private final float[] mViewMatrix = new float[16];
-    private float[] mRotationMatrix = new float[16];
-    private float[] mGyroRotationMatrix = new float[16];
-    private boolean mHaveInitialOrientation = false;
+    private float[] mMVPMatrix = new float[16];
+    private float[] mProjectionMatrix = new float[16];
+    private float[] mViewMatrix = new float[16];
+    private float[] mModelMatrix = new float[16];
 
+    //private float[] mGyroRotationMatrix = new float[16];
+    //private boolean mHaveInitialOrientation = false;
+
+
+    // GEOMETRY
     private ProgramManager mGraphicsEnvironment;
-
-    // All of the geometric primitives that can
-    // be drawn to the screen.
     private Axis mAxis;
-    private Cube mCube;
-    private TriangularPrism mTriangularPrism;
     private PrismPath mPath;
     private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
 
+    // PATH MANAGEMENT
     private float[] mPrevStepLocation;
     private float[] mPrevStepDirection;
 
@@ -58,15 +54,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // THIS HAS TO BE THE SECOND CALL. Set all drawable objects
         // to have a reference to various graphics environment handles.
         DrawableObject.SetOpenGLEnvironment(mGraphicsEnvironment);
-
         // Set the background frame color
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         mAxis = new Axis();
-        mCube = new Cube();
-        mTriangularPrism = new TriangularPrism();
         mPath = new PrismPath();
         mRectangularPrism = new SmartRectangularPrism();
         float[] faceOne = {-0.3f, 0.0f, 0.0f};
@@ -78,19 +71,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPrevStepDirection = new float[3];
     }
 
-    public void compile() {System.out.println("Blah");}
-
     public void onDrawFrame(GL10 unused) {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
+        // VIEW AND PROJECTION
         // Set the camera position (View matrix)
         Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 4, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
-
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        float[] scratch;
         if (!OpenGLActivity.USE_SHAPE && mInit) {
 
             // xy angle (z axis rotation)
@@ -107,43 +97,34 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             Matrix.setRotateM(modelMatrix, 0, angle, 0, 0, 1);
             // add translation
             Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
-            scratch = modelMatrix;
-        } else {
-           scratch =  mRotationMatrix;
+            mModelMatrix = modelMatrix;
         }
-
-        float[] scratch2 = new float[16];
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
         if (OpenGLActivity.USER_CONTROL) {
-            Matrix.setRotateM(mRotationMatrix, 0, mAngle, 0, 0, -1.0f);
+            Matrix.setRotateM(mModelMatrix, 0, mAngle, 0, 0, -1.0f);
         }
 
         // Combine the rotation matrix with the projection and camera view
         // Note that the mMVPMatrix factor *must be first* in order
         // for the matrix multiplication product to be correct.
-        Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, scratch, 0);
-
+        float[] scratch2 = new float[16];
+        Matrix.multiplyMM(scratch2, 0, mMVPMatrix, 0, mModelMatrix, 0);
+        mMVPMatrix = scratch2;
 
         float[] MVMatrix = new float[16];
         // I'm assuming 'scratch' is the model matrix.
-        Matrix.multiplyMM(MVMatrix, 0, scratch, 0, mViewMatrix, 0);
+        Matrix.multiplyMM(MVMatrix, 0, mModelMatrix, 0, mViewMatrix, 0);
 
 
-        mAxis.draw(scratch2);
+        mAxis.draw(mMVPMatrix);
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {
             // Proper path drawing currently not working
-            mPath.draw(scratch2, MVMatrix);
-        // Renders the mutlicolor cube
-        } else if (OpenGLActivity.USE_CUBE) {
-            //mCube.draw(scratch2);
-
-            mRectangularPrism.draw(scratch2, MVMatrix);
-        // Renders the mutlicolor triangular prism
+            mPath.draw(mMVPMatrix, MVMatrix);
         } else {
-            mTriangularPrism.draw(scratch2);
+            mRectangularPrism.draw(mMVPMatrix, MVMatrix);
         }
     }
 
@@ -167,7 +148,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAngle = angle;
     }
     public void setRotationMatrix(float[] r) {
-        mRotationMatrix = r;
+        mModelMatrix = r;
     }
 
     /**

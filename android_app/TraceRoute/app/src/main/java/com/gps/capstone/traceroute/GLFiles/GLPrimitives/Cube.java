@@ -10,6 +10,7 @@ import java.nio.ShortBuffer;
 /**
  * Created by keith619 on 4/14/15.
  */
+@Deprecated
 public class Cube extends BasicLightingObject {
 
 
