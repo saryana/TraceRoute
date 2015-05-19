@@ -90,9 +90,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        // TODO rotation is not entirely correct, need to handle some edge cases
         float[] scratch;
-        if (/*OpenGLActivity.FOLLOW_PATH &&*/ !OpenGLActivity.USE_SHAPE && mInit) {
+        if (!OpenGLActivity.USE_SHAPE && mInit) {
 
             // xy angle (z axis rotation)
             float x = mPrevStepDirection[0];

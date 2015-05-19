@@ -86,6 +86,8 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mStartButton.setOnClickListener(this);
         mStopButton.setOnClickListener(this);
 
+        mDataProvider = new SensorDataProvider(this);
+
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
         BusProvider.getInstance().register(this);

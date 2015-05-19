@@ -103,16 +103,6 @@ public class SensorDataProvider {
         mDirectionTest = new DirectionTestClass(mContext);
         mAltitudeListener = new AltitudeListener(mContext);
 
-        mInitalAltitude = 0;
-        mAltitude = 0;
-        mPrevAltitude = 0;
-        mHeading = 0;
-        mOldLocation = new float[3];
-        mNewLocation = new float[3];
-        mNewLocationOGL = new float[3];
-        mOldLocationOGL = new float[3];
-        mStrideLength = 0;
-
         determineOrientationListener();
     }
 
@@ -146,6 +136,9 @@ public class SensorDataProvider {
         mBus.register(this);
         USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
         int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
+
+        initStartPath();
+
         mStrideLength = height * STRIDE_RATIO;
         mDirectionDeterminer.register();
         mOrientationSensor.register();
@@ -153,6 +146,18 @@ public class SensorDataProvider {
         mDirectionTest.register();
         mAltitudeListener.register();
         // If we have user control we might have to change it here
+    }
+
+    private void initStartPath() {
+        mInitalAltitude = 0;
+        mAltitude = 0;
+        mPrevAltitude = 0;
+        mHeading = 0;
+        mOldLocation = new float[3];
+        mNewLocation = new float[3];
+        mNewLocationOGL = new float[3];
+        mOldLocationOGL = new float[3];
+        mStrideLength = 0;
     }
 
     /**
