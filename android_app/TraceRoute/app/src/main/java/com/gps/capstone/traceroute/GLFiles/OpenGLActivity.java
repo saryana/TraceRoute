@@ -276,21 +276,26 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
     @Subscribe
     public void onData(NewLocationEvent locationEvent) {
-        if (locationEvent.location == null) {
-            return;
-        }
-        // Another reference issue
-        mPath.add(locationEvent.location.clone());
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
-        TextView tv = new TextView(this);
-        tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
-                mStepCount,
-                locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
-                Math.sin(mHeading), Math.cos(mHeading),
-                mHeading,
-                mAltitude));
-        linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        mStepCount++;
+        if (locationEvent.location == null) {
+            mPath.clear();
+            mPath = new ArrayList<>();
+            linearLayout.removeAllViewsInLayout();
+            mStepCount = 0;
+        } else {
+            mPath.add(locationEvent.location.clone());
+            TextView tv = new TextView(this);
+
+            // Another reference issue
+            tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
+                    mStepCount,
+                    locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
+                    Math.sin(mHeading), Math.cos(mHeading),
+                    mHeading,
+                    mAltitude));
+            linearLayout.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            mStepCount++;
+        }
     }
 
 }
