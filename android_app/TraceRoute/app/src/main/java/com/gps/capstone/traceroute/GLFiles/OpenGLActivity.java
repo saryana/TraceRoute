@@ -63,7 +63,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
 //        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(R.layout.activity_open_gl);
-        mDataProvider = null;
         mStepCount = 0;
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
@@ -87,21 +86,17 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mStopButton.setOnClickListener(this);
 
         mDataProvider = new SensorDataProvider(this);
+        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
 
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
         BusProvider.getInstance().register(this);
-        if (mDataProvider != null) {
-            mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
-        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mDataProvider != null) {
-            mDataProvider.unregister();
-        }
+        mDataProvider.unregister();
         BusProvider.getInstance().unregister(this);
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -154,9 +149,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mLoadButton.setVisibility(View.GONE);
         // They can now stop it
         mStopButton.setVisibility(View.VISIBLE);
-
-        mDataProvider = new SensorDataProvider(this);
-        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
+        mDataProvider.startPath();
     }
 
     /**
@@ -170,8 +163,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
         mStopButton.setVisibility(View.GONE);
         // No longer want to be getting data?
-        mDataProvider.unregister();
-        mDataProvider = null;
+        mDataProvider.stopPath();
         // This is where we would alert them if they want to save the path
         AlertDialog.Builder builder = new Builder(this);
         builder.setTitle("Path Complete! Save Path?");

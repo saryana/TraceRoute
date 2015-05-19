@@ -83,6 +83,7 @@ public class SensorDataProvider {
     private float[] mNewLocationOGL;
     // Stride length = height * ratio
     private float mStrideLength;
+    private boolean mPathTracking;
 
     /**
      * Sets up the basic utilities to make this work
@@ -102,7 +103,7 @@ public class SensorDataProvider {
         // Uses the compass
         mDirectionTest = new DirectionTestClass(mContext);
         mAltitudeListener = new AltitudeListener(mContext);
-
+        mPathTracking = false;
         determineOrientationListener();
     }
 
@@ -133,31 +134,11 @@ public class SensorDataProvider {
             this.mUseGyroscope = useGyroscope;
             determineOrientationListener();
         }
+
         mBus.register(this);
         USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
-        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
 
-        initStartPath();
-
-        mStrideLength = height * STRIDE_RATIO;
-        mDirectionDeterminer.register();
         mOrientationSensor.register();
-        mStepDetector.register();
-        mDirectionTest.register();
-        mAltitudeListener.register();
-        // If we have user control we might have to change it here
-    }
-
-    private void initStartPath() {
-        mInitalAltitude = 0;
-        mAltitude = 0;
-        mPrevAltitude = 0;
-        mHeading = 0;
-        mOldLocation = new float[3];
-        mNewLocation = new float[3];
-        mNewLocationOGL = new float[3];
-        mOldLocationOGL = new float[3];
-        mStrideLength = 0;
     }
 
     /**
@@ -166,10 +147,9 @@ public class SensorDataProvider {
     public void unregister() {
         mBus.unregister(this);
         mOrientationSensor.unregister();
-        mStepDetector.unregister();
-        mDirectionDeterminer.unregister();
-        mDirectionTest.unregister();
-        mAltitudeListener.unregister();
+        if (mPathTracking) {
+            stopPath();
+        }
     }
 
     @Subscribe
@@ -260,4 +240,32 @@ public class SensorDataProvider {
             mNewLocationOGL[i] = mNewLocation[i] * OPENGL_SCALE;
     }
 
+    public void startPath() {
+        mPathTracking = true;
+        mInitalAltitude = 0;
+        mAltitude = 0;
+        mPrevAltitude = 0;
+        mHeading = 0;
+        mOldLocation = new float[3];
+        mNewLocation = new float[3];
+        mNewLocationOGL = new float[3];
+        mOldLocationOGL = new float[3];
+        mStrideLength = 0;
+        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
+        mStrideLength = height * STRIDE_RATIO;
+        mDirectionDeterminer.register();
+        mStepDetector.register();
+        mDirectionTest.register();
+        mAltitudeListener.register();
+    }
+
+    /**
+     * Stops all the listeners involved in path tracking
+     */
+    public void stopPath() {
+        mStepDetector.unregister();
+        mDirectionDeterminer.unregister();
+        mDirectionTest.unregister();
+        mAltitudeListener.unregister();
+    }
 }
