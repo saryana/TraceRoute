@@ -81,7 +81,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-
         if (!OpenGLActivity.USE_SHAPE && mInit) {
 
             // xy angle (z axis rotation)

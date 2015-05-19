@@ -81,18 +81,15 @@ public class MySurfaceView extends GLSurfaceView {
             // better yet we want to unregister the listener
         }
         // TODO Need to clean this logic up honestly
-        boolean render = false;
         switch (e.type) {
             case ROTATION_MATRIX_CHANGE:
                 mRenderer.setRotationMatrix(e.values);
-                render = true;
                 break;
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
 //                Log.i(TAG, "DATA FROM ROTATION MATRIX");
                 mRenderer.setRotationMatrix(e.values);
-                render = true;
                 break;
             default:
 //                Log.e(TAG, "Event that we cannot handle");
