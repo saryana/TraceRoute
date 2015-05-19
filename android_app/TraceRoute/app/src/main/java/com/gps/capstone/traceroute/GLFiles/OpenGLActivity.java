@@ -276,6 +276,9 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
     @Subscribe
     public void onData(NewLocationEvent locationEvent) {
+        if (locationEvent.location == null) {
+            return;
+        }
         // Another reference issue
         mPath.add(locationEvent.location.clone());
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);

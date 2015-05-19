@@ -71,7 +71,11 @@ public class MySurfaceView extends GLSurfaceView {
 
     @Subscribe
     public void onDataChange(NewLocationEvent e) {
-        mRenderer.addNewFace(e.location);
+        if (e.location == null) {
+            mRenderer.clearPath();
+        } else {
+            mRenderer.addNewFace(e.location);
+        }
     }
 
     @Subscribe

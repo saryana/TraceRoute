@@ -145,11 +145,11 @@ public class SensorDataProvider {
      * Un-register things we no longer care about
      */
     public void unregister() {
-        mBus.unregister(this);
-        mOrientationSensor.unregister();
         if (mPathTracking) {
             stopPath();
         }
+        mBus.unregister(this);
+        mOrientationSensor.unregister();
     }
 
     @Subscribe
@@ -241,6 +241,8 @@ public class SensorDataProvider {
     }
 
     public void startPath() {
+        mBus.post(new NewLocationEvent(null));
+
         mPathTracking = true;
         mInitalAltitude = 0;
         mAltitude = 0;
@@ -263,6 +265,7 @@ public class SensorDataProvider {
      * Stops all the listeners involved in path tracking
      */
     public void stopPath() {
+        mPathTracking = false;
         mStepDetector.unregister();
         mDirectionDeterminer.unregister();
         mDirectionTest.unregister();
