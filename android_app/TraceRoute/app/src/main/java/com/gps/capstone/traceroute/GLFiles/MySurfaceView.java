@@ -179,6 +179,10 @@ public class MySurfaceView extends GLSurfaceView {
                 requestRender();
                 mPreviousX = x;
                 mPreviousY = y;
+                break;
+            case MotionEvent.ACTION_UP:
+                previousMotion = TouchType.SHIT;
+                break;
         }
     }
 

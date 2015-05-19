@@ -69,8 +69,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mTriangularPrism = new TriangularPrism();
         mPath = new PrismPath();
         mRectangularPrism = new SmartRectangularPrism();
-        float[] faceOne = {0.0f, 0.0f, 0.0f};
-        float[] faceTwo = {-0.3f, 0.6f, 0.3f};
+        float[] faceOne = {-0.3f, 0.0f, 0.0f};
+        float[] faceTwo = {0.3f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
 
