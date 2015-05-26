@@ -1,22 +1,24 @@
 package com.gps.capstone.traceroute;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 
 
-public class FirstRunInfo extends Activity implements OnClickListener {
+public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
 
     private EditText mStrideLength;
     private EditText mHeightFt;
@@ -24,6 +26,8 @@ public class FirstRunInfo extends Activity implements OnClickListener {
     private Button mContinueButton;
     private Button mCalculateButton;
     private SharedPreferences mSharedPrefs;
+    // True signifies a male, false a female
+    private Switch mGenderSwitch;
 
 
     @Override
@@ -43,6 +47,7 @@ public class FirstRunInfo extends Activity implements OnClickListener {
         mHeightIn = (EditText) findViewById(R.id.info_height_inches);
         mContinueButton = (Button) findViewById(R.id.continue_button);
         mCalculateButton = (Button) findViewById(R.id.calculate_button);
+        mGenderSwitch = (Switch) findViewById(R.id.gender_switch);
 
         mStrideLength.setText("0");
         mHeightFt.setText("0");
@@ -59,7 +64,7 @@ public class FirstRunInfo extends Activity implements OnClickListener {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_first_run_info, menu);
+        getMenuInflater().inflate(R.menu.menu_first_run_info, menu);
         return true;
     }
 
@@ -111,8 +116,20 @@ public class FirstRunInfo extends Activity implements OnClickListener {
         }
     }
 
+    /**
+     * Gets the stride length based off of height and gender
+     * @param totalHeight Height of user in inches
+     * @return Stride length in inches
+     */
     private float calculateStride(int totalHeight) {
-        // need to determine
-        return .41f * totalHeight;
+        float strideLength;
+        // Is this a male?
+        if (mGenderSwitch.isChecked()) {
+            strideLength = .415f * totalHeight;
+        } else {
+            strideLength = .413f * totalHeight;
+        }
+        Log.d("STRIDE LEN", "Male true Female false: " + mGenderSwitch.isChecked() + " stride length " + strideLength);
+        return strideLength;
     }
 }

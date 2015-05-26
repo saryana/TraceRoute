@@ -193,6 +193,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @return
      */
     public float getArcballRotationRadius() {
-
+        return 0f;
     }
 }
