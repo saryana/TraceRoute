@@ -252,9 +252,9 @@ public class SensorDataProvider {
         mNewLocation = new float[3];
         mNewLocationOGL = new float[3];
         mOldLocationOGL = new float[3];
-        mStrideLength = 0;
-        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
-        mStrideLength = height * STRIDE_RATIO;
+//        mStrideLength = 0;
+//        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
+        mStrideLength = PreferenceManager.getDefaultSharedPreferences(mContext).getFloat(mContext.getString(R.string.pref_key_stride_length), 0);
         mDirectionDeterminer.register();
         mStepDetector.register();
         mDirectionTest.register();

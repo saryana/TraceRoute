@@ -114,7 +114,6 @@ public class MySurfaceView extends GLSurfaceView {
             for (int j = 0; j< 90_099_999; j++) {
                 z *= j * i;
             }
-            Log.e(TAG, "" + z);
         }
     }
 

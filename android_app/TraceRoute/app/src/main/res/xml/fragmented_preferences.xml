@@ -15,8 +15,14 @@
             android:title="Height (Inches)"
             android:defaultValue="0"
             android:inputType="number"
+
             android:summary="Height in inches"
             android:dialogTitle="Height (in)" />
+        <CheckBoxPreference android:key="@string/pref_key_first_run"
+            android:title="First Run"
+            android:summary="Simulate first run of the application"
+            android:defaultValue="true"
+            />
 
     </PreferenceCategory>
 

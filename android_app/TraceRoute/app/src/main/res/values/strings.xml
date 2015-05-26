@@ -59,5 +59,9 @@
     <string name="load_path_button_text">Load Path</string>
     <string name="step_coordinates_header">Step Coordinates</string>
     <string name="compass_info_header">Compass Info</string>
+    <string name="pref_key_first_run">prefKeyFirstRun</string>
+    <string name="title_activity_first_run_info">FirstRunInfo</string>
+    <string name="pref_key_stride_length">prefKeyStrideLength</string>
+    <string name="debug_console_label">Debug Console</string>
 
 </resources>

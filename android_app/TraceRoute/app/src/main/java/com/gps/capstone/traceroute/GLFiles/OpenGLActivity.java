@@ -3,6 +3,7 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,8 +19,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.gps.capstone.traceroute.BasicActivity;
+import com.gps.capstone.traceroute.FirstRunInfo;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
@@ -36,7 +42,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
-public class OpenGLActivity extends BasicActivity implements OnClickListener {
+public class OpenGLActivity extends BasicActivity implements OnClickListener, OnShowcaseEventListener {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -56,10 +62,18 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
     private Button mStartButton;
     private Button mStopButton;
     private ArrayList<float[]> mPath;
+    private ShowcaseView mSV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_first_run), true)) {
+//            Intent i = new Intent(this, FirstRunInfo.class);
+//            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//            startActivity(i);
+//            finish();
+//            return;
+//        }
 
 //        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(R.layout.activity_open_gl);
@@ -67,6 +81,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
         mStopButton = (Button) findViewById(R.id.stop_path_button);
+
         mPath = new ArrayList<>();
     }
 
@@ -88,9 +103,24 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         mDataProvider = new SensorDataProvider(this);
         mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
 
+        if (sharedPreferences.getBoolean(getString(R.string.pref_key_first_run), true)) {
+            firstRun();
+            sharedPreferences.edit().putBoolean(getString(R.string.pref_key_first_run), false).apply();
+        }
+
         Log.d(TAG, "User control: " + USER_CONTROL);
         Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
         BusProvider.getInstance().register(this);
+    }
+
+    private void firstRun() {
+        mSV = new ShowcaseView.Builder(this)
+                .setContentTitle("Start Path!")
+                .setContentText("This will start a new path that you can later save.")
+                .setTarget(new ViewTarget(mStartButton))
+                .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
+                .setShowcaseEventListener(this)
+                .build();
     }
 
     @Override
@@ -124,6 +154,10 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
+        // Don't accept input when this is shown for now
+        if (mSV != null && mSV.isShown()) {
+            return;
+        }
         int id = v.getId();
         /*if (id == R.id.save_button) {
             saveAction();
@@ -298,4 +332,18 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener {
         }
     }
 
+    @Override
+    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+        Toast.makeText(OpenGLActivity.this, "onShowcaseViewHide", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+        Toast.makeText(OpenGLActivity.this, "view did hide", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+    }
 }
