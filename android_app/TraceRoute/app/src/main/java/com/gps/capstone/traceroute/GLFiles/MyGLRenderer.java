@@ -32,6 +32,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     //private float[] mGyroRotationMatrix = new float[16];
     //private boolean mHaveInitialOrientation = false;
 
+    // CAMERA
+    private float[] cameraPos = {0, 0, 4};
+    private float[] cameraTarget = {0, 0, 0};
+    private float[] cameraOrientation = {0, 1, 0};
 
     // GEOMETRY
     private ProgramManager mGraphicsEnvironment;
@@ -77,7 +81,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // VIEW AND PROJECTION
         // Set the camera position (View matrix)
-        Matrix.setLookAtM(mViewMatrix, 0, 0, 0, 4, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, cameraPos[0], cameraPos[1], cameraPos[2],
+                cameraTarget[0], cameraTarget[1], cameraTarget[2],
+                cameraOrientation[0], cameraOrientation[1], cameraOrientation[2]);
+
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
@@ -138,19 +145,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.frustumM(mProjectionMatrix, 0, -ratio, ratio, -1, 1, 2, 7);
     }
 
-    public volatile float mAngle;
-
-    public float getAngle() {
-        return mAngle;
-    }
-
-    public void setAngle(float angle) {
-        mAngle = angle;
-    }
-    public void setRotationMatrix(float[] r) {
-        mModelMatrix = r;
-    }
-
     /**
      * Adds a new face to the path
      * @param newFace Face to add
@@ -174,5 +168,31 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mPath = new PrismPath();
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];
+    }
+
+    ////////////////////////////////
+    // MODEL MATRIX MANIPULATION
+    ////////////////////////////////
+
+    public volatile float mAngle;
+
+    public float getAngle() {
+        return mAngle;
+    }
+
+    public void setAngle(float angle) {
+        mAngle = angle;
+    }
+    public void setModelMatrix(float[] r) {
+        mModelMatrix = r;
+    }
+
+    /**
+     * Returns the radius between the
+     * camera's position and what it's looking at.
+     * @return
+     */
+    public float getArcballRotationRadius() {
+
     }
 }

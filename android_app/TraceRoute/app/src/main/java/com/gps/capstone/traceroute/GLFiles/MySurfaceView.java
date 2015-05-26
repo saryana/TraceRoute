@@ -87,13 +87,13 @@ public class MySurfaceView extends GLSurfaceView {
         // TODO Need to clean this logic up honestly
         switch (e.type) {
             case ROTATION_MATRIX_CHANGE:
-                mRenderer.setRotationMatrix(e.values);
+                mRenderer.setModelMatrix(e.values);
                 break;
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
 //                Log.i(TAG, "DATA FROM ROTATION MATRIX");
-                mRenderer.setRotationMatrix(e.values);
+                mRenderer.setModelMatrix(e.values);
                 break;
             default:
 //                Log.e(TAG, "Event that we cannot handle");
@@ -183,6 +183,9 @@ public class MySurfaceView extends GLSurfaceView {
                 mPreviousX = x;
                 mPreviousY = y;
                 break;
+            // This fires when the user lifts their finger up
+            // from the screen after performing a single
+            // finger touch event.
             case MotionEvent.ACTION_UP:
                 previousMotion = TouchType.SHIT;
                 break;
