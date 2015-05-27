@@ -114,7 +114,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         } else if (OpenGLActivity.USER_CONTROL) {
             float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
-            Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+            //Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+            Matrix.setRotateM(modelTemp, 0, 0, 0, 0, 1);
+            mModelMatrix = modelTemp;
         }
 
         // Combine the rotation matrix with the projection and camera view
