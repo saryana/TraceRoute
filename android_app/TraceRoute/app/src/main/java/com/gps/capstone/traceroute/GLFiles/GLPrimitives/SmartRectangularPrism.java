@@ -157,8 +157,8 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
             angleOne += 180;
         }
 
-        Log.d("ANGLE", "Y angle: " + angleOne);
-        Log.d("ANGLE", "Z angle: " + angleTwo);
+//        Log.d("ANGLE", "Y angle: " + angleOne);
+//        Log.d("ANGLE", "Z angle: " + angleTwo);
 
         float[] rotationMat = new float[16];
 

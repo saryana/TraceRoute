@@ -1,5 +1,7 @@
 package com.gps.capstone.traceroute.Utils;
 
+import android.util.Log;
+
 /**
  * Created by saryana on 4/16/15.
  */
@@ -39,6 +41,42 @@ public class SensorUtil {
         double y = Math.cos(trigTheta);
 
         return new float[]{(float) x, (float) y};
+    }
+
+    public static float[] getVectorFromAngle3(float theta) {
+        double x = 0;
+        double y = 0;
+
+        // Quadrant 1
+        if (theta > 0 && theta <= Math.PI / 2) {
+            x = Math.sin(theta);
+            y = Math.cos(theta);
+            assert x > 0;
+            assert y > 0;
+        // Quadrant 2
+        } else if (theta > Math.PI / 2 && theta <= 2 * Math.PI / 2) {
+            theta = (float) (theta - Math.PI / 2);
+            x = -Math.sin(theta);
+            y = Math.cos(theta);
+            assert  x < 0;
+            assert  y > 0;
+        // Quadrant 3
+        } else if (theta > 2 * Math.PI / 2 && theta <= 3 * Math.PI / 2) {
+            theta = (float) (theta - 2 * Math.PI / 2);
+            x = -Math.sin(theta);
+            y = -Math.cos(theta);
+            assert  x < 0;
+            assert  y < 0;
+        // Quadrant 4
+        } else if (theta > 3 * Math.PI / 2) {
+            theta = (float) (theta - 3 * Math.PI / 2);
+            x = Math.sin(theta);
+            y = -Math.cos(theta);
+            assert x > 0;
+            assert  y < 0;
+        }
+
+        return new float[]{(float)x, (float)y};
     }
 
     /**

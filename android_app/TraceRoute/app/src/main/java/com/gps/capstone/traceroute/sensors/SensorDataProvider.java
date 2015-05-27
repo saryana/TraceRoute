@@ -171,10 +171,14 @@ public class SensorDataProvider {
                 break;
         }
     }
+    float azmax = Float.MIN_VALUE;
+    float azmin = Float.MAX_VALUE;
 
     private void handleHeadingChange(float heading) {
+        heading += Math.PI;
         // Did we break the direction threshold?
         if (Math.abs(heading - mHeading) > DIRECTION_THRESHOLD) {
+            Log.d(TAG, "changing the heading " + SensorUtil.radianToDegree(mHeading) + " " + SensorUtil.radianToDegree(heading));
             mHeading = heading;
         }
     }
@@ -184,14 +188,15 @@ public class SensorDataProvider {
      */
     private void handleStepChange() {
         // Get unit vector of heading
-        float[] xy = SensorUtil.getVectorFromAngle1(mHeading);
+        float[] xy = SensorUtil.getVectorFromAngle3(mHeading);
+        Log.d(TAG, "heading " + SensorUtil.radianToDegree(mHeading) + " angles " + Arrays.toString(xy) + " stride length" + mStrideLength);
         // scale the vector to stride length and add to old location
         mNewLocation[0] = mOldLocation[0] + xy[0] * mStrideLength;
         mNewLocation[1] = mOldLocation[1] + xy[1] * mStrideLength;
         // every time we record the altitude lets do it relative to
         // what the initial reading was.
         mNewLocation[2] = mAltitude - mInitalAltitude;
-
+        Log.d(TAG, "location " + Arrays.toString(mNewLocation));
         // Woo! new data lets update the values
         updateView();
 
@@ -238,7 +243,7 @@ public class SensorDataProvider {
         updateOpenGLvalues();
         Log.d("NewPint", Arrays.toString(mNewLocationOGL));
         // Post the new location with the new direction
-        mBus.post(new NewLocationEvent(mNewLocationOGL));
+        mBus.post(new NewLocationEvent(mNewLocationOGL, mNewLocation));
         // Set the old values to the values we just read
         mOldLocation = mNewLocation;
         mOldLocationOGL = mNewLocationOGL;
@@ -256,7 +261,7 @@ public class SensorDataProvider {
     }
 
     public void startPath() {
-        mBus.post(new NewLocationEvent(null));
+        mBus.post(new NewLocationEvent(null, null));
 
         mPathTracking = true;
         mInitalAltitude = 0;
