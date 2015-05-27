@@ -288,7 +288,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
             float heading = SensorUtil.radianToDegree(newDataEvent.values[0]);
             if (heading < 0) {
-                heading += 360;
+                heading += 180;
             }
             heading = Math.round(heading);
             if (Math.abs(heading - mHeading) > 1) {
@@ -315,7 +315,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
             // Another reference issue
             tv.setText(String.format("Step %d at <%f, %f, %f> XY diff (%f, %f) with heading at the moment %f and altitude of %f",
                     mStepCount,
-                    locationEvent.location[0], locationEvent.location[1], locationEvent.location[2],
+                    locationEvent.otherLocation[0], locationEvent.otherLocation[1], locationEvent.otherLocation[2],
                     Math.sin(mHeading), Math.cos(mHeading),
                     mHeading,
                     mAltitude));
