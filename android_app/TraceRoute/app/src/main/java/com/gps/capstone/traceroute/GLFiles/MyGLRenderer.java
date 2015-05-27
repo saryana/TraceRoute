@@ -186,13 +186,4 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setModelMatrix(float[] r) {
         mModelMatrix = r;
     }
-
-    /**
-     * Returns the radius between the
-     * camera's position and what it's looking at.
-     * @return
-     */
-    public float getArcballRotationRadius() {
-
-    }
 }

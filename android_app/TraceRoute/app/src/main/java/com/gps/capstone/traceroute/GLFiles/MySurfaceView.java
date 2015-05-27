@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
 import com.gps.capstone.traceroute.Utils.BusProvider;
@@ -163,6 +164,11 @@ public class MySurfaceView extends GLSurfaceView {
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
 
+                // get a sphere radius that's half the size of the screen.
+                float sphereRadius = getWidth() / 2;
+
+                Quaternion rotation = determineRotation(sphereRadius, x, y, mPreviousX, mPreviousY);
+
                 float dx = x - mPreviousX;
                 float dy = y - mPreviousY;
 
@@ -254,5 +260,28 @@ public class MySurfaceView extends GLSurfaceView {
         // Set the previous distance to be the current distance.
         previousDistance = curDistance;
         // TODO: do something with deltaDistance! Change the zoom level based on the change in finger distance.
+    }
+
+    /*
+     * Determines arcball rotation based on a single finger gesture.
+     */
+    private Quaternion determineRotation(float radius, float curX, float curY, float prevX, float prevY) {
+
+        float[] curSphereVector = getSphereVector(radius, curX, curY);
+        float[] prevSphereVector = getSphereVector(radius, prevX, prevY);
+
+
+        return null;
+    }
+
+    /*
+    Determines where the touch coordinates fall on a sphere with
+    radius radius.
+     */
+    private float[] getSphereVector(float radius, float x, float y) {
+        float[] result = new float[3];
+
+
+        return result;
     }
 }
