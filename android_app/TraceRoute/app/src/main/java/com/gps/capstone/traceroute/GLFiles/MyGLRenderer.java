@@ -30,7 +30,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mMVPMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
-    private float[] mModelMatrix = new float[16];
+    private float[] mModelMatrix = null;//new float[16];
 
     //private float[] mGyroRotationMatrix = new float[16];
     //private boolean mHaveInitialOrientation = false;
@@ -79,6 +79,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         singleFingerRotationMatrix = new float[16];
         Matrix.setIdentityM(singleFingerRotationMatrix, 0);
+
+
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -115,8 +117,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
             //Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
-            Matrix.setRotateM(modelTemp, 0, 0, 0, 0, 1);
-            mModelMatrix = modelTemp;
+
+            if (translated) {
+                Matrix.translateM(mModelMatrix, 0, translateX, translateY, 0);
+                translated = false;
+            }
+            if (zoomed) {
+                Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
+                zoomed = false;
+            }
         }
 
         // Combine the rotation matrix with the projection and camera view
@@ -181,23 +190,56 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // MODEL MATRIX MANIPULATION
     ////////////////////////////////
 
-    public volatile float mAngle;
     public volatile float[] singleFingerRotationMatrix;
-    public float getAngle() {
-        return mAngle;
-    }
+    private float translateX;
+    private float translateY;
+    private boolean translated;
+    private float zoomAmount;
+    private boolean zoomed;
 
-    public void setAngle(float angle) {
-        mAngle = angle;
-    }
+    private static final float TRANSLATION_FACTOR = 0.001f;
+    private static final float ZOOM_FACTOR = 0.005f;
 
-
-    public void setSingleFingerRotation(Quaternion rotation) {
+    /**
+     * Rotates the model with the given quaternion.
+     * @param rotation
+     */
+    public void rotate(Quaternion rotation) {
         Matrix4 rotMatrix = rotation.toMatrix();
         singleFingerRotationMatrix = rotMatrix.getAsArray();
     }
 
+    /**
+     * Translates the model by the given amount.
+     * @param x
+     * @param y
+     */
+    public void translate(float x, float y) {
+        x *= TRANSLATION_FACTOR * -1;
+        y *= TRANSLATION_FACTOR * -1;
+        translateX = x;
+        translateY = y;
+        translated = true;
+    }
+
+    /**
+     * Zooms in on the model by the given amount.
+     * @param zoom
+     */
+    public void zoom(float zoom) {
+        zoom *= ZOOM_FACTOR;
+        zoomAmount = zoom;
+        zoomed = true;
+    }
+
+    /**
+     * Sets the model matrix to r.
+     * @param r
+     */
     public void setModelMatrix(float[] r) {
-        mModelMatrix = r;
+        if (mModelMatrix == null) {
+            mModelMatrix = r;
+            Matrix.setIdentityM(mModelMatrix, 0);
+        }
     }
 }

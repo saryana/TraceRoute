@@ -183,7 +183,7 @@ public class MySurfaceView extends GLSurfaceView {
                 //    dy = dy * -1;
                 //}
 
-                mRenderer.setSingleFingerRotation(rotation);
+                mRenderer.rotate(rotation);
                 requestRender();
                 mPreviousX = x;
                 mPreviousY = y;
@@ -246,7 +246,7 @@ public class MySurfaceView extends GLSurfaceView {
         float deltaMidpointX = curMidpoint[0] - prevMidpoint[0];
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
         // TODO: Do something with these deltas! Pan the camera based on them.
-
+        mRenderer.translate(deltaMidpointX, deltaMidpointY);
         Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
 
     }
@@ -259,6 +259,7 @@ public class MySurfaceView extends GLSurfaceView {
         // Set the previous distance to be the current distance.
         previousDistance = curDistance;
         // TODO: do something with deltaDistance! Change the zoom level based on the change in finger distance.
+        mRenderer.zoom(deltaDistance);
     }
 
     /*
