@@ -76,6 +76,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];
+
+        singleFingerRotationMatrix = new float[16];
+        Matrix.setIdentityM(singleFingerRotationMatrix, 0);
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -108,11 +111,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // add translation
             Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
             mModelMatrix = modelMatrix;
-        }
-
-        // This determines if the user is taking control or it is based off of the orientation of the phone
-        float[] modelTemp = new float[16];
-        if (OpenGLActivity.USER_CONTROL) {
+        } else if (OpenGLActivity.USER_CONTROL) {
+            float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
             Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
         }
