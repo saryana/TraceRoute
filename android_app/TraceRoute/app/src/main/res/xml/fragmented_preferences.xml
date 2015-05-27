@@ -35,6 +35,13 @@
             android:inputType="numberDecimal"
             android:summary="A lower alpha will try to 'smooth' the values more"
             android:dialogTitle="Alpha value" />
+        <EditTextPreference android:key="@string/pref_key_degree_filter"
+            android:title="Degree Filter to make less jumpy"
+            android:defaultValue="2"
+            android:inputType="number"
+            android:summary="A larger filter will make the path less 'jumpy'"
+            android:dialogTitle="Degree Filter"
+            />
         <SwitchPreference android:key="@string/pref_key_use_gyroscope"
             android:defaultValue="true"
             android:title="Use the gyroscope to rotate the model"

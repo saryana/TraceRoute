@@ -122,40 +122,10 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         // If we find this inaccurate we can put restrictions on the user and
         // and possibly use the compass. For now the restrictions include
 
-
-        // TODO detect when possibly stopped?
-        // TODO filter out insignificant accelerations
-
-
-//        String s = "";
-//        if (magnitude(average) > THRESHOLD) {
-//            mHeading = vectorToDirection(average);
-            //s += "Heading: " + vectorToDirection(average) + "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" + "\n";
-            //s += "{" + average[0] + ", " + average[1] + ", " + average[2] + "}" +"\n";
-//        }
-        //for (int i = 0; i < values.length; i++) {
-            /*if (Math.abs(values[i]) > THRESHOLD) {
-
-
-                if (i == 0) {
-                    s += "Movement in X\n";
-                } else if (i == 1) {
-                    s += "Movement in \t\t\t\tY\n";
-                } else {
-                    s += "Movement in \t\t\t\t\t\t\t\tZ\n";
-                }
-            }*/
-        //}
         // Update the new timestamp
         mTimestamp = event.timestamp;
         mOldAccel = worldSpaceAccel;
 
-        // TODO KEITH this is where you can throw things into the notification bar
-        // so we can be testing in the OpenGL part of the app and not the debug console.
-        // As a tip if you want a new notification change the first parameter to something new.
-        // 1 is used for step stuff, 2 for direction....
-//        mNotificationManager.notify(2, getNotification());
-//        mNotificationManager.notify(3, getMovementNotification());
     }
 
     /**
@@ -325,21 +295,5 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         }
         double theta = (float) Math.acos(cosineTheta);
         return (float) (theta / Math.PI * 180);
-    }
-
-    public Notification getNotification() {
-        return mBuilder.setContentTitle("Heading")
-                .setContentText("Heading Direction " + mHeading)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
-    }
-
-    public Notification getMovementNotification() {
-        return mBuilder.setContentTitle("Movement")
-                .setContentText("Moving: " + mMoving + " Direction: " + Direction.values()[mMovementSector])
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
     }
 }

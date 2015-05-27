@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import java.nio.FloatBuffer;
 import java.util.Arrays;
@@ -137,21 +138,23 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
         vertexArrayLength = verticies.length;
 
         // xz angle (y-axis rotation)
-        float angleOne = 0;
+        float angleOne;
         // xy angle (z axis rotation)
-        float angleTwo = 0;
+        float angleTwo;
 
 
         angleOne = (float) Math.atan2(directionVector[2], directionVector[0]);
         // convert this shit to degrees.
-        angleOne = (float) ((angleOne / (2 * Math.PI)) * 360);
+        angleOne = SensorUtil.radianToDegree(angleOne);
         angleTwo = (float) Math.atan2(directionVector[1], directionVector[0]);
         // convert this to degrees.
-        angleTwo = (float) ((angleTwo / (2 * Math.PI)) * 360);
+        angleTwo = SensorUtil.radianToDegree(angleTwo);
+
+        // Need to confirm this. We may have our coordinates confused.
 
         // This is the nasty case.
         if (directionVector[0] < 0) {
-            angleOne += 180;
+            angleOne += 360;
         }
 
         Log.d("ANGLE", "Y angle: " + angleOne);

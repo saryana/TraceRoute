@@ -39,11 +39,14 @@ public class SensorDataProvider {
     private final String TAG = getClass().getSimpleName();
     // Threshold for detecting a difference in sole altitude change
     private static final float ALTITUDE_THRESHOLD = 5; // in feet
+    private static final float RAD_TO_DEG = 0.034906585f;
+    // Threshold for detecting a difference in direction
+    private static float DIRECTION_THRESHOLD; // 2 degrees in radians
+    // The two OpenGL scales need to be tested so we can determine the proper values for them
+    // The vertical need to be exaggerated more
+    private static final float OPENGL_VERTICAL_SCALE = .01f;
     // Scale for converting ft to openGL units, currently arbitrary value that looks good
-    private static final float OPENGL_SCALE = .0118f;
-    // https://www.walkingwithattitude.com/articles/features/how-to-measure-stride-or-step-length-for-your-pedometer
-    // Men ~ .415 Women ~.413 => this only really matters if we want to display distance traveled
-    private static final float STRIDE_RATIO = .41f;
+    private static final float OPENGL_SCALE = .0218f;
 
     // Bus for posting and receiving event
     private Bus mBus;
@@ -58,12 +61,12 @@ public class SensorDataProvider {
     // We need to keep track of the step detector for the entire period
     private StepDetectorListener mStepDetector;
     // Direction Listener
-    private DirectionListener mDirectionDeterminer;
+//    private DirectionListener mDirectionDeterminer;
     // Altitude listener
     private AltitudeListener mAltitudeListener;
     // Context we got called from
     private Context mContext;
-    // Shared prefrences
+    // Shared preferences
     private SharedPreferences mSharedPrefs;
 
     // All the values we need to keep the state of
@@ -99,7 +102,7 @@ public class SensorDataProvider {
         // Path determining sensors
         mStepDetector = new StepDetectorListener(mContext);
         // Uses accelerometer detection
-        mDirectionDeterminer = new DirectionListener(mContext);
+//        mDirectionDeterminer = new DirectionListener(mContext);
         // Uses the compass
         mDirectionTest = new DirectionTestClass(mContext);
         mAltitudeListener = new AltitudeListener(mContext);
@@ -129,6 +132,7 @@ public class SensorDataProvider {
      *                     the model, false then using the rotation matrix
      */
     public void register(boolean userControl, boolean useGyroscope) {
+        DIRECTION_THRESHOLD = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.pref_key_degree_filter), "" + 2)) * RAD_TO_DEG;
         // Are we changing our state?
         if (mUseGyroscope != useGyroscope) {
             this.mUseGyroscope = useGyroscope;
@@ -160,11 +164,18 @@ public class SensorDataProvider {
                 break;
             // Set the new heading direction
             case DIRECTION_CHANGE:
-                mHeading = event.values[0];
+                handleHeadingChange(event.values[0]);
                 break;
             case STEP_DETECTED:
                 handleStepChange();
                 break;
+        }
+    }
+
+    private void handleHeadingChange(float heading) {
+        // Did we break the direction threshold?
+        if (Math.abs(heading - mHeading) > DIRECTION_THRESHOLD) {
+            mHeading = heading;
         }
     }
 
@@ -236,8 +247,12 @@ public class SensorDataProvider {
      * This is what we are going to be sending the view
      */
     private void updateOpenGLvalues() {
-        for (int i = 0; i < mOldLocation.length; i++)
-            mNewLocationOGL[i] = mNewLocation[i] * OPENGL_SCALE;
+        // Set the X and Y
+        mNewLocationOGL[0] = mNewLocation[0] * OPENGL_SCALE;
+        mNewLocationOGL[1] = mNewLocation[1] * OPENGL_SCALE;
+        // The Z axis needs to be exaggerated
+        mNewLocationOGL[2] = mNewLocation[2] * OPENGL_VERTICAL_SCALE;
+
     }
 
     public void startPath() {
@@ -255,7 +270,7 @@ public class SensorDataProvider {
 //        mStrideLength = 0;
 //        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
         mStrideLength = PreferenceManager.getDefaultSharedPreferences(mContext).getFloat(mContext.getString(R.string.pref_key_stride_length), 0);
-        mDirectionDeterminer.register();
+//        mDirectionDeterminer.register();
         mStepDetector.register();
         mDirectionTest.register();
         mAltitudeListener.register();
@@ -267,7 +282,7 @@ public class SensorDataProvider {
     public void stopPath() {
         mPathTracking = false;
         mStepDetector.unregister();
-        mDirectionDeterminer.unregister();
+//        mDirectionDeterminer.unregister();
         mDirectionTest.unregister();
         mAltitudeListener.unregister();
     }

@@ -112,6 +112,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // This determines if the user is taking control or it is based off of the orientation of the phone
         float[] modelTemp = new float[16];
         if (OpenGLActivity.USER_CONTROL) {
+            // Null pointer exception... On random reboot into setting
             Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
         }
 

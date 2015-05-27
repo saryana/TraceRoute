@@ -28,6 +28,7 @@ import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.FirstRunInfo;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
@@ -67,15 +68,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(getString(R.string.pref_key_first_run), true)) {
-//            Intent i = new Intent(this, FirstRunInfo.class);
-//            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//            startActivity(i);
-//            finish();
-//            return;
-//        }
-
-//        GLSurfaceView mGLSurface = new MySurfaceView(this);
         setContentView(R.layout.activity_open_gl);
         mStepCount = 0;
         mLoadButton = (Button) findViewById(R.id.load_button);
@@ -291,18 +283,21 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
 
     /* Data change listeners */
 
-    private float mHeading;
+    private float mHeading = 0;
     private float mAltitude;
 
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            float heading = (float) (newDataEvent.values[0] * 180f / Math.PI);
+            float heading = SensorUtil.radianToDegree(newDataEvent.values[0]);
             if (heading < 0) {
                 heading += 360;
             }
-            mHeading = heading;
-            ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + heading);
+            heading = Math.round(heading);
+            if (Math.abs(heading - mHeading) > 1) {
+                mHeading = heading;
+                ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + mHeading);
+            }
         } else if (newDataEvent.type == EventType.ALTITUDE_CHANGE) {
             mAltitude = newDataEvent.values[0];
         }

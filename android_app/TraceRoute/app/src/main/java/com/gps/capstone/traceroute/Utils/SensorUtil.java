@@ -52,4 +52,8 @@ public class SensorUtil {
         double y = Math.cos(theta);
         return new float[]{(float) x, (float) y};
     }
+
+    public static float radianToDegree(float theta) {
+        return (float) (theta * 180f / Math.PI);
+    }
 }
