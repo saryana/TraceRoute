@@ -9,6 +9,8 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
+import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
+import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -108,8 +110,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
 
         // This determines if the user is taking control or it is based off of the orientation of the phone
+        float[] modelTemp = new float[16];
         if (OpenGLActivity.USER_CONTROL) {
-            Matrix.setRotateM(mModelMatrix, 0, mAngle, 0, 0, -1.0f);
+            Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
         }
 
         // Combine the rotation matrix with the projection and camera view
@@ -175,7 +178,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     ////////////////////////////////
 
     public volatile float mAngle;
-
+    public volatile float[] singleFingerRotationMatrix;
     public float getAngle() {
         return mAngle;
     }
@@ -183,6 +186,13 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     public void setAngle(float angle) {
         mAngle = angle;
     }
+
+
+    public void setSingleFingerRotation(Quaternion rotation) {
+        Matrix4 rotMatrix = rotation.toMatrix();
+        singleFingerRotationMatrix = rotMatrix.getAsArray();
+    }
+
     public void setModelMatrix(float[] r) {
         mModelMatrix = r;
     }

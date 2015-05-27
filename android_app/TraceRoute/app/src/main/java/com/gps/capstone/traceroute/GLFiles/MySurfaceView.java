@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.util.TouchType;
 import com.gps.capstone.traceroute.GLFiles.util.TouchUtil;
+import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
@@ -169,22 +170,20 @@ public class MySurfaceView extends GLSurfaceView {
 
                 Quaternion rotation = determineRotation(sphereRadius, x, y, mPreviousX, mPreviousY);
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
+                //float dx = x - mPreviousX;
+                //float dy = y - mPreviousY;
 
                 // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1;
-                }
+                //if (y > getHeight() / 2) {
+                //    dx = dx * -1;
+                //}
 
                 // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1;
-                }
+                //if (x < getWidth() / 2) {
+                //    dy = dy * -1;
+                //}
 
-                mRenderer.setAngle(
-                        mRenderer.getAngle() +
-                                ((dx + dy) * TOUCH_SCALE_FACTOR));
+                mRenderer.setSingleFingerRotation(rotation);
                 requestRender();
                 mPreviousX = x;
                 mPreviousY = y;
@@ -270,8 +269,14 @@ public class MySurfaceView extends GLSurfaceView {
         float[] curSphereVector = getSphereVector(radius, curX, curY);
         float[] prevSphereVector = getSphereVector(radius, prevX, prevY);
 
+        float[] rotationAxis = VectorLibrary.crossProduct(prevSphereVector, curSphereVector);
 
-        return null;
+        float angle = VectorLibrary.dotProduct(prevSphereVector, curSphereVector);
+
+        Quaternion rotation = new Quaternion(rotationAxis[0], rotationAxis[1], rotationAxis[2], (float)Math.acos(angle));
+
+
+        return rotation;
     }
 
     /*
@@ -279,9 +284,36 @@ public class MySurfaceView extends GLSurfaceView {
     radius radius.
      */
     private float[] getSphereVector(float radius, float x, float y) {
+        // flip around the y coordinate; y increases in value towards the bottom of the screen.
+        y *= -1;
+        // for storing the final coordinates.
         float[] result = new float[3];
 
+        float sphereX;
+        float sphereY;
+        float sphereZ;
 
+        float length = (float)Math.sqrt(x*x + y*y);
+        // if the touch falls within the sphere, we're in good shape.
+        if (length <= radius) {
+            sphereZ = (float)Math.sqrt((radius*radius) - (length*length));
+            sphereX = x;
+            sphereY = y;
+        } else {
+            // the touch was outside the sphere.
+            // scale down the x and y coordinates to be on the edge of the sphere
+            float ratio = radius / length;
+            x *= ratio;
+            y *= ratio;
+
+            sphereX = x;
+            sphereY = y;
+            sphereZ = 0;
+        }
+
+        result[0] = sphereX;
+        result[1] = sphereY;
+        result[2] = sphereZ;
         return result;
     }
 }

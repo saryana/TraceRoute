@@ -22,8 +22,12 @@ public class VectorLibrary {
         return (float)Math.sqrt(vec[0]*vec[0] + vec[1]*vec[1] + vec[2]*vec[2]);
     }
 
-    // Compute the cross product between two vectors and return the result.
-    // THIS COULD GIVE STRANGE VECTOR DIRECTIONS
+    /**
+     * Computes the cross product between two 3d vectors and returns the result.
+     * @param vectorOne The first vector.
+     * @param vectorTwo The second vector.
+     * @return The cross product of vectorOne with vectorTwo.
+     */
     public static float[] crossProduct(float[] vectorOne, float[] vectorTwo) {
         // CROSS PRODUCT FORMULA (a x b = c)
         //cx = aybz − azby
@@ -34,6 +38,18 @@ public class VectorLibrary {
                 vectorOne[0]*vectorTwo[1]-vectorOne[1]*vectorTwo[0]};
 
         return result;
+    }
+
+    /**
+     * Computes the dot product between two vectors and returns the result.
+     * @param vectorOne
+     * @param vectorTwo
+     * @return The dot product between vectorOne and vectorTwo.
+     */
+    public static float dotProduct(float[] vectorOne, float[] vectorTwo) {
+        return vectorOne[0] * vectorTwo[0] +
+                vectorOne[1] * vectorTwo[1] +
+                vectorOne[2] * vectorTwo[2];
     }
 
     // Add two vectors together, return the result.
