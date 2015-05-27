@@ -154,7 +154,7 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
 
         // This is the nasty case.
         if (directionVector[0] < 0) {
-            angleOne += 360;
+            angleOne += 180;
         }
 
         Log.d("ANGLE", "Y angle: " + angleOne);

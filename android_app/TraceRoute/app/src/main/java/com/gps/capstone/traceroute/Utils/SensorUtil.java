@@ -54,6 +54,6 @@ public class SensorUtil {
     }
 
     public static float radianToDegree(float theta) {
-        return (float) (theta * 180f / Math.PI);
+        return (float) (theta / (2 * Math.PI)) * 360;
     }
 }

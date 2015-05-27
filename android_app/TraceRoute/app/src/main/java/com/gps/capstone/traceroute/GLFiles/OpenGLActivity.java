@@ -151,9 +151,6 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
             return;
         }
         int id = v.getId();
-        /*if (id == R.id.save_button) {
-            saveAction();
-        } else*/
         if (id == R.id.load_button) {
             loadAction();
         } else if (id == R.id.start_path_button) {
@@ -329,16 +326,13 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
 
     @Override
     public void onShowcaseViewHide(ShowcaseView showcaseView) {
-        Toast.makeText(OpenGLActivity.this, "onShowcaseViewHide", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-        Toast.makeText(OpenGLActivity.this, "view did hide", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShowcaseViewShow(ShowcaseView showcaseView) {
-
     }
 }

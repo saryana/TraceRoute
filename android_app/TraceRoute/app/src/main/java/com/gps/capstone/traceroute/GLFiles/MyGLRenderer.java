@@ -12,6 +12,7 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -99,7 +100,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             float angle = (float)Math.atan2(y, x);
             angle -= Math.PI/2;
 
-            angle = (float)((angle / (2 * Math.PI)) * 360);
+            angle = SensorUtil.radianToDegree(angle);
             // create a new model matrix
             float[] modelMatrix = new float[16];
             // add rotation
