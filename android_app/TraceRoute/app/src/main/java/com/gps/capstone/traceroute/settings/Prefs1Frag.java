@@ -57,14 +57,15 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
         determineSwitch(mUseRender);
         // Make it so when we change any preferences we can see it here
         PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .registerOnSharedPreferenceChangeListener(this);
+                .registerOnSharedPreferenceChangeListener(this);
     }
+
     @Override
     public void onPause() {
         super.onPause();
         // Don't forget to unregister the listener when we are done
         PreferenceManager.getDefaultSharedPreferences(getActivity())
-                            .unregisterOnSharedPreferenceChangeListener(this);
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.pref_key_height_ft)) || key.equals(getString(R.string.pref_key_height_in))) {
             int height = 12 * Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_ft), "" + 0));
-            height += Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_in), ""+0));
+            height += Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_in), "" + 0));
             // Put the total height in the pref
             sharedPreferences.edit().putInt(getString(R.string.pref_key_total_height_in), height).apply();
         }

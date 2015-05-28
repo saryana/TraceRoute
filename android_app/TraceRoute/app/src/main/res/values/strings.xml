@@ -63,5 +63,6 @@
     <string name="title_activity_first_run_info">FirstRunInfo</string>
     <string name="pref_key_stride_length">prefKeyStrideLength</string>
     <string name="debug_console_label">Debug Console</string>
+    <string name="pref_key_degree_filter">prefKeyDegreeFilter</string>
 
 </resources>

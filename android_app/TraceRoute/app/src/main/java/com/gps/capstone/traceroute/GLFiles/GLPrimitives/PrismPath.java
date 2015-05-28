@@ -30,7 +30,7 @@ public class PrismPath {
      * @param coords
      */
     public void addPoint(float[] coords) {
-        Log.d("AH", "ADDING POINT " + Arrays.toString(coords) + " old value " + Arrays.toString(previousPoint));
+//        Log.d("AH", "ADDING POINT " + Arrays.toString(coords) + " old value " + Arrays.toString(previousPoint));
         SmartRectangularPrism end = new SmartRectangularPrism();
         end.setDimensions(previousPoint.clone(), coords);
         path.add(end);

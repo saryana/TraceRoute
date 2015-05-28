@@ -12,6 +12,7 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -29,7 +30,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mMVPMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
-    private float[] mModelMatrix = new float[16];
+    private float[] mModelMatrix = null;//new float[16];
 
     //private float[] mGyroRotationMatrix = new float[16];
     //private boolean mHaveInitialOrientation = false;
@@ -75,6 +76,11 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];
+
+        singleFingerRotationMatrix = new float[16];
+        Matrix.setIdentityM(singleFingerRotationMatrix, 0);
+
+
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -99,7 +105,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             float angle = (float)Math.atan2(y, x);
             angle -= Math.PI/2;
 
-            angle = (float)((angle / (2 * Math.PI)) * 360);
+            angle = SensorUtil.radianToDegree(angle);
             // create a new model matrix
             float[] modelMatrix = new float[16];
             // add rotation
@@ -107,12 +113,19 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             // add translation
             Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
             mModelMatrix = modelMatrix;
-        }
+        } else if (OpenGLActivity.USER_CONTROL) {
+            float[] modelTemp = new float[16];
+            // Null pointer exception... On random reboot into setting
+            //Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
 
-        // This determines if the user is taking control or it is based off of the orientation of the phone
-        float[] modelTemp = new float[16];
-        if (OpenGLActivity.USER_CONTROL) {
-            Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+            if (translated) {
+                Matrix.translateM(mModelMatrix, 0, translateX, translateY, 0);
+                translated = false;
+            }
+            if (zoomed) {
+                Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
+                zoomed = false;
+            }
         }
 
         // Combine the rotation matrix with the projection and camera view
@@ -177,23 +190,56 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // MODEL MATRIX MANIPULATION
     ////////////////////////////////
 
-    public volatile float mAngle;
     public volatile float[] singleFingerRotationMatrix;
-    public float getAngle() {
-        return mAngle;
-    }
+    private float translateX;
+    private float translateY;
+    private boolean translated;
+    private float zoomAmount;
+    private boolean zoomed;
 
-    public void setAngle(float angle) {
-        mAngle = angle;
-    }
+    private static final float TRANSLATION_FACTOR = 0.001f;
+    private static final float ZOOM_FACTOR = 0.005f;
 
-
-    public void setSingleFingerRotation(Quaternion rotation) {
+    /**
+     * Rotates the model with the given quaternion.
+     * @param rotation
+     */
+    public void rotate(Quaternion rotation) {
         Matrix4 rotMatrix = rotation.toMatrix();
         singleFingerRotationMatrix = rotMatrix.getAsArray();
     }
 
+    /**
+     * Translates the model by the given amount.
+     * @param x
+     * @param y
+     */
+    public void translate(float x, float y) {
+        x *= TRANSLATION_FACTOR * -1;
+        y *= TRANSLATION_FACTOR * -1;
+        translateX = x;
+        translateY = y;
+        translated = true;
+    }
+
+    /**
+     * Zooms in on the model by the given amount.
+     * @param zoom
+     */
+    public void zoom(float zoom) {
+        zoom *= ZOOM_FACTOR;
+        zoomAmount = zoom;
+        zoomed = true;
+    }
+
+    /**
+     * Sets the model matrix to r.
+     * @param r
+     */
     public void setModelMatrix(float[] r) {
-        mModelMatrix = r;
+        if (mModelMatrix == null) {
+            mModelMatrix = r;
+            Matrix.setIdentityM(mModelMatrix, 0);
+        }
     }
 }

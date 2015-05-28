@@ -108,7 +108,6 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
                         .putFloat(getString(R.string.pref_key_stride_length), strideLength)
                         .apply();
                 Intent i = new Intent(this, OpenGLActivity.class);
-//                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);
             } else {
                 Toast.makeText(this, "Must Enter correct height", Toast.LENGTH_LONG).show();
@@ -118,6 +117,10 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
 
     /**
      * Gets the stride length based off of height and gender
+     *
+     * https://www.walkingwithattitude.com/articles/features/how-to-measure-stride-or-step-length-for-your-pedometer
+     * Men ~ .415 Women ~.413 => this only really matters if we want to display distance traveled
+     *
      * @param totalHeight Height of user in inches
      * @return Stride length in inches
      */

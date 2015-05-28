@@ -35,14 +35,6 @@
                         android:layout_width="0dp"
                         android:visibility="gone"
                         android:layout_height="wrap_content"/>
-                <!--<Button android:id="@+id/save_button"-->
-                        <!--android:text="@string/save_path_button_text"-->
-                        <!--style="?android:attr/buttonBarButtonStyle"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:enabled="false"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:visibility="gone"/>-->
                 <Button android:id="@+id/load_button"
                         style="?android:attr/buttonBarButtonStyle"
                         android:text="@string/load_path_button_text"
@@ -68,9 +60,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:paddingTop="10dp"/>
-            <!--<ScrollView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content">-->
                 <LinearLayout android:id="@+id/prev_step_values"
                     android:layout_width="match_parent"
                     android:orientation="vertical"

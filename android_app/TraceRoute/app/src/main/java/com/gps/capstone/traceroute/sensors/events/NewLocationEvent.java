@@ -5,7 +5,9 @@ package com.gps.capstone.traceroute.sensors.events;
  */
 public class NewLocationEvent {
     public float[] location;
-    public NewLocationEvent(float[] location) {
+    public float[] otherLocation;
+    public NewLocationEvent(float[] location, float[] otherLocation) {
+        this.otherLocation = otherLocation;
         this.location = location;
     }
 }
