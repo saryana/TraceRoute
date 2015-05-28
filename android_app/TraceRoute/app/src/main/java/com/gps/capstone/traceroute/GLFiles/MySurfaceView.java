@@ -187,7 +187,6 @@ public class MySurfaceView extends GLSurfaceView {
                 //}
 
                 mRenderer.rotate(rotation);
-                requestRender();
                 mPreviousX = x;
                 mPreviousY = y;
                 break;

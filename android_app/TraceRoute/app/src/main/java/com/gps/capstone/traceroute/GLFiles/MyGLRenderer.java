@@ -13,6 +13,7 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
+import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import java.util.Arrays;
@@ -119,14 +120,14 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         } else if (OpenGLActivity.USER_CONTROL) {
             float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
-            Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+           // Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
 
             if (translated) {
-                Matrix.translateM(mModelMatrix, 0, translateX, translateY, 0);
+                computeTranslation();
                 translated = false;
             }
             if (zoomed) {
-                Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
+                computeZoom();
                 zoomed = false;
             }
         }
@@ -218,7 +219,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param y
      */
     public void translate(float x, float y) {
-        x *= TRANSLATION_FACTOR * -1;
+        x *= TRANSLATION_FACTOR;
         y *= TRANSLATION_FACTOR * -1;
         translateX = x;
         translateY = y;
@@ -241,5 +242,21 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void setModelMatrix(float[] r) {
         mModelMatrix = r;
+    }
+
+    private void computeTranslation() {
+        // get the original vector length
+        float length = (float)Math.sqrt(translateX*translateX + translateY*translateY);
+        float[] translationVector = {translateX, translateY, 0, 0};
+        float[] result = new float[4];
+        // convert the matrix into the rotation matrix.
+        Matrix.multiplyMV(result, 0, mModelMatrix, 0, translationVector, 0);
+        float vectorLength = VectorLibrary.vectorLength(result);
+        float ratio = length / vectorLength;
+        Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
+    }
+
+    private void computeZoom() {
+
     }
 }
