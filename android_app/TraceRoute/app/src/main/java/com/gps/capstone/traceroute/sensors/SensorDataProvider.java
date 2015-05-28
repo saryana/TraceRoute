@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
@@ -142,7 +143,11 @@ public class SensorDataProvider {
         mBus.register(this);
         USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
 
-        mOrientationSensor.register();
+        if (!userControl) {
+            mOrientationSensor.register();
+        } else {
+            mOrientationSensor = null;
+        }
     }
 
     /**
@@ -150,10 +155,12 @@ public class SensorDataProvider {
      */
     public void unregister() {
         if (mPathTracking) {
-            stopPath();
+            stopPath(OpenGLActivity.USER_CONTROL);
         }
         mBus.unregister(this);
-        mOrientationSensor.unregister();
+        if (mOrientationSensor != null) {
+            mOrientationSensor.unregister();
+        }
     }
 
     @Subscribe
@@ -171,8 +178,6 @@ public class SensorDataProvider {
                 break;
         }
     }
-    float azmax = Float.MIN_VALUE;
-    float azmin = Float.MAX_VALUE;
 
     private void handleHeadingChange(float heading) {
         heading += Math.PI;
@@ -284,11 +289,15 @@ public class SensorDataProvider {
     /**
      * Stops all the listeners involved in path tracking
      */
-    public void stopPath() {
+    public void stopPath(boolean userControl) {
         mPathTracking = false;
         mStepDetector.unregister();
 //        mDirectionDeterminer.unregister();
         mDirectionTest.unregister();
         mAltitudeListener.unregister();
+//        if (!userControl) {
+//            mOrientationSensor = new GyroscopeListener(mContext);
+//            mOrientationSensor.register();
+//        }
     }
 }

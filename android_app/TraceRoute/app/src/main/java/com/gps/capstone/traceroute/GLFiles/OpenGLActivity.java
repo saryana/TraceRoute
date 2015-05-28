@@ -154,8 +154,10 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
         if (id == R.id.load_button) {
             loadAction();
         } else if (id == R.id.start_path_button) {
+            FOLLOW_PATH = true;
             startPath();
         } else if (id == R.id.stop_path_button) {
+            FOLLOW_PATH = false;
             stopPath();
         } else {
             Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
@@ -186,7 +188,7 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
 
         mStopButton.setVisibility(View.GONE);
         // No longer want to be getting data?
-        mDataProvider.stopPath();
+        mDataProvider.stopPath(USER_CONTROL);
         // This is where we would alert them if they want to save the path
         AlertDialog.Builder builder = new Builder(this);
         builder.setTitle("Path Complete! Save Path?");
