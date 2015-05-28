@@ -39,19 +39,19 @@
                 android:layout_height="wrap_content"/>
 
     </LinearLayout>
-    <ImageView android:id="@+id/pointer"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:src="@drawable/pointer"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="Compass pointer"/>
-    <LinearLayout android:id="@+id/stuff2"
-                  android:orientation="vertical"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:layout_weight="2">
-    </LinearLayout>
+    <!--<RelativeLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="1">-->
+        <ImageView android:id="@+id/pointer"
+                   android:layout_width="wrap_content"
+                   android:layout_height="0dp"
+                   android:layout_weight="1"
+                   android:layout_marginBottom="15dp"
+                   android:src="@drawable/pointer"
+                   android:layout_gravity="center_horizontal"
+                   android:contentDescription="Compass pointer"/>
+    <!--</RelativeLayout>-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"

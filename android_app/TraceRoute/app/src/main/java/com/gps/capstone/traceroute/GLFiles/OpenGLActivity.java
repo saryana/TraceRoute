@@ -79,11 +79,11 @@ public class OpenGLActivity extends BasicActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_gl);
-        CustomView cv = new CustomView(this);
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        cv.setLayoutParams(layoutParams);
-        LinearLayout ll = (LinearLayout)findViewById(R.id.stuff2);
-        ll.addView(cv);
+//        CustomView cv = new CustomView(this);
+//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        cv.setLayoutParams(layoutParams);
+//        LinearLayout ll = (LinearLayout)findViewById(R.id.stuff2);
+//        ll.addView(cv);
         mStepCount = 0;
         mPointer = (ImageView) findViewById(R.id.pointer);
         mLoadButton = (Button) findViewById(R.id.load_button);
@@ -304,21 +304,43 @@ public class OpenGLActivity extends BasicActivity
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-//            float heading = newDataEvent.values[0];
-//            if (heading < 0) {
-//                heading = (float) (Math.PI +(Math.PI + heading));
-//            }
-//            heading = Math.round(SensorUtil.radianToDegree(heading));
-            float heading = (float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360;
+            float heading = newDataEvent.values[0];
+            if (heading < 0) {
+                heading = (float) (Math.PI +(Math.PI + heading));
+            }
+            heading = Math.round(SensorUtil.radianToDegree(heading));
+//            float heading = (float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360;
             if (Math.abs(heading - mHeading) > 1) {
-                RotateAnimation ra = new RotateAnimation(
-                        mHeading,
-                        heading,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                );
+                RotateAnimation ra;
+                if (heading > 340 && mHeading < 20) {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading-360,
+                            Animation.ABSOLUTE,
+                            0.5f,
+                            Animation.ABSOLUTE,
+                            0.5f
+                    );
+                } else if (heading < 20 && mHeading > 340) {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                    );
+                } else  {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                    );
+                }
+
                 ra.setDuration(250);
                 ra.setFillAfter(true);
                 mPointer.startAnimation(ra);
