@@ -6,12 +6,24 @@
               android:orientation="vertical"
               tools:context="com.gps.capstone.traceroute.GLFiles.OpenGLActivity"
               android:id="@+id/stuff">
-    <fragment android:id="@+id/frag_open_gl"
-              android:name="com.gps.capstone.traceroute.sensors.OpenGLFragment"
-              android:layout_width="match_parent"
-              android:layout_height="0dp"
-              android:layout_weight="9"
-              tools:layout="@layout/fragment_open_gl"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9">
+        <fragment android:id="@+id/frag_open_gl"
+                  android:name="com.gps.capstone.traceroute.sensors.OpenGLFragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  tools:layout="@layout/fragment_open_gl"/>
+        <ImageView android:id="@+id/pointer"
+                   android:layout_width="100dp"
+                   android:layout_height="100dp"
+                   android:scaleType="fitStart"
+                   android:src="@drawable/comp"
+                   android:layout_gravity="bottom"
+                   android:contentDescription="Compass pointer"/>
+    </FrameLayout>
+
 
     <LinearLayout android:orientation="horizontal"
                   style="?android:attr/buttonBarStyle"
@@ -39,19 +51,7 @@
                 android:layout_height="wrap_content"/>
 
     </LinearLayout>
-    <!--<RelativeLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1">-->
-        <ImageView android:id="@+id/pointer"
-                   android:layout_width="wrap_content"
-                   android:layout_height="0dp"
-                   android:layout_weight="1"
-                   android:layout_marginBottom="15dp"
-                   android:src="@drawable/pointer"
-                   android:layout_gravity="center_horizontal"
-                   android:contentDescription="Compass pointer"/>
-    <!--</RelativeLayout>-->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
