@@ -288,11 +288,11 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            float heading = SensorUtil.radianToDegree(newDataEvent.values[0]);
+            float heading = newDataEvent.values[0];
             if (heading < 0) {
-                heading += 180;
+                heading = (float) (Math.PI +(Math.PI + heading));
             }
-            heading = Math.round(heading);
+            heading = Math.round(SensorUtil.radianToDegree(heading));
             if (Math.abs(heading - mHeading) > 1) {
                 mHeading = heading;
                 ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + mHeading);
