@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
@@ -13,6 +14,8 @@ import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
+
+import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -30,7 +33,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mMVPMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
-    private float[] mModelMatrix = null;//new float[16];
+    private float[] mModelMatrix = new float[16];
 
     //private float[] mGyroRotationMatrix = new float[16];
     //private boolean mHaveInitialOrientation = false;
@@ -53,6 +56,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public MyGLRenderer(Context context) {
         this.context = context;
+        Matrix.setIdentityM(mModelMatrix, 0);
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -95,9 +99,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
-
-        if (!OpenGLActivity.USE_SHAPE && mInit) {
-
+        // We want this when we are don't want user control or if we are following a path
+        if (mInit && OpenGLActivity.FOLLOW_PATH) {
             // xy angle (z axis rotation)
             float x = mPrevStepDirection[0];
             float y = mPrevStepDirection[1];
@@ -116,7 +119,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         } else if (OpenGLActivity.USER_CONTROL) {
             float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
-            //Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+            Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
 
             if (translated) {
                 Matrix.translateM(mModelMatrix, 0, translateX, translateY, 0);
@@ -237,9 +240,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      * @param r
      */
     public void setModelMatrix(float[] r) {
-        if (mModelMatrix == null) {
-            mModelMatrix = r;
-            Matrix.setIdentityM(mModelMatrix, 0);
-        }
+        mModelMatrix = r;
     }
 }

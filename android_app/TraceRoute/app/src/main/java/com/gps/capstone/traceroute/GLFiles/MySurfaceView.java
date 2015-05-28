@@ -2,6 +2,7 @@ package com.gps.capstone.traceroute.GLFiles;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -78,13 +79,13 @@ public class MySurfaceView extends GLSurfaceView {
         } else {
             mRenderer.addNewFace(e.location);
         }
+        requestRender();
     }
 
     @Subscribe
     public void onDataChange(NewDataEvent e) {
-        if (!OpenGLActivity.USE_SHAPE) {
-            // We will eventually want to prevent this
-            // better yet we want to unregister the listener
+        if (OpenGLActivity.FOLLOW_PATH || OpenGLActivity.USER_CONTROL) {
+            return;
         }
         // TODO Need to clean this logic up honestly
         switch (e.type) {
@@ -94,12 +95,12 @@ public class MySurfaceView extends GLSurfaceView {
             case DELTA_ROTATION_MATRIX:
                 // this is for when we have the information form the
                 // gyroscope
-//                Log.i(TAG, "DATA FROM ROTATION MATRIX");
                 mRenderer.setModelMatrix(e.values);
                 break;
             default:
-//                Log.e(TAG, "Event that we cannot handle");
-                // Event that we aren't handling
+                float[] m = new float[16];
+                Matrix.setIdentityM(m, 0);
+                mRenderer.setModelMatrix(m);
         }
         requestRender();
     }
@@ -107,7 +108,7 @@ public class MySurfaceView extends GLSurfaceView {
     public void onNewPath(NewPathFromFile pathEvent) {
         mRenderer.clearPath();
         ArrayList<float[]> path = pathEvent.path;
-
+        OpenGLActivity.FOLLOW_PATH = true;
         for (int i = 0; i < path.size(); i++) {
             mRenderer.addNewFace(path.get(i).clone());
             requestRender();
@@ -117,6 +118,7 @@ public class MySurfaceView extends GLSurfaceView {
                 z *= j * i;
             }
         }
+        OpenGLActivity.FOLLOW_PATH = false;
     }
 
     @Override
@@ -141,6 +143,7 @@ public class MySurfaceView extends GLSurfaceView {
             previousMotion = TouchType.SHIT;
         }
 
+        requestRender();
         return true;
     }
 
@@ -247,7 +250,8 @@ public class MySurfaceView extends GLSurfaceView {
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
         // TODO: Do something with these deltas! Pan the camera based on them.
         mRenderer.translate(deltaMidpointX, deltaMidpointY);
-        Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
+        requestRender();
+//        Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
 
     }
 

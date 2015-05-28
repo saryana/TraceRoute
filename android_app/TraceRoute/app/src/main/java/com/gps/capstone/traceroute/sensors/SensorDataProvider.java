@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
@@ -44,7 +45,8 @@ public class SensorDataProvider {
     private static float DIRECTION_THRESHOLD; // 2 degrees in radians
     // The two OpenGL scales need to be tested so we can determine the proper values for them
     // The vertical need to be exaggerated more
-    private static final float OPENGL_VERTICAL_SCALE = .01f;
+    private static final float OPENGL_VERTICAL_SCALE = .06f;
+    private static final float OPENGL_ONLY_VERTICAL_SCALE = .09f;
     // Scale for converting ft to openGL units, currently arbitrary value that looks good
     private static final float OPENGL_SCALE = .0218f;
 
@@ -142,7 +144,11 @@ public class SensorDataProvider {
         mBus.register(this);
         USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
 
-        mOrientationSensor.register();
+        if (!userControl) {
+            mOrientationSensor.register();
+        } else {
+            mOrientationSensor = null;
+        }
     }
 
     /**
@@ -150,10 +156,12 @@ public class SensorDataProvider {
      */
     public void unregister() {
         if (mPathTracking) {
-            stopPath();
+            stopPath(OpenGLActivity.USER_CONTROL);
         }
         mBus.unregister(this);
-        mOrientationSensor.unregister();
+        if (mOrientationSensor != null) {
+            mOrientationSensor.unregister();
+        }
     }
 
     @Subscribe
@@ -171,11 +179,12 @@ public class SensorDataProvider {
                 break;
         }
     }
-    float azmax = Float.MIN_VALUE;
-    float azmin = Float.MAX_VALUE;
 
     private void handleHeadingChange(float heading) {
-        heading += Math.PI;
+//        heading += Math.PI;
+        if (heading < 0) {
+            heading = (float) (Math.PI +(Math.PI + heading));
+        }
         // Did we break the direction threshold?
         if (Math.abs(heading - mHeading) > DIRECTION_THRESHOLD) {
             Log.d(TAG, "changing the heading " + SensorUtil.radianToDegree(mHeading) + " " + SensorUtil.radianToDegree(heading));
@@ -219,8 +228,6 @@ public class SensorDataProvider {
             mInitalAltitude = mAltitude;
         // Are we breaking our threshold?
         } else if (Math.abs(mPrevAltitude - mAltitude) > ALTITUDE_THRESHOLD) {
-            mNewLocation[0] = mOldLocation[0];
-            mNewLocation[1] = mNewLocation[1];
             mNewLocation[2] = mAltitude - mInitalAltitude;
             updateView();
         }
@@ -252,12 +259,16 @@ public class SensorDataProvider {
      * This is what we are going to be sending the view
      */
     private void updateOpenGLvalues() {
-        // Set the X and Y
-        mNewLocationOGL[0] = mNewLocation[0] * OPENGL_SCALE;
-        mNewLocationOGL[1] = mNewLocation[1] * OPENGL_SCALE;
-        // The Z axis needs to be exaggerated
-        mNewLocationOGL[2] = mNewLocation[2] * OPENGL_VERTICAL_SCALE;
-
+        // is this just a change in z?
+        if (mNewLocation[0] == mOldLocation[0] && mNewLocation[2] != mOldLocation[2]) {
+            mNewLocationOGL[2] = mNewLocation[2] * OPENGL_ONLY_VERTICAL_SCALE;
+        } else {
+            // Set the X and Y
+            mNewLocationOGL[0] = mNewLocation[0] * OPENGL_SCALE;
+            mNewLocationOGL[1] = mNewLocation[1] * OPENGL_SCALE;
+            // The Z axis needs to be exaggerated
+            mNewLocationOGL[2] = mNewLocation[2] * OPENGL_VERTICAL_SCALE;
+        }
     }
 
     public void startPath() {
@@ -284,11 +295,15 @@ public class SensorDataProvider {
     /**
      * Stops all the listeners involved in path tracking
      */
-    public void stopPath() {
+    public void stopPath(boolean userControl) {
         mPathTracking = false;
         mStepDetector.unregister();
 //        mDirectionDeterminer.unregister();
         mDirectionTest.unregister();
         mAltitudeListener.unregister();
+//        if (!userControl) {
+//            mOrientationSensor = new GyroscopeListener(mContext);
+//            mOrientationSensor.register();
+//        }
     }
 }
