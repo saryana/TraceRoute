@@ -5,6 +5,7 @@ import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -13,10 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.gps.capstone.traceroute.BasicActivity;
+import com.gps.capstone.traceroute.CustomView;
 import com.gps.capstone.traceroute.FirstRunInfo;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
@@ -43,7 +47,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
-public class OpenGLActivity extends BasicActivity implements OnClickListener, OnShowcaseEventListener {
+public class OpenGLActivity extends BasicActivity
+                                implements OnClickListener,
+                                OnShowcaseEventListener {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
@@ -69,6 +75,11 @@ public class OpenGLActivity extends BasicActivity implements OnClickListener, On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_gl);
+        CustomView cv = new CustomView(this);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cv.setLayoutParams(layoutParams);
+        LinearLayout ll = (LinearLayout)findViewById(R.id.stuff2);
+        ll.addView(cv);
         mStepCount = 0;
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
