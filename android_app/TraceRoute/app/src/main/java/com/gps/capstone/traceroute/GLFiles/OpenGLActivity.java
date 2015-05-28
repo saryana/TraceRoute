@@ -16,10 +16,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +73,7 @@ public class OpenGLActivity extends BasicActivity
     private Button mStopButton;
     private ArrayList<float[]> mPath;
     private ShowcaseView mSV;
+    private ImageView mPointer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,7 @@ public class OpenGLActivity extends BasicActivity
         LinearLayout ll = (LinearLayout)findViewById(R.id.stuff2);
         ll.addView(cv);
         mStepCount = 0;
+        mPointer = (ImageView) findViewById(R.id.pointer);
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
         mStopButton = (Button) findViewById(R.id.stop_path_button);
@@ -299,14 +304,28 @@ public class OpenGLActivity extends BasicActivity
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            float heading = newDataEvent.values[0];
-            if (heading < 0) {
-                heading = (float) (Math.PI +(Math.PI + heading));
-            }
-            heading = Math.round(SensorUtil.radianToDegree(heading));
+//            float heading = newDataEvent.values[0];
+//            if (heading < 0) {
+//                heading = (float) (Math.PI +(Math.PI + heading));
+//            }
+//            heading = Math.round(SensorUtil.radianToDegree(heading));
+            float heading = (float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360;
             if (Math.abs(heading - mHeading) > 1) {
+                RotateAnimation ra = new RotateAnimation(
+                        mHeading,
+                        heading,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                );
+                ra.setDuration(250);
+                ra.setFillAfter(true);
+                mPointer.startAnimation(ra);
                 mHeading = heading;
+
                 ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + mHeading);
+
             }
         } else if (newDataEvent.type == EventType.ALTITUDE_CHANGE) {
             mAltitude = newDataEvent.values[0];
