@@ -249,7 +249,6 @@ public class MySurfaceView extends GLSurfaceView {
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
         // TODO: Do something with these deltas! Pan the camera based on them.
         mRenderer.translate(deltaMidpointX, deltaMidpointY);
-        requestRender();
 //        Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
 
     }
