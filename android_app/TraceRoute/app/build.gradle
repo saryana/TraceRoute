@@ -33,5 +33,5 @@ dependencies {
     // For highlighting things on first use
     compile 'com.github.amlcurran.showcaseview:library:5.0.0'
     // Trying out FAB
-    compile 'com.melnykov:floatingactionbutton:1.3.0'
+    compile 'com.github.clans:fab:1.5.0'
 }

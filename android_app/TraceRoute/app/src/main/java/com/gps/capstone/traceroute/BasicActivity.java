@@ -3,13 +3,13 @@ package com.gps.capstone.traceroute;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.MenuItem;
-import android.view.WindowManager.LayoutParams;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.debugConsole.DebugConsole;
 import com.gps.capstone.traceroute.settings.UserSettings;
+import com.gps.capstone.traceroute.R;
+
 
 /**
  * This will hopefully help with code reduction and make it so we can
