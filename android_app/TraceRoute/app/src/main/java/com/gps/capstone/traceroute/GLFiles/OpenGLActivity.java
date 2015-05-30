@@ -3,9 +3,7 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -14,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
@@ -22,21 +19,16 @@ import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.gps.capstone.traceroute.BasicActivity;
-import com.gps.capstone.traceroute.CustomView;
-import com.gps.capstone.traceroute.FirstRunInfo;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
-import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
@@ -305,12 +297,7 @@ public class OpenGLActivity extends BasicActivity
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-//            float heading = newDataEvent.values[0];
-//            if (heading < 0) {
-//                heading = (float) (Math.PI +(Math.PI + heading));
-//            }
-//            heading = Math.round(SensorUtil.radianToDegree(heading));
-            float heading = ((float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360);
+            float heading = ((float) (Math.round(Math.toDegrees(newDataEvent.values[0]) + 360) %360));
             if (Math.abs(heading - mHeading) > 1) {
                 RotateAnimation ra;
                 ra = new RotateAnimation(
