@@ -22,15 +22,44 @@
                    android:src="@drawable/comp"
                    android:layout_gravity="bottom"
                    android:contentDescription="Compass pointer"/>
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/fab"
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
             android:src="@android:drawable/ic_media_play"
-            fab:fab_shadow="true"
-            fab:fab_colorNormal="@color/colorAccent"
+            fab:fab_showAnimation="@anim/scale_up"
+            fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/primaryPressed"
+            fab:fab_colorRipple="@color/ripple" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@android:drawable/ic_media_pause"
+            fab:fab_showAnimation="@anim/scale_up"
+            fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_colorNormal="@color/accent"
+            fab:fab_colorPressed="@color/primaryPressed"
+            fab:fab_colorRipple="@color/ripple" />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="75dp"
+            android:src="@android:drawable/ic_menu_save"
+            fab:fab_showAnimation="@anim/scale_up"
+            fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
     </FrameLayout>

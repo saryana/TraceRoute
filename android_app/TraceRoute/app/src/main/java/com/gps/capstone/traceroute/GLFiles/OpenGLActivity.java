@@ -26,14 +26,15 @@ import android.widget.TextView;
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.github.clans.fab.FloatingActionButton;
 import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
-import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
+import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.squareup.otto.Subscribe;
 
 import java.io.FileInputStream;
@@ -67,6 +68,9 @@ public class OpenGLActivity extends BasicActivity
     private ArrayList<float[]> mPath;
     private ShowcaseView mSV;
     private ImageView mPointer;
+    private FloatingActionButton mFabStart;
+    private FloatingActionButton mFabStop;
+    private FloatingActionButton mFabSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +86,11 @@ public class OpenGLActivity extends BasicActivity
         mLoadButton = (Button) findViewById(R.id.load_button);
         mStartButton = (Button) findViewById(R.id.start_path_button);
         mStopButton = (Button) findViewById(R.id.stop_path_button);
+        mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
+        mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
+        mFabSave = (FloatingActionButton) findViewById(R.id.fab_save);
+        mFabStop.hide(false);
+        mFabSave.hide(false);
 
         mPath = new ArrayList<>();
     }
@@ -100,6 +109,10 @@ public class OpenGLActivity extends BasicActivity
         mLoadButton.setOnClickListener(this);
         mStartButton.setOnClickListener(this);
         mStopButton.setOnClickListener(this);
+
+        mFabStart.setOnClickListener(this);
+        mFabStop.setOnClickListener(this);
+        mFabSave.setOnClickListener(this);
 
         mDataProvider = new SensorDataProvider(this);
         mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
@@ -162,12 +175,36 @@ public class OpenGLActivity extends BasicActivity
         int id = v.getId();
         if (id == R.id.load_button) {
             loadAction();
-        } else if (id == R.id.start_path_button) {
+        } else if (id == R.id.start_path_button || id == R.id.fab_start) {
             FOLLOW_PATH = true;
+            mFabStart.hide(true);
+            mFabSave.hide(true);
+            mFabStop.show(true);
             startPath();
-        } else if (id == R.id.stop_path_button) {
+        } else if (id == R.id.stop_path_button || id == R.id.fab_stop) {
             FOLLOW_PATH = false;
+            mFabStart.show(true);
+            mFabSave.show(true);
+            mFabStop.hide(true);
             stopPath();
+        } else if (id == R.id.fab_save) {
+            mFabSave.hide(true);
+            // This is where we would alert them if they want to save the path
+            AlertDialog.Builder builder = new Builder(this);
+            builder.setTitle("Path Complete! Save Path?");
+            builder.setPositiveButton("Save!!!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    saveAction();
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("NO!", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
         } else {
             Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
         }
@@ -198,22 +235,6 @@ public class OpenGLActivity extends BasicActivity
         mStopButton.setVisibility(View.GONE);
         // No longer want to be getting data?
         mDataProvider.stopPath(USER_CONTROL);
-        // This is where we would alert them if they want to save the path
-        AlertDialog.Builder builder = new Builder(this);
-        builder.setTitle("Path Complete! Save Path?");
-        builder.setPositiveButton("Save!!!", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                saveAction();
-                dialog.dismiss();
-            }
-        }).setNegativeButton("NO!", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
     }
 
     /**
