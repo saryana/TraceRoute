@@ -223,6 +223,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         y *= TRANSLATION_FACTOR * -1;
         translateX = x;
         translateY = y;
+        if (translateX == Float.NaN || translateY == Float.NaN) {
+            Log.i("DEBUG", "HOLY BALLS NAN2");
+        }
         translated = true;
     }
 
@@ -251,9 +254,16 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         float[] result = new float[4];
         // convert the matrix into the rotation matrix.
         Matrix.multiplyMV(result, 0, mModelMatrix, 0, translationVector, 0);
+
         float vectorLength = VectorLibrary.vectorLength(result);
         float ratio = length / vectorLength;
-        Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
+        float count = 0;
+        for (int i = 0; i < result.length; i++) {
+            count += result[i];
+        }
+        if (count != 0.0f) {
+            Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
+        }
     }
 
     private void computeZoom() {

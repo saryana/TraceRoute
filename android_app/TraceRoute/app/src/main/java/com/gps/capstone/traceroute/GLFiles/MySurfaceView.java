@@ -247,6 +247,9 @@ public class MySurfaceView extends GLSurfaceView {
         float[] curMidpoint = TouchUtil.midpointFormula(curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
         float deltaMidpointX = curMidpoint[0] - prevMidpoint[0];
         float deltaMidpointY = curMidpoint[1] - prevMidpoint[1];
+        if (deltaMidpointX == Float.NaN || deltaMidpointY == Float.NaN) {
+            Log.i("DEBUG", "HOLY BALLS NAN1");
+        }
         // TODO: Do something with these deltas! Pan the camera based on them.
         mRenderer.translate(deltaMidpointX, deltaMidpointY);
 //        Log.i(TAG, "Delta X " + deltaMidpointX + " Delta Y " + deltaMidpointY);
