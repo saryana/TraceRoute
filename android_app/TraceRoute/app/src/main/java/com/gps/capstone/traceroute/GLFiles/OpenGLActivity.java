@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
@@ -304,48 +305,27 @@ public class OpenGLActivity extends BasicActivity
     @Subscribe
     public void onDataChange(NewDataEvent newDataEvent) {
         if (newDataEvent.type == EventType.DIRECTION_CHANGE) {
-            float heading = newDataEvent.values[0];
-            if (heading < 0) {
-                heading = (float) (Math.PI +(Math.PI + heading));
-            }
-            heading = Math.round(SensorUtil.radianToDegree(heading));
-//            float heading = (float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360;
+//            float heading = newDataEvent.values[0];
+//            if (heading < 0) {
+//                heading = (float) (Math.PI +(Math.PI + heading));
+//            }
+//            heading = Math.round(SensorUtil.radianToDegree(heading));
+            float heading = ((float) (Math.toDegrees(newDataEvent.values[0]) + 360) %360);
             if (Math.abs(heading - mHeading) > 1) {
                 RotateAnimation ra;
-                if (heading > 340 && mHeading < 20) {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading-360,
-                            Animation.ABSOLUTE,
-                            0.5f,
-                            Animation.ABSOLUTE,
-                            0.5f
-                    );
-                } else if (heading < 20 && mHeading > 340) {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f
-                    );
-                } else  {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f
-                    );
-                }
-
+                ra = new RotateAnimation(
+                        mHeading,
+                        heading,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                );
+                ra.setInterpolator(new AccelerateDecelerateInterpolator());
                 ra.setDuration(250);
                 ra.setFillAfter(true);
                 mPointer.startAnimation(ra);
                 mHeading = heading;
-
                 ((TextView) findViewById(R.id.heading_direction)).setText("Heading Direction : " + mHeading);
 
             }
