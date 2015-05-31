@@ -65,7 +65,7 @@ public class OpenGLActivity extends BasicActivity
     private FloatingActionButton mFabStart;
     private FloatingActionButton mFabStop;
     private FloatingActionButton mFabSave;
-    private List<ShowcaseView> mTestShowCaseView;
+    int n;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +81,7 @@ public class OpenGLActivity extends BasicActivity
         mFabSave.hide(false);
 
         mPath = new ArrayList<>();
+        n = 0;
     }
 
     @Override
@@ -114,12 +115,12 @@ public class OpenGLActivity extends BasicActivity
 
     private void firstRun() {
         mSV = new ShowcaseView.Builder(this)
-                .setContentTitle("Start Path!")
-                .setContentText("This will start a new path that you can later save.")
+                .setContentTitle("Path Starter")
+                .setContentText("Hit play to start recording your path in 3D space! At the end press stop" +
+                        " and you can move your path around or save it.")
                 .setTarget(new ViewTarget(mFabStart))
                 .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
-                .setShowcaseEventListener(this)
-                .build();
+                .setShowcaseEventListener(this).build();
     }
 
     @Override
@@ -349,6 +350,16 @@ public class OpenGLActivity extends BasicActivity
 
     @Override
     public void onShowcaseViewHide(ShowcaseView showcaseView) {
+        if (n == 0) {
+            n++;
+            mSV = new ShowcaseView.Builder(this)
+                    .setContentTitle("VR Mode")
+                    .setContentText("VR Mode allows you to observe your path in 3D space. User mode will allow you to " +
+                            "pan around the map.")
+                    .setTarget(new ViewTarget(mPointer))
+                    .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
+                    .setShowcaseEventListener(this).build();
+        }
     }
 
     @Override
