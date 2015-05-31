@@ -9,6 +9,7 @@ import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
+import com.gps.capstone.traceroute.sensors.events.PathCompletion;
 import com.gps.capstone.traceroute.sensors.listeners.AltitudeListener;
 import com.gps.capstone.traceroute.sensors.listeners.CompassListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
@@ -16,6 +17,9 @@ import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -58,6 +62,7 @@ public class SensorDataProvider {
     private AltitudeListener mAltitudeListener;
     // Context we got called from
     private Context mContext;
+    private ArrayList<float[]> mPath;
 
     // All the values we need to keep the state of
     // in feet
@@ -72,11 +77,10 @@ public class SensorDataProvider {
     private float[] mNewLocation;
     private float[] mOldLocation;
     // (x, y, z) in OpenGLUnits
-    private float[] mOldLocationOGL;
     private float[] mNewLocationOGL;
-    // Stride length = height * ratio
     private float mStrideLength;
     private boolean mPathTracking;
+    private int mSteps;
 
     /**
      * Sets up the basic utilities to make this work
@@ -114,15 +118,16 @@ public class SensorDataProvider {
     public void startPath() {
         // This will reset anything that is keeping track of all our current steps
         mBus.post(new NewLocationEvent(null, null));
+        mPath = new ArrayList<>();
         rotateModeFromGyroscope(false);
         mPathTracking = true;
         mInitalAltitude = 0;
         mAltitude = 0;
+        mSteps = 0;
         mPrevAltitude = 0;
         mOldLocation = new float[3];
         mNewLocation = new float[3];
         mNewLocationOGL = new float[3];
-        mOldLocationOGL = new float[3];
         mStrideLength = PreferenceManager.getDefaultSharedPreferences(mContext).getFloat(mContext.getString(R.string.pref_key_stride_length), 0);
         mStepDetector.register();
         mAltitudeListener.register();
@@ -135,14 +140,20 @@ public class SensorDataProvider {
         mPathTracking = false;
         mStepDetector.unregister();
         mAltitudeListener.unregister();
+        mBus.post(new PathCompletion(
+                mSteps,   // Distance in inches
+                mSteps*mStrideLength,
+                mInitalAltitude,        // Initial altitude we detected
+                mAltitude               // Final altitude
+        ));
     }
 
     public void rotateModeFromGyroscope(boolean rotate) {
         if (rotate) {
-            mCompass.unregister();
             if (mOrientationSensor == null) {
                 mOrientationSensor = new GyroscopeListener(mContext);
             }
+            mCompass.unregister();
             mOrientationSensor.register();
         } else {
             if (mOrientationSensor != null) {
@@ -167,6 +178,24 @@ public class SensorDataProvider {
         }
     }
 
+    public boolean saveCurrentPath(String pathName) {
+        FileOutputStream fos;
+        try {
+            // Don't need no snitches stealing our files
+            fos = mContext.openFileOutput(pathName, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            // Ideally we would use parcelable, but lists are already serializable
+            oos.writeObject(mPath);
+            oos.close();
+            fos.close();
+            return true;
+        } catch (Exception e) {
+//            e.printStackTrace();
+            Log.e(TAG, e.toString());
+            return false;
+        }
+    }
+
     @Subscribe
     public void onDataChange(NewDataEvent event) {
         switch (event.type) {
@@ -184,12 +213,9 @@ public class SensorDataProvider {
     }
 
     private void handleHeadingChange(float heading) {
-//        heading += Math.PI;
         if (heading < 0) {
             heading = (float) (Math.PI +(Math.PI + heading));
         }
-        // New hack
-//        heading = (float) ((heading + 2*Math.PI) % 360);
         // Did we break the direction threshold?
         if (Math.abs(heading - mHeading) > DIRECTION_THRESHOLD) {
             mHeading = heading;
@@ -200,6 +226,7 @@ public class SensorDataProvider {
      * AYY we have a step
      */
     private void handleStepChange() {
+        mSteps++;
         // Get unit vector of heading
         float[] xy = SensorUtil.getVectorFromAngle3(mHeading);
         Log.d(TAG, "heading " + SensorUtil.radianToDegree(mHeading) + " angles " + Arrays.toString(xy) + " stride length" + mStrideLength);
@@ -247,17 +274,16 @@ public class SensorDataProvider {
      * This simply updaes a couple states and sends the event
      */
     private void updateView() {
-        Log.d(TAG, "Updating view " + Arrays.toString(mNewLocation));
         // mark this as the last altitude that we sent to the view
         mPrevAltitude = mAltitude;
         // Calculate the new openGL values
         updateOpenGLvalues();
-        Log.d("NewPint", Arrays.toString(mNewLocationOGL));
+//        Log.d("NewPint", Arrays.toString(mNewLocationOGL));
+        mPath.add(mNewLocationOGL.clone());
         // Post the new location with the new direction
         mBus.post(new NewLocationEvent(mNewLocationOGL, mNewLocation));
         // Set the old values to the values we just read
         mOldLocation = mNewLocation;
-        mOldLocationOGL = mNewLocationOGL;
     }
     /**
      * This is what we are going to be sending the view
