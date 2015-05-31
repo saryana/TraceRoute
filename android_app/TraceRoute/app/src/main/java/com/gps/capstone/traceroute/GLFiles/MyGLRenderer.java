@@ -10,6 +10,7 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.Axis;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
+import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TronGrid;
 import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
@@ -47,6 +48,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     // GEOMETRY
     private ProgramManager mGraphicsEnvironment;
     private Axis mAxis;
+    private TronGrid grid;
     private PrismPath mPath;
     private SmartRectangularPrism mRectangularPrism;
     private boolean mInit;
@@ -72,6 +74,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
         mAxis = new Axis();
+        grid = new TronGrid();
         mPath = new PrismPath();
         mRectangularPrism = new SmartRectangularPrism();
         float[] faceOne = {-0.3f, 0.0f, 0.0f};
@@ -145,6 +148,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
 
         mAxis.draw(mMVPMatrix);
+        grid.draw(mMVPMatrix);
         // If we don't want to use a shape that means
         // we are drawing a path!
         if (!OpenGLActivity.USE_SHAPE) {

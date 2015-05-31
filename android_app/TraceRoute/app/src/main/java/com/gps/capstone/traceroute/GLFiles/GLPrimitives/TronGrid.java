@@ -1,5 +1,7 @@
 package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
+import android.opengl.GLES20;
+
 import java.nio.FloatBuffer;
 
 /**
@@ -27,6 +29,7 @@ public class TronGrid extends BasicLightingObject {
 
     private static FloatBuffer colorBuffer;
 
+    private int bufferLength;
 
 
     public TronGrid() {
@@ -35,22 +38,22 @@ public class TronGrid extends BasicLightingObject {
         int index = 0;
         // fill out the X grid and y grid lines.
         // have i mark out the important coordinates of the grid lines.
-        for (int i = -GRID_SIZE / 2 * DIMENSIONS; i < GRID_SIZE / 2 * DIMENSIONS; i += DIMENSIONS) {
-            xLines[index][0] = -GRID_SIZE / 2 * DIMENSIONS;
+        for (int i = -GRID_SIZE / 2 * STEP_FACTOR; i < GRID_SIZE / 2 * STEP_FACTOR; i += STEP_FACTOR) {
+            xLines[index][0] = -GRID_SIZE / 2 * STEP_FACTOR;
             xLines[index][1] = i;
             xLines[index][2] = 0;
 
-            xLines[index][3] = GRID_SIZE / 2 * DIMENSIONS;
+            xLines[index][3] = GRID_SIZE / 2 * STEP_FACTOR;
             xLines[index][4] = i;
             xLines[index][5] = 0;
 
             // For each y-line, the relationship is flipped between the x and y coordinates.
             yLines[index][0] = i;
-            yLines[index][1] = -GRID_SIZE / 2 * DIMENSIONS;
+            yLines[index][1] = -GRID_SIZE / 2 * STEP_FACTOR;
             yLines[index][2] = 0;
 
             yLines[index][3] = i;
-            yLines[index][4] = GRID_SIZE / 2 * DIMENSIONS;
+            yLines[index][4] = GRID_SIZE / 2 * STEP_FACTOR;
             yLines[index][5] = 0;
 
             index++;
@@ -59,6 +62,7 @@ public class TronGrid extends BasicLightingObject {
 
         // stuff them into one big array.
         float[] masterVertexArray = new float[2 * GRID_SIZE * (DIMENSIONS * 2)];
+        bufferLength = masterVertexArray.length / DIMENSIONS;
         index = 0;
         for (int i = 0; i < masterVertexArray.length / 2; i += DIMENSIONS * 2) {
             for (int j = 0; j < DIMENSIONS * 2; j++) {
@@ -87,4 +91,41 @@ public class TronGrid extends BasicLightingObject {
         setVerticies(masterVertexArray);
         colorBuffer = convertFloatArray(colorArray);
     }
+
+    /**
+     * Draw the axis.
+     * @param mvpMatrix
+     */
+    public void draw(float[] mvpMatrix) {
+        // Add program to OpenGL ES environment
+        GLES20.glUseProgram(programHandle);
+
+        // Prepare the triangle coordinate values
+        GLES20.glVertexAttribPointer(mVertexPositionHandle, DIMENSIONS,
+                GLES20.GL_FLOAT, false,
+                DIMENSIONS * 4, getVertexData());
+
+        // Enable a handle to the axis vertices
+        GLES20.glEnableVertexAttribArray(mVertexPositionHandle);
+
+        // Set color for drawing the axis
+        GLES20.glVertexAttribPointer(mVertexColorHandle, 4,
+                GLES20.GL_FLOAT, false,
+                COLOR_STRIDE, colorBuffer);
+
+        GLES20.glEnableVertexAttribArray(mVertexColorHandle);
+
+        // Pass the projection and view transformation to the shader
+        GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mvpMatrix, 0);
+
+        for (int i = 0; i < bufferLength / 2; i++) {
+            GLES20.glDrawArrays(GLES20.GL_LINES, i * 2, 2);
+        }
+
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
+
+        GLES20.glDisableVertexAttribArray(mVertexColorHandle);
+    }
+
 }
