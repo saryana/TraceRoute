@@ -267,6 +267,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     private void computeZoom() {
-
+        Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
     }
 }
