@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class OpenGLActivity extends BasicActivity
@@ -64,6 +65,7 @@ public class OpenGLActivity extends BasicActivity
     private FloatingActionButton mFabStart;
     private FloatingActionButton mFabStop;
     private FloatingActionButton mFabSave;
+    private List<ShowcaseView> mTestShowCaseView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
