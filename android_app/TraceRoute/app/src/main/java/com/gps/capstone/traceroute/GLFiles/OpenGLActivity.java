@@ -8,19 +8,23 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
@@ -34,14 +38,12 @@ import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
 import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
+import com.gps.capstone.traceroute.sensors.events.PathCompletion;
 import com.squareup.otto.Subscribe;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class OpenGLActivity extends BasicActivity
@@ -59,12 +61,12 @@ public class OpenGLActivity extends BasicActivity
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     private int mStepCount;
-    private ArrayList<float[]> mPath;
     private ShowcaseView mSV;
     private ImageView mPointer;
     private FloatingActionButton mFabStart;
     private FloatingActionButton mFabStop;
     private FloatingActionButton mFabSave;
+    private View mCard;
     int n;
 
     @Override
@@ -79,8 +81,6 @@ public class OpenGLActivity extends BasicActivity
         mFabSave = (FloatingActionButton) findViewById(R.id.fab_save);
         mFabStop.hide(false);
         mFabSave.hide(false);
-
-        mPath = new ArrayList<>();
         n = 0;
     }
 
@@ -273,19 +273,13 @@ public class OpenGLActivity extends BasicActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String pathName = editText.getText().toString();
-                FileOutputStream fos;
-                try {
-                    // Don't need no snitches stealing our files
-                    fos = openFileOutput(pathName, MODE_PRIVATE);
-                    ObjectOutputStream oos = new ObjectOutputStream(fos);
-                    // Ideally we would use parcelable, but lists are already serializable
-                    oos.writeObject(mPath);
-                    oos.close();
-                    fos.close();
-                    Log.d(TAG, "Wrote path to file with name " + pathName);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                String message;
+                if (mDataProvider.saveCurrentPath(pathName)) {
+                    message = String.format(getString(R.string.successful_save), pathName);
+                } else {
+                    message = String.format(getString(R.string.unsuccessful_save), pathName);
                 }
+                Toast.makeText(OpenGLActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -327,17 +321,30 @@ public class OpenGLActivity extends BasicActivity
             mAltitude = newDataEvent.values[0];
         }
     }
+    @Subscribe
+    public void onPathEnd(PathCompletion path) {
+        mCard = LayoutInflater.from(this).inflate(R.layout.card, null);
+        ((TextView) mCard.findViewById(R.id.total_steps)).setText(String.valueOf(path.steps));
+        ((TextView) mCard.findViewById(R.id.total_distance)).setText(String.valueOf(Math.round(path.distance)));
+        int roundedInitialAlt = Math.round(path.initialAltitude);
+        int roundedFinalAlt = Math.round(path.finalAltitude);
+        ((TextView) mCard.findViewById(R.id.init_alt)).setText(String.valueOf(roundedInitialAlt));
+        ((TextView) mCard.findViewById(R.id.final_alt)).setText(String.valueOf(roundedFinalAlt));
+        ((TextView) mCard.findViewById(R.id.alt_change)).setText(String.valueOf(roundedFinalAlt-roundedInitialAlt));
+        mCard.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((FrameLayout) findViewById(R.id.frame)).removeView(v);
+            }
+        });
+        ((ViewGroup) findViewById(R.id.frame)).addView(mCard);
+
+    }
 
     @Subscribe
     public void onData(NewLocationEvent locationEvent) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);
-        if (locationEvent.location == null) {
-            mPath.clear();
-            mPath = new ArrayList<>();
-            linearLayout.removeAllViewsInLayout();
-            mStepCount = 0;
-        } else {
-            mPath.add(locationEvent.location.clone());
+        if (locationEvent.location != null) {
             TextView tv = new TextView(this);
 
             // Another reference issue

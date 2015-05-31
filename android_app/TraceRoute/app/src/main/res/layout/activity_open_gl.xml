@@ -6,7 +6,7 @@
               android:orientation="vertical"
               tools:context="com.gps.capstone.traceroute.GLFiles.OpenGLActivity"
               android:id="@+id/stuff">
-    <FrameLayout
+    <FrameLayout android:id="@+id/frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9">
@@ -33,7 +33,10 @@
             android:src="@android:drawable/ic_media_play"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_showShadow="true"
+            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
+            fab:menu_shadowRadius="1dp"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
         <com.github.clans.fab.FloatingActionButton
@@ -46,6 +49,9 @@
             android:src="@android:drawable/ic_media_pause"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_showShadow="true"
+            fab:menu_shadowRadius="1dp"
+            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
@@ -59,15 +65,22 @@
             android:src="@android:drawable/ic_menu_save"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
+            fab:fab_showShadow="true"
+            fab:menu_shadowRadius="1dp"
+            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
     </FrameLayout>
-
+    <!--<fragment android:id="@+id/path_info_frag"-->
+        <!--android:name="com.gps.capstone.traceroute.sensors.PathInfo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="3" />-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight="0">
         <LinearLayout android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

@@ -109,6 +109,7 @@ public class MySurfaceView extends GLSurfaceView {
         mRenderer.clearPath();
         ArrayList<float[]> path = pathEvent.path;
         OpenGLActivity.FOLLOW_PATH = true;
+        // TODO THIS IS AWFUL
         for (int i = 0; i < path.size(); i++) {
             mRenderer.addNewFace(path.get(i).clone());
             requestRender();

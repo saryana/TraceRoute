@@ -64,5 +64,7 @@
     <string name="pref_key_stride_length">prefKeyStrideLength</string>
     <string name="debug_console_label">Debug Console</string>
     <string name="pref_key_degree_filter">prefKeyDegreeFilter</string>
+    <string name="successful_save">Successfully saved path %s</string>
+    <string name="unsuccessful_save">Could not save file %s, try removing previous paths</string>
 
 </resources>
