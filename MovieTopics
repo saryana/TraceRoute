@@ -1,0 +1,67 @@
+TECH TOPICS FOR THE VIDEO
+
+This will serve as a narrative script for our video.
+
+------------I - Sensors-------------
+- Discuss the drawbacks of each sensor.
+
+- Discuss the sensor fusion demo and corrective algorithm.
+ 
+- Talk about what role each sensor plays in halping us
+navigate
+
+------------II Navigation------------
+- Introduce the concept of pedestrian dead reckoning 
+
+- Talk about the major problems present with our
+current application. 
+
+- Discuss the different methods of navigation that we pondered 
+(integrating acceleration vector vs. step counting. Compass vs. Gyroscope, ect.)
+
+- Discuss future developemnts (bluetooth beacons, wifi backscatter, ect.)
+
+
+------------III OpenGL ES------------
+- Quick introduction to OpenGL ES. 
+
+- Discuss the shaders and diffuse lighting.
+
+- Talk about panning and scrolling
+
+------------IV Interface Design------------
+- Talk about the difficulties of designing for a small screen.
+
+Designing for a mobile screen is difficult - a typical 24" desktop display offers
+plenty of room for an interface. Phones don't have that luxury. Every centimeter counts - 
+We needed maximum functionality with minimal clutter.  
+
+- Design mock-up
+
+As we made progress, our interface became crowded with
+debugging menus and special settings. We needed to consolidate what 
+was important into an intuitive, streamlined interface. We created 
+a crude design mock-up in paint that illistrated the desired application 
+structure. In interface design, it's important to present the user
+with as little noise as possible. We tried to minimize the amount
+of interactive objects on the main screen, and we made sure that
+everything was marked with a picture. Additionally, we organized menus in 
+a way that minimizes work required to change user-desireable settings.
+
+The introductory screen consists of an interactive 3-d model, a menu bar, and a "play"
+button. When the play button is pressed, the application begins recording the user's path.
+A 'save' bubble appears, which allows the user to save their path to the phone for
+later viewing. 
+
+
+One of the primary features we implemented for the sake of useability are floating icons:
+- Using a library for floating icons
+
+
+
+
+Tools: 
+
+Lollipop Screen Recorder
+
+Movie Maker
