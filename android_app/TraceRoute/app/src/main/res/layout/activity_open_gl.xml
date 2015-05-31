@@ -19,7 +19,7 @@
                    android:layout_width="100dp"
                    android:layout_height="100dp"
                    android:scaleType="fitStart"
-                   android:src="@drawable/comp"
+                   android:src="@drawable/compass"
                    android:layout_gravity="bottom"
                    android:contentDescription="Compass pointer"/>
 

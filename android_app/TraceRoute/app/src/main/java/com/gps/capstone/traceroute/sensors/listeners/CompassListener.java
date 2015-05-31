@@ -59,39 +59,9 @@ public class CompassListener extends MySensorListener implements SensorEventList
                 SensorManager.getOrientation(rotationMatrix, orientation);
                 // Posting the radian value we are getting
                 mBus.post(new NewDataEvent(new float[]{orientation[0], orientation[2]}, EventType.DIRECTION_CHANGE));
-
-//                // TODO NOTE TO KEITH: It may not be an idea to sector it up since the data readings still
-//                // jump around a bit we can have a pretty small sector size, but i'm not sure if that
-//                // actually helps anything
-//                mBus.post(new NewDataEvent(new float[]{heading}, EventType.DIRECTION_CHANGE));
             }
         }
     }
-
-    private String headingToDir(float heading) {
-        String dir;
-        if (heading >= 337.5 || heading < 22.5) {
-            dir = "NORTH";
-        } else if (heading >= 22.5f && heading < 67.5f) {
-            dir = "NORTH WEST";
-        } else if (heading >= 67.5 && heading < 112.5) {
-            dir = "WEST";
-        } else if (heading >= 112.5 && heading < 157.5) {
-            dir = "SOUTH WEST";
-        } else if (heading >= 157.5 && heading < 202.5) {
-            dir = "SOUTH";
-        } else if (heading >= 202.5 && heading < 247.5) {
-            dir = "SOUTH EAST";
-        } else if (heading >= 247.5 && heading < 292.5) {
-            dir = "EAST";
-        } else if (heading >= 292.5 && heading < 337.5) {
-            dir = "NORTH EAST";
-        } else {
-            dir = "SEAN FUCKED UP";
-        }
-        return dir;
-    }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Not used

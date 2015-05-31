@@ -119,8 +119,10 @@ public class OpenGLActivity extends BasicActivity
                 .setContentText("Hit play to start recording your path in 3D space! At the end press stop" +
                         " and you can move your path around or save it.")
                 .setTarget(new ViewTarget(mFabStart))
+                .doNotBlockTouches()
                 .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
                 .setShowcaseEventListener(this).build();
+        n++;
     }
 
     @Override
@@ -160,6 +162,7 @@ public class OpenGLActivity extends BasicActivity
     public void onClick(View v) {
         // Don't accept input when this is shown for now
         if (mSV != null && mSV.isShown()) {
+            mSV.hide();
             return;
         }
         int id = v.getId();
@@ -196,6 +199,7 @@ public class OpenGLActivity extends BasicActivity
         } else if (id == R.id.pointer) {
             // Switch using the gyroscope
             USE_GYROSCOPE = !USE_GYROSCOPE;
+            USER_CONTROL = !USER_CONTROL;
             mDataProvider.rotateModeFromGyroscope(USE_GYROSCOPE);
         } else {
             Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
@@ -350,8 +354,8 @@ public class OpenGLActivity extends BasicActivity
 
     @Override
     public void onShowcaseViewHide(ShowcaseView showcaseView) {
-        if (n == 0) {
-            n++;
+        if (n == 1) {
+            n = 0;
             mSV = new ShowcaseView.Builder(this)
                     .setContentTitle("VR Mode")
                     .setContentText("VR Mode allows you to observe your path in 3D space. User mode will allow you to " +
