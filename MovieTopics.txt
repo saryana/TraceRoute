@@ -7,7 +7,7 @@ This will serve as a narrative script for our video.
 
 - Discuss the sensor fusion demo and corrective algorithm.
  
-- Talk about what role each sensor plays in halping us
+- Talk about what role each sensor plays in helping us
 navigate
 
 ------------II Navigation------------
