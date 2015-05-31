@@ -4,6 +4,8 @@ import android.opengl.GLES20;
 
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 
+import java.nio.FloatBuffer;
+
 /**
  * Created by keith619 on 4/9/15.
  */
@@ -38,6 +40,9 @@ public class Axis extends BasicLightingObject {
     // Set color with red, green, blue and alpha (opacity) values
     float color[] = { 0.0f, 0.0f, 1f, 1.0f };
 
+    private FloatBuffer bufferColors = convertFloatArray(vertexColors);
+
+
     public Axis() {
         setVerticies(axisLineCoords);
 
@@ -62,7 +67,7 @@ public class Axis extends BasicLightingObject {
         // Set color for drawing the axis
         GLES20.glVertexAttribPointer(mVertexColorHandle, 4,
                 GLES20.GL_FLOAT, false,
-                COLOR_STRIDE, convertFloatArray(vertexColors));
+                COLOR_STRIDE, bufferColors);
 
         GLES20.glEnableVertexAttribArray(mVertexColorHandle);
 
