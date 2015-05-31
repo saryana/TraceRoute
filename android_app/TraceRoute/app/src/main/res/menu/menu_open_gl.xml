@@ -15,4 +15,10 @@
     <item android:id="@+id/remove"
         android:title="Remove"
         app:showAsAction="never"/>
+    <item android:id="@+id/load_path"
+          android:title="Load Path"
+          app:showAsAction="never"/>
+    <item android:id="@+id/path_manager"
+          android:title="Load Path"
+          app:showAsAction="never"/>
 </menu>

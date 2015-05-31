@@ -29,6 +29,7 @@ import java.util.Queue;
  * Gravity? can be used to figure out how the phone is standing but I don't think this will get
  * it in world orientation
  */
+@Deprecated
 public class DirectionListener extends MySensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
@@ -113,12 +114,12 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
         Matrix.invertM(invertedRotate, 0, mCurrentRotation, 0);
         Matrix.multiplyMV(worldSpaceAccel, 0, invertedRotate, 0, accelVector, 0);
         // Do we want to use the accelerometer?
-        if (SensorDataProvider.USE_ACCELERATION) {
-            directionFromAcceleration(worldSpaceAccel);
-        // Lets use velocity
-        } else {
-            directoinFromVelocity(mTimestamp, worldSpaceAccel);
-        }
+//        if (SensorDataProvider.USE_ACCELERATION) {
+//            directionFromAcceleration(worldSpaceAccel);
+//        // Lets use velocity
+//        } else {
+//            directoinFromVelocity(mTimestamp, worldSpaceAccel);
+//        }
         // If we find this inaccurate we can put restrictions on the user and
         // and possibly use the compass. For now the restrictions include
 

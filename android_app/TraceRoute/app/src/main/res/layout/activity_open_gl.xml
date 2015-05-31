@@ -64,38 +64,10 @@
             fab:fab_colorRipple="@color/ripple" />
     </FrameLayout>
 
-
-    <LinearLayout android:orientation="horizontal"
-                  style="?android:attr/buttonBarStyle"
-                  android:layout_width="match_parent"
-                  android:layout_height="0dp"
-                  android:layout_weight="1">
-        <Button android:id="@+id/start_path_button"
-                android:text="@string/start_path_button_text"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-        <Button android:id="@+id/stop_path_button"
-                android:text="@string/finish_path_button_text"
-                style="?android:attr/borderlessButtonStyle"
-                android:visibility="gone"
-                android:layout_weight="2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        <Button android:id="@+id/load_button"
-                style="?android:attr/borderlessButtonStyle"
-                android:text="@string/load_path_button_text"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="2">
         <LinearLayout android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

@@ -17,7 +17,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -54,17 +53,11 @@ public class OpenGLActivity extends BasicActivity
     public static boolean USER_CONTROL;
     // Defines whether the camera follows path
     public static boolean FOLLOW_PATH;
-    // Defines whether to use the gyro scope or the rotation matrix
-    public static boolean USE_GYROSCOPE;
-    // Flag to use cube for the render
-    public static boolean USE_CUBE;
     public static boolean USE_SHAPE;
+    public static boolean USE_GYROSCOPE;
     // The source of our sensor data
     private SensorDataProvider mDataProvider;
     private int mStepCount;
-    private Button mLoadButton;
-    private Button mStartButton;
-    private Button mStopButton;
     private ArrayList<float[]> mPath;
     private ShowcaseView mSV;
     private ImageView mPointer;
@@ -76,16 +69,9 @@ public class OpenGLActivity extends BasicActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_gl);
-//        CustomView cv = new CustomView(this);
-//        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        cv.setLayoutParams(layoutParams);
-//        LinearLayout ll = (LinearLayout)findViewById(R.id.stuff2);
-//        ll.addView(cv);
         mStepCount = 0;
+
         mPointer = (ImageView) findViewById(R.id.pointer);
-        mLoadButton = (Button) findViewById(R.id.load_button);
-        mStartButton = (Button) findViewById(R.id.start_path_button);
-        mStopButton = (Button) findViewById(R.id.stop_path_button);
         mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
         mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
         mFabSave = (FloatingActionButton) findViewById(R.id.fab_save);
@@ -101,29 +87,26 @@ public class OpenGLActivity extends BasicActivity
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        USER_CONTROL = sharedPreferences.getBoolean(getString(R.string.pref_key_user_control), false);
-        USE_CUBE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_cube), true);
-        USE_GYROSCOPE = sharedPreferences.getBoolean(getString(R.string.pref_key_use_gyroscope), true);
-        USE_SHAPE = sharedPreferences.getBoolean(getString(R.string.pref_key_render_shape), true);
-
-        mLoadButton.setOnClickListener(this);
-        mStartButton.setOnClickListener(this);
-        mStopButton.setOnClickListener(this);
-
         mFabStart.setOnClickListener(this);
         mFabStop.setOnClickListener(this);
         mFabSave.setOnClickListener(this);
 
         mDataProvider = new SensorDataProvider(this);
-        mDataProvider.register(USER_CONTROL, USE_GYROSCOPE);
+        mPointer.setOnClickListener(this);
+
+        USE_SHAPE = true;
+        FOLLOW_PATH = false;
+        USER_CONTROL = false;
+        USE_GYROSCOPE = true;
+
+        mDataProvider.register();
+        mDataProvider.rotateModeFromGyroscope(USE_GYROSCOPE);
 
         if (sharedPreferences.getBoolean(getString(R.string.pref_key_first_run), true)) {
             firstRun();
             sharedPreferences.edit().putBoolean(getString(R.string.pref_key_first_run), false).apply();
         }
 
-        Log.d(TAG, "User control: " + USER_CONTROL);
-        Log.d(TAG, "Use gyroscope: " + USE_GYROSCOPE);
         BusProvider.getInstance().register(this);
     }
 
@@ -131,7 +114,7 @@ public class OpenGLActivity extends BasicActivity
         mSV = new ShowcaseView.Builder(this)
                 .setContentTitle("Start Path!")
                 .setContentText("This will start a new path that you can later save.")
-                .setTarget(new ViewTarget(mStartButton))
+                .setTarget(new ViewTarget(mFabStart))
                 .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
                 .setShowcaseEventListener(this)
                 .build();
@@ -147,13 +130,17 @@ public class OpenGLActivity extends BasicActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!super.onOptionsItemSelected(item) && item.getItemId() == R.id.remove) {
-            for (String file : fileList()) {
-                if (deleteFile(file)) {
-                    Log.d(TAG, "removed " + file);
-                } else {
-                    Log.d(TAG, "Could not remove " + file);
+        if (!super.onOptionsItemSelected(item)) {
+            if (item.getItemId() == R.id.remove) {
+                for (String file : fileList()) {
+                    if (deleteFile(file)) {
+                        Log.d(TAG, "removed " + file);
+                    } else {
+                        Log.d(TAG, "Could not remove " + file);
+                    }
                 }
+            } else if(item.getItemId() == R.id.load_path) {
+                loadAction();
             }
         }
         return true;
@@ -173,22 +160,20 @@ public class OpenGLActivity extends BasicActivity
             return;
         }
         int id = v.getId();
-        if (id == R.id.load_button) {
-            loadAction();
-        } else if (id == R.id.start_path_button || id == R.id.fab_start) {
-            FOLLOW_PATH = true;
+        if (id == R.id.fab_start) {
+            mDataProvider.rotateModeFromGyroscope(false);
+            USE_SHAPE = false;
+
             mFabStart.hide(true);
             mFabSave.hide(true);
             mFabStop.show(true);
             startPath();
-        } else if (id == R.id.stop_path_button || id == R.id.fab_stop) {
-            FOLLOW_PATH = false;
+        } else if (id == R.id.fab_stop) {
             mFabStart.show(true);
             mFabSave.show(true);
             mFabStop.hide(true);
             stopPath();
         } else if (id == R.id.fab_save) {
-            mFabSave.hide(true);
             // This is where we would alert them if they want to save the path
             AlertDialog.Builder builder = new Builder(this);
             builder.setTitle("Path Complete! Save Path?");
@@ -205,6 +190,10 @@ public class OpenGLActivity extends BasicActivity
                 }
             });
             builder.show();
+        } else if (id == R.id.pointer) {
+            // Switch using the gyroscope
+            USE_GYROSCOPE = !USE_GYROSCOPE;
+            mDataProvider.rotateModeFromGyroscope(USE_GYROSCOPE);
         } else {
             Log.e(TAG, "WHAT THE HELL DID WE CLICK?");
         }
@@ -214,12 +203,7 @@ public class OpenGLActivity extends BasicActivity
      * Starts the path drawing and listening
      */
     private void startPath() {
-        // We can no longer load a path
-        mStartButton.setVisibility(View.GONE);
-        // Can't load the path
-        mLoadButton.setVisibility(View.GONE);
-        // They can now stop it
-        mStopButton.setVisibility(View.VISIBLE);
+        FOLLOW_PATH = true;
         mDataProvider.startPath();
     }
 
@@ -227,14 +211,9 @@ public class OpenGLActivity extends BasicActivity
      * Stops the path listening and allows for the 3d moving of the path
      */
     private void stopPath() {
-        // After they have stopped lets allow them to save it
-        mStartButton.setVisibility(View.VISIBLE);
-        mStartButton.setText(R.string.restart_path_button_text);
-        mLoadButton.setVisibility(View.VISIBLE);
-
-        mStopButton.setVisibility(View.GONE);
+        FOLLOW_PATH = false;
         // No longer want to be getting data?
-        mDataProvider.stopPath(USER_CONTROL);
+        mDataProvider.stopPath();
     }
 
     /**

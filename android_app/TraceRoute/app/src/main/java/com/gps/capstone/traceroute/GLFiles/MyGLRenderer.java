@@ -102,6 +102,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
         // We want this when we are don't want user control or if we are following a path
         if (mInit && OpenGLActivity.FOLLOW_PATH) {
+            Log.d(TAG, "FP");
             // xy angle (z axis rotation)
             float x = mPrevStepDirection[0];
             float y = mPrevStepDirection[1];
@@ -121,6 +122,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             float[] modelTemp = new float[16];
             // Null pointer exception... On random reboot into setting
            // Matrix.multiplyMM(modelTemp, 0, mModelMatrix, 0, singleFingerRotationMatrix, 0);
+            Log.d(TAG, "UC");
 
             if (translated) {
                 computeTranslation();

@@ -1,22 +1,17 @@
 package com.gps.capstone.traceroute.sensors;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
-import com.gps.capstone.traceroute.sensors.listeners.AccelerometerCompassListener;
 import com.gps.capstone.traceroute.sensors.listeners.AltitudeListener;
-import com.gps.capstone.traceroute.sensors.listeners.DirectionListener;
-import com.gps.capstone.traceroute.sensors.listeners.DirectionTestClass;
+import com.gps.capstone.traceroute.sensors.listeners.CompassListener;
 import com.gps.capstone.traceroute.sensors.listeners.GyroscopeListener;
-import com.gps.capstone.traceroute.sensors.listeners.MySensorListener;
 import com.gps.capstone.traceroute.sensors.listeners.StepDetectorListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -40,7 +35,6 @@ public class SensorDataProvider {
     private final String TAG = getClass().getSimpleName();
     // Threshold for detecting a difference in sole altitude change
     private static final float ALTITUDE_THRESHOLD = 5; // in feet
-    private static final float RAD_TO_DEG = 0.034906585f;
     // Threshold for detecting a difference in direction
     private static float DIRECTION_THRESHOLD; // 2 degrees in radians
     // The two OpenGL scales need to be tested so we can determine the proper values for them
@@ -53,23 +47,17 @@ public class SensorDataProvider {
     // Bus for posting and receiving event
     private Bus mBus;
 
-    public static boolean USE_ACCELERATION;
-    private final DirectionTestClass mDirectionTest;
+    private CompassListener mCompass;
     // Marker for knowing whether or not to use the gyroscope as our source of data
-    private boolean mUseGyroscope;
 
     // The current sensor lister we are using
-    private MySensorListener mOrientationSensor;
+    private GyroscopeListener mOrientationSensor;
     // We need to keep track of the step detector for the entire period
     private StepDetectorListener mStepDetector;
-    // Direction Listener
-//    private DirectionListener mDirectionDeterminer;
     // Altitude listener
     private AltitudeListener mAltitudeListener;
     // Context we got called from
     private Context mContext;
-    // Shared preferences
-    private SharedPreferences mSharedPrefs;
 
     // All the values we need to keep the state of
     // in feet
@@ -96,58 +84,72 @@ public class SensorDataProvider {
      */
     public SensorDataProvider(Context context) {
         this.mContext = context;
-        mUseGyroscope = PreferenceManager.getDefaultSharedPreferences(context)
-                                .getBoolean(context.getString(R.string.pref_key_use_gyroscope), true);
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         mBus = BusProvider.getInstance();
 
         // Path determining sensors
         mStepDetector = new StepDetectorListener(mContext);
-        // Uses accelerometer detection
-//        mDirectionDeterminer = new DirectionListener(mContext);
         // Uses the compass
-        mDirectionTest = new DirectionTestClass(mContext);
+        mCompass = new CompassListener(mContext);
         mAltitudeListener = new AltitudeListener(mContext);
         mPathTracking = false;
-        determineOrientationListener();
+        // We are no longer using the accelerometer, just the gyroscope
+        mOrientationSensor = null;
     }
 
     /**
-     * Depending on the settings it will set the default listener to use, currently it is
-     * between the Gyroscope and the Accelerometer
+     * Register the things necessary for the data provider to work. Still requires path starting and stopping
+     * based off of user interaction
      */
-    private void determineOrientationListener() {
-        if (mUseGyroscope) {
-            Log.i(TAG, "SETTING GYROSCOPE LISTENER");
-            mOrientationSensor = new GyroscopeListener(mContext);
-        } else {
-            Log.i(TAG, "SETTING MATRIX LISTENER");
-            mOrientationSensor = new AccelerometerCompassListener(mContext);
-        }
-    }
-
-    /**
-     * Re-register the things we need to keep track of
-     * @param userControl if true, user is controlling the movement,
-     *                    otherwise it is based off of sensors
-     * @param useGyroscope If true, using the gyroscope for the medium of moving
-     *                     the model, false then using the rotation matrix
-     */
-    public void register(boolean userControl, boolean useGyroscope) {
-        DIRECTION_THRESHOLD = Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.pref_key_degree_filter), "" + 2)) * RAD_TO_DEG;
-        // Are we changing our state?
-        if (mUseGyroscope != useGyroscope) {
-            this.mUseGyroscope = useGyroscope;
-            determineOrientationListener();
-        }
-
+    public void register() {
+        DIRECTION_THRESHOLD = (float) Math.toRadians(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.pref_key_degree_filter), "" + 2)));
+        Log.d("DIR", "" + DIRECTION_THRESHOLD);
         mBus.register(this);
-        USE_ACCELERATION = mSharedPrefs.getBoolean(mContext.getString(R.string.pref_key_use_acceleration), true);
+        mHeading = 0;
+    }
 
-        if (!userControl) {
+    /**
+     * Activates all the listeners and all the things we need to keep track of for a path.
+     * This includes getting the stride length and resetting everything
+     */
+    public void startPath() {
+        // This will reset anything that is keeping track of all our current steps
+        mBus.post(new NewLocationEvent(null, null));
+        rotateModeFromGyroscope(false);
+        mPathTracking = true;
+        mInitalAltitude = 0;
+        mAltitude = 0;
+        mPrevAltitude = 0;
+        mOldLocation = new float[3];
+        mNewLocation = new float[3];
+        mNewLocationOGL = new float[3];
+        mOldLocationOGL = new float[3];
+        mStrideLength = PreferenceManager.getDefaultSharedPreferences(mContext).getFloat(mContext.getString(R.string.pref_key_stride_length), 0);
+        mStepDetector.register();
+        mAltitudeListener.register();
+    }
+
+    /**
+     * Stops all the listeners involved in path tracking
+     */
+    public void stopPath() {
+        mPathTracking = false;
+        mStepDetector.unregister();
+        mAltitudeListener.unregister();
+    }
+
+    public void rotateModeFromGyroscope(boolean rotate) {
+        if (rotate) {
+            mCompass.unregister();
+            if (mOrientationSensor == null) {
+                mOrientationSensor = new GyroscopeListener(mContext);
+            }
             mOrientationSensor.register();
         } else {
-            mOrientationSensor = null;
+            if (mOrientationSensor != null) {
+                mOrientationSensor.unregister();
+                mOrientationSensor = null;
+            }
+            mCompass.register();
         }
     }
 
@@ -156,8 +158,9 @@ public class SensorDataProvider {
      */
     public void unregister() {
         if (mPathTracking) {
-            stopPath(OpenGLActivity.USER_CONTROL);
+            stopPath();
         }
+
         mBus.unregister(this);
         if (mOrientationSensor != null) {
             mOrientationSensor.unregister();
@@ -185,9 +188,10 @@ public class SensorDataProvider {
         if (heading < 0) {
             heading = (float) (Math.PI +(Math.PI + heading));
         }
+        // New hack
+//        heading = (float) ((heading + 2*Math.PI) % 360);
         // Did we break the direction threshold?
         if (Math.abs(heading - mHeading) > DIRECTION_THRESHOLD) {
-            Log.d(TAG, "changing the heading " + SensorUtil.radianToDegree(mHeading) + " " + SensorUtil.radianToDegree(heading));
             mHeading = heading;
         }
     }
@@ -269,41 +273,5 @@ public class SensorDataProvider {
             // The Z axis needs to be exaggerated
             mNewLocationOGL[2] = mNewLocation[2] * OPENGL_VERTICAL_SCALE;
         }
-    }
-
-    public void startPath() {
-        mBus.post(new NewLocationEvent(null, null));
-
-        mPathTracking = true;
-        mInitalAltitude = 0;
-        mAltitude = 0;
-        mPrevAltitude = 0;
-        mHeading = 0;
-        mOldLocation = new float[3];
-        mNewLocation = new float[3];
-        mNewLocationOGL = new float[3];
-        mOldLocationOGL = new float[3];
-//        mStrideLength = 0;
-//        int height  = PreferenceManager.getDefaultSharedPreferences(mContext).getInt(mContext.getString(R.string.pref_key_total_height_in), 0);
-        mStrideLength = PreferenceManager.getDefaultSharedPreferences(mContext).getFloat(mContext.getString(R.string.pref_key_stride_length), 0);
-//        mDirectionDeterminer.register();
-        mStepDetector.register();
-        mDirectionTest.register();
-        mAltitudeListener.register();
-    }
-
-    /**
-     * Stops all the listeners involved in path tracking
-     */
-    public void stopPath(boolean userControl) {
-        mPathTracking = false;
-        mStepDetector.unregister();
-//        mDirectionDeterminer.unregister();
-        mDirectionTest.unregister();
-        mAltitudeListener.unregister();
-//        if (!userControl) {
-//            mOrientationSensor = new GyroscopeListener(mContext);
-//            mOrientationSensor.register();
-//        }
     }
 }

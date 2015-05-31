@@ -21,6 +21,7 @@ import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
  * that will help the state of the data and make sure we are receiving things in
  * the proper order.
  */
+@Deprecated
 public class AccelerometerCompassListener extends MySensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();

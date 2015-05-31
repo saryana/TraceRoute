@@ -13,7 +13,7 @@ import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 /**
  * Created by saryana on 5/3/15.
  */
-public class DirectionTestClass extends MySensorListener implements SensorEventListener {
+public class CompassListener extends MySensorListener implements SensorEventListener {
 
     private Sensor mMagnetic;
     private Sensor mGravity;
@@ -25,7 +25,7 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
      * Dummy class for direction that will use the compass and put the restriction on users
      * to be holding their phone so we have the proper heading.
      */
-    public DirectionTestClass(Context context) {
+    public CompassListener(Context context) {
         super(context);
         mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
@@ -37,7 +37,7 @@ public class DirectionTestClass extends MySensorListener implements SensorEventL
     @Override
     public void register() {
         mSensorManager.registerListener(this, mGravity, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
