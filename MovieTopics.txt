@@ -23,11 +23,49 @@ current application.
 
 
 ------------III OpenGL ES------------
-- Quick introduction to OpenGL ES. 
+- Quick introduction to OpenGL ES.
+OpenGL ES is a special flavor of openGL for mobile devices.
+This is what powers 3d graphics on the Andriod platform.
+I found interfacing with the API to be cumbersome and unfriendly. 
+OpenGL was designed around C++, so this Java 
+port was clumsy at best. I had no previous experience 
+with graphics, so this was a painful, but rewarding learning experience.
+
+Graphics programming requires a rich mix of low-level programming, matrix algebra, 3 dimensional
+reasoning, and physics. It takes a lot of knowledge, and many errors before I was
+capable of drawing a 3-dimensional object.
+
+Here's a summary of what I learned about graphics:
+In a digital world, all objects are made up of a mesh of triangles. Even round things, such as spheres
+and cyliders are approximated using a polyhdedron of triangles.
+
+The verticies of every triangle in the world is represented by an array of 9 floating-point numbers.
+There's an X, Y, and Z coordinate for each vertex. Complex objects are just arrays of coordinates
+that define each vertex of each triangle that makes up the object.
+
+
+In order to move objects around in the 3d world, you take the array of their 
+vertex coordinates and 'combine' them with a matrix, which is another array.
+Depending on the type of operation you do, the verticies in the original array 
+can be translated to another location, or rotated, or both. 
 
 - Discuss the shaders and diffuse lighting.
+A 3d model is no good without basic lighting effects. I had to learn 
+how to program basic lighting through OpenGL shaders to give our
+path some depth. The graphical effect that I used is called diffuse lighting. 
+It shades faces of objects based on how much light they receive from a light
+source. 
+
+
 
 - Talk about panning and scrolling
+In order to make the 3d model more useful, we decided to add 
+panning, rotation, and zooming capabilities. The user can use a single
+finger gesture to rotate the model, and can use two fingers to 
+pan and zoom the camera. Although this seems simple to implement, 
+it was very difficult to implement correctly. There's a surprising 
+amount of math involved to get the camera to move in an intuitive manner. 
+This feature took a long time to implement.  
 
 ------------IV Interface Design------------
 - Talk about the difficulties of designing for a small screen.
@@ -48,13 +86,14 @@ of interactive objects on the main screen, and we made sure that
 everything was marked with a picture. Additionally, we organized menus in 
 a way that minimizes work required to change user-desireable settings.
 
-The introductory screen consists of an interactive 3-d model, a menu bar, and a "play"
-button. When the play button is pressed, the application begins recording the user's path.
-A 'save' bubble appears, which allows the user to save their path to the phone for
+The introductory screen consists of an interactive 3d model, a menu bar, and a "play"
+button. There's a compass in the lower left corner for orientation.
+When the play button is pressed, the application begins recording the user's path.
+A 'save' bubble also appears, which allows the user to save their path to the phone for
 later viewing. 
 
 
-One of the primary features we implemented for the sake of useability are floating icons:
+One of the primary features we implemented for the sake of usability are floating icons:
 - Using a library for floating icons
 
 
