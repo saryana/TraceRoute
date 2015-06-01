@@ -15,6 +15,7 @@ import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
+import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import java.util.Arrays;
@@ -68,8 +69,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // THIS HAS TO BE THE SECOND CALL. Set all drawable objects
         // to have a reference to various graphics environment handles.
         DrawableObject.SetOpenGLEnvironment(mGraphicsEnvironment);
+        float backgroundColor = (context.getResources().getColor(R.color.secondaryText) & 0xFF)/255f;
         // Set the background frame color
-        GLES20.glClearColor(0.5647f, 0.5647f, 0.5647f, 1.0f);
+        GLES20.glClearColor(backgroundColor, backgroundColor, backgroundColor, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
