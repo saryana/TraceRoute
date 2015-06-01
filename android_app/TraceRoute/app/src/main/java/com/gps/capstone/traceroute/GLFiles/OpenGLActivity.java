@@ -373,7 +373,8 @@ public class OpenGLActivity extends BasicActivity
                             "pan around the map.")
                     .setTarget(new ViewTarget(mPointer))
                     .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
-                    .setShowcaseEventListener(this).build();
+                    .setShowcaseEventListener(this)
+                    .build();
         }
     }
 
