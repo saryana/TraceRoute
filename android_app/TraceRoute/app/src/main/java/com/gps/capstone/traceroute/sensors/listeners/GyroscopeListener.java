@@ -79,8 +79,8 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
     public void register() {
         super.register();
         // LOOK INTO
-        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_GAME);
-        mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_FASTEST);
         mPanic = 0;
     }
 

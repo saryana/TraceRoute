@@ -100,8 +100,8 @@ public class AccelerometerCompassListener extends MySensorListener implements Se
      */
     public void register() {
         mBus.register(this);
-        mSensorManager.registerListener(this, mAccelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mAccelerationSensor, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mGravitySensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     /**

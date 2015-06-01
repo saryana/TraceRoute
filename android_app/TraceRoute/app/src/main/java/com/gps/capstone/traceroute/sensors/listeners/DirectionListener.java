@@ -87,15 +87,14 @@ public class DirectionListener extends MySensorListener implements SensorEventLi
 
     @Override
     public void register() {
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        Log.i(TAG, "Registered the bus");
-        mBus.register(this);
+        super.register();
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
     public void unregister() {
+        super.unregister();
         mSensorManager.unregisterListener(this);
-        mBus.unregister(this);
     }
 
 

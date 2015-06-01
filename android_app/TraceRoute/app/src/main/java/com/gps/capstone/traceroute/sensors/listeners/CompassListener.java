@@ -36,8 +36,8 @@ public class CompassListener extends MySensorListener implements SensorEventList
     @Override
     public void register() {
         super.register();
-        mSensorManager.registerListener(this, mGravity, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mGravity, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override
