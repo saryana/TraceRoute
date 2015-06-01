@@ -21,8 +21,8 @@ public class Axis extends BasicLightingObject {
 
     // Defines some vertex colors.
     private static float[] vertexColors = {
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f
+            190/255f, 190/255f, 190/255f, 1.0f,
+            190/255f, 190/255f, 190/255f, 1.0f
     };
 
     //private final int vertexCount = axisLineCoords.length / COORDS_PER_VERTEX;

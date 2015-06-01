@@ -2,6 +2,8 @@ package com.gps.capstone.traceroute.GLFiles.GLPrimitives;
 
 import android.opengl.GLES20;
 
+import com.gps.capstone.traceroute.R;
+
 import java.nio.FloatBuffer;
 
 /**
@@ -65,26 +67,22 @@ public class TronGrid extends BasicLightingObject {
         bufferLength = masterVertexArray.length / DIMENSIONS;
         index = 0;
         for (int i = 0; i < masterVertexArray.length / 2; i += DIMENSIONS * 2) {
-            for (int j = 0; j < DIMENSIONS * 2; j++) {
-                masterVertexArray[i + j] = xLines[index][j];
-            }
+            System.arraycopy(xLines[index], 0, masterVertexArray, i, DIMENSIONS * 2);
             index++;
         }
 
         index = 0;
         for (int i = masterVertexArray.length / 2; i < masterVertexArray.length; i += DIMENSIONS * 2) {
-            for (int j = 0; j < DIMENSIONS * 2; j++) {
-                masterVertexArray[i + j] = yLines[index][j];
-            }
+            System.arraycopy(yLines[index], 0, masterVertexArray, i, DIMENSIONS * 2);
             index++;
         }
 
         // fill up the color array with blue.
         float[] colorArray = new float[2 * GRID_SIZE * (4 * 2)];
         for (int i = 0; i < colorArray.length; i += 4) {
-            colorArray[i] = 0.0f;
-            colorArray[i + 1] = 0.0f;
-            colorArray[i + 2] = 1.0f;
+            colorArray[i] = 182/255f;
+            colorArray[i + 1] = 182/255f;
+            colorArray[i + 2] = 182/255f;
             colorArray[i + 3] = 1.0f;
         }
 

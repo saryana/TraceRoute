@@ -33,10 +33,7 @@
             android:src="@android:drawable/ic_media_play"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
-            fab:fab_showShadow="true"
-            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
-            fab:menu_shadowRadius="1dp"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
         <com.github.clans.fab.FloatingActionButton
@@ -49,9 +46,6 @@
             android:src="@android:drawable/ic_media_pause"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
-            fab:fab_showShadow="true"
-            fab:menu_shadowRadius="1dp"
-            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
@@ -65,18 +59,10 @@
             android:src="@android:drawable/ic_menu_save"
             fab:fab_showAnimation="@anim/scale_up"
             fab:fab_hideAnimation="@anim/scale_down"
-            fab:fab_showShadow="true"
-            fab:menu_shadowRadius="1dp"
-            fab:fab_shadowColor="@color/primary"
             fab:fab_colorNormal="@color/accent"
             fab:fab_colorPressed="@color/primaryPressed"
             fab:fab_colorRipple="@color/ripple" />
     </FrameLayout>
-    <!--<fragment android:id="@+id/path_info_frag"-->
-        <!--android:name="com.gps.capstone.traceroute.sensors.PathInfo"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="3" />-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
