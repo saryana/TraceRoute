@@ -15,6 +15,7 @@ import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
+import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
 
 import java.util.Arrays;
@@ -69,6 +70,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // to have a reference to various graphics environment handles.
         DrawableObject.SetOpenGLEnvironment(mGraphicsEnvironment);
         // Set the background frame color
+
         GLES20.glClearColor(0.5647f, 0.5647f, 0.5647f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
@@ -117,6 +119,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             float[] modelMatrix = new float[16];
             // add rotation
             Matrix.setRotateM(modelMatrix, 0, angle, 0, 0, 1);
+
+            // computes a bird's eye view.
+            float[] rotation2 = new float[16];
+            float[] result;
+            if (mPrevStepDirection[2] == 0) {
+                float[] zLine = {0, 0, 1, 0};
+                result = VectorLibrary.crossProduct(mPrevStepDirection, zLine);
+            } else {
+                float[] dropped = {mPrevStepDirection[0], mPrevStepDirection[1], 0, 0};
+                result = VectorLibrary.crossProduct(mPrevStepDirection, dropped);
+            }
+
+            Matrix.setRotateM(rotation2, 0, 30, result[0], result[1], result[2]);
+
+
+
             // add translation
             Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);
             mModelMatrix = modelMatrix;
@@ -224,7 +242,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void translate(float x, float y) {
         x *= TRANSLATION_FACTOR;
-        y *= TRANSLATION_FACTOR * -1;
+        y *= TRANSLATION_FACTOR;
         translateX = x;
         translateY = y;
         if (translateX == Float.NaN || translateY == Float.NaN) {
@@ -266,7 +284,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             count += result[i];
         }
         if (count != 0.0f) {
-            Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
+            Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], -ratio*result[2]);
         }
     }
 
