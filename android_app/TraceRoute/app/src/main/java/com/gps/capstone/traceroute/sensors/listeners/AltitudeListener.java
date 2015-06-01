@@ -24,13 +24,13 @@ public class AltitudeListener extends MySensorListener implements SensorEventLis
 
     @Override
     public void register() {
-        mBus.register(this);
+        super.register();
         mSensorManager.registerListener(this, mBarometricSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void unregister() {
-        mBus.unregister(this);
+        super.unregister();
         mSensorManager.unregisterListener(this);
     }
 

@@ -106,7 +106,6 @@ public class SensorDataProvider {
      */
     public void register() {
         DIRECTION_THRESHOLD = (float) Math.toRadians(Integer.valueOf(PreferenceManager.getDefaultSharedPreferences(mContext).getString(mContext.getString(R.string.pref_key_degree_filter), "" + 2)));
-        Log.d("DIR", "" + DIRECTION_THRESHOLD);
         mBus.register(this);
         mHeading = 0;
     }
@@ -176,6 +175,7 @@ public class SensorDataProvider {
         if (mOrientationSensor != null) {
             mOrientationSensor.unregister();
         }
+        mCompass.unregister();
     }
 
     public boolean saveCurrentPath(String pathName) {

@@ -77,8 +77,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
 
     @Override
     public void register() {
-        Log.i(TAG, "REGISTER GYROSCOPE");
-        mBus.register(this);
+        super.register();
         // LOOK INTO
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mRotationVector, SensorManager.SENSOR_DELAY_GAME);
@@ -87,7 +86,7 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
 
     @Override
     public void unregister() {
-        mBus.unregister(this);
+        super.unregister();
         mSensorManager.unregisterListener(this);
         mInitialized = false;
     }

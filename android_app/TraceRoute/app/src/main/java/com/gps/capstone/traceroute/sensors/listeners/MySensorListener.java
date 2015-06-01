@@ -25,6 +25,8 @@ public abstract class MySensorListener {
     NotificationManagerCompat mNotificationManager;
     // Notification builder
     Builder mBuilder;
+    // Check to see if the device is registered so we don't get double registration or unregistration
+    boolean mIsRegistered;
 
     /**
      * Initialize the listener that we will be using
@@ -36,17 +38,28 @@ public abstract class MySensorListener {
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mNotificationManager = NotificationManagerCompat.from(mContext);
         mBuilder = new Builder(mContext);
+        mIsRegistered = false;
     }
 
     /**
      * Register the sensors and the bus
      */
-    public abstract void register();
+    public void register() {
+        mIsRegistered = true;
+        mBus.register(this);
+    }
 
     /**
      * Unregister sensors and from the bus
      */
-    public abstract void unregister();
+    public void unregister() {
+        mIsRegistered = false;
+        mBus.unregister(this);
+    }
+
+    public boolean isRegistered() {
+        return mIsRegistered;
+    }
 
 
 }

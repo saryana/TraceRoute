@@ -19,7 +19,6 @@ public class CompassListener extends MySensorListener implements SensorEventList
     private Sensor mGravity;
     private float[] mGravValues;
     private float[] mMagneticValues;
-    private String mCurrentDir;
 
     /**
      * Dummy class for direction that will use the compass and put the restriction on users
@@ -31,17 +30,18 @@ public class CompassListener extends MySensorListener implements SensorEventList
         mMagnetic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         mGravValues = null;
         mMagneticValues = null;
-        mCurrentDir = "";
     }
 
     @Override
     public void register() {
+        super.register();
         mSensorManager.registerListener(this, mGravity, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mMagnetic, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
     public void unregister() {
+        super.unregister();
         mSensorManager.unregisterListener(this);
     }
 
