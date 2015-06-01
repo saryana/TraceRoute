@@ -15,20 +15,12 @@ public class Axis extends BasicLightingObject {
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float axisLineCoords[] = {   // in counterclockwise order:
-            -10.0f,  0.0f, 0.0f, // X-axis negative
-            10.0f, 0.0f, 0.0f, // X-axis positive
-            0.0f,  -10.0f, 0.0f, // Y-axis negative
-            0.0f, 10.0f, 0.0f, // Y-axis positive
             0.0f,  0.0f, -10.0f, // Z-axis negative
             0.0f, 0.0f, 10.0f // Z-axis positive
     };
 
     // Defines some vertex colors.
-    private static float [] vertexColors = {
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
+    private static float[] vertexColors = {
             1.0f, 0.0f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 1.0f
     };
@@ -37,8 +29,7 @@ public class Axis extends BasicLightingObject {
     private final int vertexStride = COORDS_PER_VERTEX * 4; // 4 bytes per vertex
     private static final int COLOR_STRIDE = 16;
 
-    // Set color with red, green, blue and alpha (opacity) values
-    float color[] = { 0.0f, 0.0f, 1f, 1.0f };
+
 
     private FloatBuffer bufferColors = convertFloatArray(vertexColors);
 
@@ -76,8 +67,6 @@ public class Axis extends BasicLightingObject {
 
         // Draw the axis
         GLES20.glDrawArrays(GLES20.GL_LINES, 0, 2);
-        GLES20.glDrawArrays(GLES20.GL_LINES, 2, 2);
-        GLES20.glDrawArrays(GLES20.GL_LINES, 4, 2);
 
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mVertexPositionHandle);
