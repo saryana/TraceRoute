@@ -167,9 +167,6 @@ public class OpenGLActivity extends BasicActivity
         }
         int id = v.getId();
         if (id == R.id.fab_start) {
-            mDataProvider.rotateModeFromGyroscope(false);
-            USE_SHAPE = false;
-
             mFabStart.hide(true);
             mFabSave.hide(true);
             mFabStop.show(true);
@@ -211,6 +208,10 @@ public class OpenGLActivity extends BasicActivity
      */
     private void startPath() {
         FOLLOW_PATH = true;
+        USE_SHAPE = false;
+        USE_GYROSCOPE = false;
+        USER_CONTROL = false;
+        mDataProvider.rotateModeFromGyroscope(false);
         mDataProvider.startPath();
     }
 
@@ -219,6 +220,9 @@ public class OpenGLActivity extends BasicActivity
      */
     private void stopPath() {
         FOLLOW_PATH = false;
+        USE_GYROSCOPE = false;
+        USER_CONTROL = true;
+        mDataProvider.rotateModeFromGyroscope(false);
         // No longer want to be getting data?
         mDataProvider.stopPath();
     }
