@@ -89,6 +89,7 @@ public class SensorDataProvider {
     public SensorDataProvider(Context context) {
         this.mContext = context;
         mBus = BusProvider.getInstance();
+        SensorUtil.ALPHA = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha), ""+ SensorUtil.ALPHA));
 
         // Path determining sensors
         mStepDetector = new StepDetectorListener(mContext);

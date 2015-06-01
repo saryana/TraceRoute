@@ -305,14 +305,34 @@ public class OpenGLActivity extends BasicActivity
             float heading = ((float) (Math.round(Math.toDegrees(newDataEvent.values[0]) + 360) %360));
             if (Math.abs(heading - mHeading) > 1) {
                 RotateAnimation ra;
-                ra = new RotateAnimation(
-                        mHeading,
-                        heading,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                );
+                if (heading < 20 && mHeading > 340) {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading + 360,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                    );
+                } else if (heading > 340 && mHeading < 20) {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading - 360,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                    );
+                } else {
+                    ra = new RotateAnimation(
+                            mHeading,
+                            heading,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.5f
+                    );
+                }
                 ra.setInterpolator(new AccelerateDecelerateInterpolator());
                 ra.setDuration(250);
                 ra.setFillAfter(true);

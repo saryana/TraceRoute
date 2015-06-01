@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 

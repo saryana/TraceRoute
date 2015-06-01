@@ -18,6 +18,10 @@ public class SensorUtil {
         NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST
     }
 
+    // Might need to put the low pass filter in a util class
+    // Used for a low pass filter
+    public static float ALPHA = 0.02f;
+
 
     // TODO this method might not be correct. I forgot that cardinal direction degrees is different from trig degrees
     /**
@@ -85,5 +89,23 @@ public class SensorUtil {
 
     public static float radianToDegree(float theta) {
         return (float) (theta / (2 * Math.PI)) * 360;
+    }
+
+    /**
+     * Low pass filter to smooth the values according to a specified alpha, a lower alpha means more
+     * smoothing
+     * @param input New values we received
+     * @param previous Old values, null on start
+     * @return Now filtered values
+     */
+    public static float[] lowPass(float[] input, float[] previous) {
+        if (previous == null) {
+            return input;
+        }
+        for (int i = 0; i < input.length; i++) {
+            previous[i] = previous[i] + ALPHA * (input[i] - previous[i]);
+        }
+
+        return previous;
     }
 }

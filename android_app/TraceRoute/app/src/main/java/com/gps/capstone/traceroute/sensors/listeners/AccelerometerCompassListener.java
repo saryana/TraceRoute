@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.Utils.SensorUtil;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 
@@ -25,10 +26,6 @@ import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 public class AccelerometerCompassListener extends MySensorListener implements SensorEventListener {
     // Tag for logging
     private final String TAG = this.getClass().getSimpleName();
-
-    // Might need to put the low pass filter in a util class
-    // Used for a low pass filter
-    public static float ALPHA = 0.02f;
 
     // Sensors we need the previous values of
 
@@ -52,8 +49,6 @@ public class AccelerometerCompassListener extends MySensorListener implements Se
         super(context);
         // Might need a better way to update the value on the fly
 
-        ALPHA = Float.parseFloat(PreferenceManager.getDefaultSharedPreferences(context).getString(context.getString(R.string.pref_key_alpha), ""+ALPHA));
-
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
         mBus = BusProvider.getInstance();
@@ -69,9 +64,9 @@ public class AccelerometerCompassListener extends MySensorListener implements Se
 
         // Determine the values we have
         if (type == Sensor.TYPE_ACCELEROMETER) {
-            mAccelerometerValues = lowPass(event.values, mAccelerometerValues);
+            mAccelerometerValues = SensorUtil.lowPass(event.values, mAccelerometerValues);
         } else if (type == Sensor.TYPE_GRAVITY) {
-            mGravityValues = lowPass(event.values, mGravityValues);
+            mGravityValues = SensorUtil.lowPass(event.values, mGravityValues);
         } else if (type == Sensor.TYPE_GYROSCOPE) {
             Log.e(TAG, "Something has gone terribly wrong");
             return;
@@ -117,21 +112,4 @@ public class AccelerometerCompassListener extends MySensorListener implements Se
         mSensorManager.unregisterListener(this);
     }
 
-    /**
-     * Low pass filter to smooth the values according to a specified alpha, a lower alpha means more
-     * smoothing
-     * @param input New values we received
-     * @param previous Old values, null on start
-     * @return Now filtered values
-     */
-    private float[] lowPass(float[] input, float[] previous) {
-        if (previous == null) {
-            return input;
-        }
-        for (int i = 0; i < input.length; i++) {
-            previous[i] = previous[i] + ALPHA * (input[i] - previous[i]);
-        }
-
-        return previous;
-    }
 }
