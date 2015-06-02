@@ -87,9 +87,9 @@ Galaxy S5, and there was no artifact. We suspect this is a hardware
 issue.
 
 ------------IV Interface Design------------
-We wanted to make this a application useful and 
-easy to use. A good deal of work was put into 
-the interface to ensure 
+An application is only as good as its user interface. If your interface is weak,
+it's not going to be  A good deal of work was put into 
+the interface to ensure smooth operation.
 
 - Talk about the difficulties of designing for a small screen.
 
@@ -131,3 +131,13 @@ Tools:
 Lollipop Screen Recorder
 
 Movie Maker
+
+
+PRESENTATION FORMAT 
+
+Motivation - Small video
+
+What we did - 
+Video
+
+What we learned - 
