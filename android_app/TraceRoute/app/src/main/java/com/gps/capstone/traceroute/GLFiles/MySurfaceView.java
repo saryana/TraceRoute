@@ -134,7 +134,7 @@ public class MySurfaceView extends GLSurfaceView {
 
         // This fires if there's only one finger.
         if (numFingers == 1) {
-            computeOneFingerRotation(e);
+            computeOneFingerMotion(e);
         // For two finger touch events.
         } else if (numFingers == 2) {
             // compute the pan and zoom.
@@ -149,7 +149,7 @@ public class MySurfaceView extends GLSurfaceView {
     }
 
     // computes camera rotation for single-finger movement.
-    private void computeOneFingerRotation(MotionEvent e) {
+    private void computeOneFingerMotion(MotionEvent e) {
         float x = e.getX();
         float y = e.getY();
 
@@ -174,9 +174,9 @@ public class MySurfaceView extends GLSurfaceView {
 
                 Quaternion rotation = determineRotation(sphereRadius, x, y, mPreviousX, mPreviousY);
 
-                //float dx = x - mPreviousX;
-                //float dy = y - mPreviousY;
-
+                float dx = x - mPreviousX;
+                float dy = y - mPreviousY;
+                mRenderer.translate(dx, dy);
                 // reverse direction of rotation above the mid-line
                 //if (y > getHeight() / 2) {
                 //    dx = dx * -1;
@@ -227,7 +227,7 @@ public class MySurfaceView extends GLSurfaceView {
             float curYFingerOne = e.getY(fingerOne);
             float curXFingerTwo = e.getX(fingerTwo);
             float curYFingerTwo = e.getY(fingerTwo);
-            computeTwoFingerPan(e, curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
+            //computeTwoFingerPan(e, curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
             computeTwoFingerZoom(e, curXFingerOne, curYFingerOne, curXFingerTwo, curYFingerTwo);
             // update the previous values of the finger positions.
             previousXFingerOne = curXFingerOne;
