@@ -24,14 +24,14 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
 
     // colors for the face.
     private float[] colors = {
-            1.0f, 0.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f,
+            0xC2/255f, 0x18/255f, 0x5B/255f, 1.0f
     };
 
     //                                FRONT          TOP           RIGHT         BOTTOM        LEFT          BACK
@@ -249,6 +249,23 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
         GLES20.glDisableVertexAttribArray(mVertexNormalHandle);
     }
 
+    /**
+     * Sets the cube color to be what's passed in.
+     */
+    public void setColor(int r, int g, int b) {
+        float[] resultColor = {
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f,
+                r/255f, g/255f, b/255f, 1.0f
+        };
+
+        setColors(toStraightArray(resultColor, 4));
+    }
 
     // PRIVATES
 
