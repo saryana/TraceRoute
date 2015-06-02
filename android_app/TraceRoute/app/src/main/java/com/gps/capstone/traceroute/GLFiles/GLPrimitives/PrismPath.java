@@ -32,6 +32,12 @@ public class PrismPath {
     public void addPoint(float[] coords) {
 //        Log.d("AH", "ADDING POINT " + Arrays.toString(coords) + " old value " + Arrays.toString(previousPoint));
         SmartRectangularPrism end = new SmartRectangularPrism();
+        if (path.size() > 1) {
+            SmartRectangularPrism prev = path.get(path.size() - 1);
+            // SEAN THIS IS WHERE WE CHANGE COLORS.
+            prev.setColor(0xE0, 0x40, 0xFB);
+        }
+        end.setColor(0xE9, 0x1E, 0x63);
         end.setDimensions(previousPoint.clone(), coords);
         path.add(end);
         previousPoint = coords;

@@ -147,10 +147,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
                 float[] dropped = {mPrevStepDirection[0], mPrevStepDirection[1], 0, 0};
                 result = VectorLibrary.crossProduct(mPrevStepDirection, dropped);
             }
-
             Matrix.setRotateM(rotation2, 0, 30, result[0], result[1], result[2]);
-
-
 
             // add translation
             Matrix.translateM(modelMatrix, 0, -mPrevStepLocation[0], -mPrevStepLocation[1], -mPrevStepLocation[2]);

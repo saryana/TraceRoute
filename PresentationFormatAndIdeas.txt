@@ -1,7 +1,7 @@
 Presentation: The Core Concepts
 
-Professor Gollagotaka said that the presentation is supposed to be a 3 minute 'pitch'.
-Be conservative with the technical details, and focus on the potential that this technology has.
+Be conservative with the technical details, focus on what we learned.
+
 
 FOCAL POINTS:
 
