@@ -220,6 +220,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     }
     public void clearPath() {
+        // Null Pointer exception?
         mPath.clear();
         mPath = new PrismPath();
         mPrevStepLocation = new float[3];
