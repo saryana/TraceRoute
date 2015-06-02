@@ -4,23 +4,35 @@ This will serve as a narrative script for our video.
 
 ------------I - Sensors-------------
 - Discuss the drawbacks of each sensor.
+ - Accelerometer - Gives decent readings, but can't take too much with acceleration alone. First off we have to negate the affect from gravity which Android does for us, but we really care about is position which requires double integration which is an absolute disaster and we never went very down this path other than trying to find phone position from it which was very 'glitchy' and no longer used anywhere.
+ - Gyroscope - Gives ok readings for change in rotation, but over time it accumulates drift which is a research topic in its own that we were able to use an existing project. This is used for the VR mode.
+ - Rotation Vector - This will give raw position in a quaternion that can correct for drift that the gyroscope accumulates. This is used for the VR mode.
+ - Barometer - The barometer is used for getting the altitude and the only issue is that it bounces quite a lot while being in the same position. While being good at detecting an upward trend, it can't be used for accuracy. Used for the path.
+ - Compass - The compass is as good as any compass can be and that strong interference from other factors will change its reading. Like the other sensors it is very jumpy and we have to have a buffer of 1-2 degrees before we detect a true change in direction which over time will accumulates drift but for shorter paths, (our current goal) it does better. Makes two strong assumptions, user is only walking forward and the phone is flat. Used for the path.
+ - Step Counter - The step counter is accurate within 10% for a day which is good, but our use for it is distance which leads to other problems. Steps for example you have a very short distance forward and a small distance up. We detect the motion up but also detect the motion forward as a regular step which makes it inaccurate.
 
 - Discuss the sensor fusion demo and corrective algorithm.
+ - Low Pass Filter - Low pass filters will put certain weight on the previous readings of the sensor data smoothing it out and we used this originally for when we were using the accelerometer for the phone movement but also experimented by putting it on other sensor readings.
+ - Drift Detector - We used another thesis which was able to detect significant phone drift over time which it would apply the the rotation vector and use that as the base.
+ - Kalman filter - We will see if we can implement this.
  
-- Talk about what role each sensor plays in helping us
-navigate
+- Talk about what role each sensor plays in helping us navigate
+ - Step, compass, barometer. Discussed above really.
 
 ------------II Navigation------------
-- Introduce the concept of pedestrian dead reckoning 
+- Introduce the concept of pedestrian dead reckoning
+ - PDR is the attempt to get the relative position of the user without GPS. Other projects have other units attached to the foot to help with detecting pedestrian movement and many don't keep track of elevation difference which we have indeed attempted to do.
 
 - Talk about the major problems present with our
 current application. 
+ - The accuracy is very variable. We have been able to do loops and detect full circles. Steps aren't fully functional although we are able to indeed detect movement in the Z direction just fine.
 
 - Discuss the different methods of navigation that we pondered 
-(integrating acceleration vector vs. step counting. Compass vs. Gyroscope, ect.)
+(integrating acceleration vector vs. step counting. Compass vs. Gyroscope, etc.)
+ - For distance we can get it two ways, double integrating acceleration which gets a large amount of uncorrectable error or step counting which is a set length based off of the user height that we assume is moving in a given direction. However, with close detection we will be able to do some correction that wouldn't have been able to do before.
 
-- Discuss future developemnts (bluetooth beacons, wifi backscatter, ect.)
-
+- Discuss future developments (bluetooth beacons, wifi backscatter, etc.)
+ - Future iterations of the application would need to have some outside source that it could use to better triangulate the position of the user. The work done with the sensors will still be necessary since it will allow for the beacons or backscatter to not necessary have 100% coverage of the floor plan, supplement the phone in any compounding error. The ideal use case would be that when a user enters a place with limited GPS (mall) they can make a request to the server that has the knowledge of where the beacons are and then from there we will detect the direction and steps as before but use the beacons to push data and help the phone know the positioning when we drift.
 
 ------------III OpenGL ES------------
 - Quick introduction to OpenGL ES.
@@ -69,9 +81,9 @@ This feature took a long time to implement.
 - Talk about difficulties
 On most devices, our application worked as we expected. However, 
 on my model of the Samsung Galaxy S5, there's severe graphical artifacts
-that make the application unuseable. The lines wildy flicker and
+that make the application unusable. The lines wildly flicker and
 produce bizarre patterns across the screen. We tried it on a different model of the
-Galaxy S5, and there was no artifacting. We suspect this is a hardware
+Galaxy S5, and there was no artifact. We suspect this is a hardware
 issue.
 
 ------------IV Interface Design------------
@@ -90,12 +102,12 @@ We needed maximum functionality with minimal clutter.
 As we made progress, our interface became crowded with
 debugging menus and special settings. We needed to consolidate what 
 was important into an intuitive, streamlined interface. We created 
-a crude design mock-up in paint that illistrated the desired application 
+a crude design mock-up in paint that illustrated the desired application 
 structure. In interface design, it's important to present the user
 with as little noise as possible. We tried to minimize the amount
 of interactive objects on the main screen, and we made sure that
 everything was marked with a picture. Additionally, we organized menus in 
-a way that minimizes work required to change user-desireable settings.
+a way that minimizes work required to change user-desirable settings.
 
 The primary screen consists of an interactive 3d model, a menu bar, and a "play"
 button. There's a compass in the lower left corner for orientation.
@@ -110,7 +122,7 @@ One of the primary features we implemented for the sake of usability are floatin
 
 ----------------V Conclusion-----------------
 Although TraceRoute certainly isn't ready for the market, we've learned many invaluable
-things throughout the developement of our application. We've strengthened 
+things throughout the development of our application. We've strengthened 
 our mobile development skills, learned about graphics, and we're now very familiar with
 cell phone sensor systems.
 
