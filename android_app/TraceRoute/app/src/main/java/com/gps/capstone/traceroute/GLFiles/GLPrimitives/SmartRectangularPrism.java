@@ -19,8 +19,7 @@ import java.util.Arrays;
 public class SmartRectangularPrism extends DiffuseLightingObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
-
-    private static final float SIZE = 0.025f;
+    private float SIZE = 0.025f;
 
     // colors for the face.
     private float[] colors = {
@@ -104,6 +103,12 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
      */
     public SmartRectangularPrism() {
         setColors(toStraightArray(colors, 4));
+    }
+
+    // special constructor for manually specifying the size to be something
+    // other than the default.
+    public SmartRectangularPrism(float size) {
+        SIZE = size;
     }
 
 

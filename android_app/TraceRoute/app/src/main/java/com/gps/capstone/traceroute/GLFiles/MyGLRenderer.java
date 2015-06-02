@@ -82,9 +82,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         mAxis = new Axis();
         grid = new TronGrid();
         mPath = new PrismPath();
-        mRectangularPrism = new SmartRectangularPrism();
-        float[] faceOne = {-0.3f, 0.0f, 0.0f};
-        float[] faceTwo = {0.3f, 0.0f, 0.0f};
+        mRectangularPrism = new SmartRectangularPrism(1.2f);
+        float[] faceOne = {-0.6f, 0.0f, 0.0f};
+        float[] faceTwo = {0.6f, 0.0f, 0.0f};
         mRectangularPrism.setDimensions(faceOne, faceTwo);
         mInit = false;
 
