@@ -12,23 +12,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 
 
-public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
+public class FirstRunInfo extends ActionBarActivity implements OnClickListener, OnCheckedChangeListener {
 
     private EditText mStrideLength;
     private EditText mHeightFt;
     private EditText mHeightIn;
     private Button mContinueButton;
-    private Button mCalculateButton;
+//    private Button mCalculateButton;
     private SharedPreferences mSharedPrefs;
     // True signifies a male, false a female
-    private Switch mGenderSwitch;
-
+//    private Switch mGenderSwitch;
+    private RadioGroup mRadioGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +48,10 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
         mHeightFt = (EditText) findViewById(R.id.info_height_feet);
         mHeightIn = (EditText) findViewById(R.id.info_height_inches);
         mContinueButton = (Button) findViewById(R.id.continue_button);
-        mCalculateButton = (Button) findViewById(R.id.calculate_button);
-        mGenderSwitch = (Switch) findViewById(R.id.gender_switch);
-
+        mRadioGroup = (RadioGroup) findViewById(R.id.gender);
+//        mCalculateButton = (Button) findViewById(R.id.calculate_button);
+//        mGenderSwitch = (Switch) findViewById(R.id.gender_switch);
+        mRadioGroup.setOnCheckedChangeListener(this);
         mStrideLength.setText("0");
         mHeightFt.setText("0");
         mHeightIn.setText("0");
@@ -58,7 +61,7 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
     protected void onResume() {
         super.onResume();
         mContinueButton.setOnClickListener(this);
-        mCalculateButton.setOnClickListener(this);
+//        mCalculateButton.setOnClickListener(this);
     }
 
     @Override
@@ -91,7 +94,7 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
         int totalHeight = heightFt * 12 + heightIn;
 
         // Are we calculating the stride?
-        if (v.getId() == R.id.calculate_button) {
+        if (false) {
             strideLength = calculateStride(totalHeight);
             mStrideLength.setText(String.valueOf(strideLength));
 
@@ -127,12 +130,24 @@ public class FirstRunInfo extends ActionBarActivity implements OnClickListener {
     private float calculateStride(int totalHeight) {
         float strideLength;
         // Is this a male?
-        if (mGenderSwitch.isChecked()) {
+//        if (mGenderSwitch.isChecked()) {
             strideLength = .415f * totalHeight;
-        } else {
-            strideLength = .413f * totalHeight;
-        }
-        Log.d("STRIDE LEN", "Male true Female false: " + mGenderSwitch.isChecked() + " stride length " + strideLength);
+//        } else {
+//            strideLength = .413f * totalHeight;
+//        }
+//        Log.d("STRIDE LEN", "Male true Female false: " + mGenderSwitch.isChecked() + " stride length " + strideLength);
         return strideLength;
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
+            case R.id.female:
+                break;
+            case R.id.male:
+                break;
+            case R.id.other:
+                break;
+        }
     }
 }

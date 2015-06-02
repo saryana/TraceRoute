@@ -37,7 +37,6 @@
     <LinearLayout style="@style/InfoPage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -55,22 +54,55 @@
     </LinearLayout>
 
 
-    <Switch
+    <!--<Switch-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Gender"-->
+        <!--android:id="@+id/gender_switch"-->
+        <!--android:textOn="Male"-->
+        <!--android:textOff="Female"-->
+        <!--android:layout_marginTop="@dimen/activity_horizontal_margin"-->
+        <!--/>-->
+    <TextView android:text="Gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gender"
-        android:id="@+id/gender_switch"
-        android:textOn="Male"
-        android:textOff="Female"
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
-        />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider"/>
+    <RadioGroup android:id="@+id/gender"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RadioButton android:id="@+id/female"
+             android:text="Female"
+             android:checked="true"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content"
+             android:textIsSelectable="true"/>
+        <RadioButton android:id="@+id/male"
+             android:text="Male"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content"
+             android:textIsSelectable="true"/>
+        <RadioButton android:id="@+id/other"
+             android:text="Other"
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="wrap_content"
+             android:textIsSelectable="true"/>
+    </RadioGroup>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calculate"
-        android:id="@+id/calculate_button"
-        android:layout_marginTop="@dimen/activity_horizontal_margin" />
+    <!--<Button-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Calculate"-->
+        <!--android:id="@+id/calculate_button"-->
+        <!--android:layout_marginTop="@dimen/activity_horizontal_margin" />-->
 
     <LinearLayout style="@style/InfoPage"
         android:layout_width="match_parent"
@@ -84,7 +116,13 @@
             android:id="@+id/calculated_stride_length_text"
             android:labelFor="@+id/calculated_stride_length"
             />
+        <TextView android:text="0"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"/>
         <EditText
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
