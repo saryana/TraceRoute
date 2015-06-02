@@ -286,7 +286,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     private void computeTranslation() {
         // get the original vector length
-        float length = (float)Math.sqrt(translateX*translateX + translateY*translateY);
+        /*float length = (float)Math.sqrt(translateX*translateX + translateY*translateY);
         float[] translationVector = {translateX, translateY, 0, 0};
         float[] result = new float[4];
         // convert the matrix into the rotation matrix.
@@ -298,13 +298,15 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         for (int i = 0; i < result.length; i++) {
             count += result[i];
         }
-        if (count != 0.0f) {
+        //if (count != 0.0f) {
             Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], -ratio*result[2]);
-        }
+        //}
+        */
+        Matrix.translateM(mModelMatrix, 0, translateX, translateY, 0);
     }
 
     private void computeZoom() {
-        float[] zoomVector = {0, 0, 0, zoomAmount};
+        /*float[] zoomVector = {0, 0, 0, zoomAmount};
         float[] result = new float[4];
         Matrix.multiplyMV(result, 0, mModelMatrix, 0, zoomVector, 0);
         float vectorLength = VectorLibrary.vectorLength(result);
@@ -315,6 +317,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         }
         if (count != 0.0f) {
             Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
-        }
+        }*/
+        Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
     }
 }
