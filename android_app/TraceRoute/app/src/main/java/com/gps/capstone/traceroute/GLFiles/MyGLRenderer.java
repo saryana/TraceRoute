@@ -58,12 +58,18 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float[] mPrevStepLocation;
     private float[] mPrevStepDirection;
 
+    // FRAMERATE
+    private long startTime;
+    private long endTime;
+
     public MyGLRenderer(Context context) {
         this.context = context;
         Matrix.setIdentityM(mModelMatrix, 0);
     }
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
+        startTime = System.currentTimeMillis();
+
         // Does this break if it is in the constructor? Yes - we get an OpenGL error.
         mGraphicsEnvironment = new ProgramManager(context);
         // THIS HAS TO BE THE SECOND CALL. Set all drawable objects
@@ -94,6 +100,17 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     }
 
     public void onDrawFrame(GL10 unused) {
+        // cap at 40fps.
+        endTime = System.currentTimeMillis();
+        long dt = endTime - startTime;
+        if (dt < 25) {
+            try {
+                Thread.sleep(25 - dt);
+            } catch (Exception e) {}
+        }
+        startTime = System.currentTimeMillis();
+
+
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
@@ -284,11 +301,22 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             count += result[i];
         }
         if (count != 0.0f) {
-            Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], -ratio*result[2]);
+            Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], ratio*result[2]);
         }
     }
 
     private void computeZoom() {
-        Matrix.translateM(mModelMatrix, 0, 0, 0, zoomAmount);
+        float[] zoomVector = {0, 0, 0, zoomAmount};
+        float[] result = new float[4];
+        Matrix.multiplyMV(result, 0, mModelMatrix, 0, zoomVector, 0);
+        float vectorLength = VectorLibrary.vectorLength(result);
+        float ratio = zoomAmount / vectorLength;
+        float count = 0;
+        for (int i = 0; i < result.length; i++) {
+            count += result[i];
+        }
+        if (count != 0.0f) {
+            Matrix.translateM(mModelMatrix, 0, ratio*result[0], ratio*result[1], ratio*result[2]);
+        }
     }
 }
