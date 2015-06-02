@@ -6,11 +6,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,41 +34,8 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
     private int mTotalHeightVal;
     private StrideLength mStrideType;
 
-    @Override
-    public boolean onKey(View v, int keyCode, KeyEvent event) {
-        String val;
-        switch (v.getId()) {
-            // Update the view on each key press hopefully only once. unless the user is mean.
-            case R.id.info_height_feet:
-                val = mHeightFt.getText().toString();
-                if (val.length() == 0) break;
-                mHeightFtVal = Integer.valueOf(val);
-                if (mHeightFtVal > 3) {
-                    mContinueButton.setEnabled(true);
-                }
-                calculateStride();
-                break;
-            case R.id.info_height_inches:
-                val = mHeightIn.getText().toString();
-                if (val.length() == 0) break;
-                mHeightInVal = Integer.valueOf(val);
-                calculateStride();
-                break;
-            // Are we doing a manual override of the stride length
-            case R.id.calculated_stride_length_edit:
-                val = mStrideLengthEdit.getText().toString();
-                if (val.length() == 0) break;
-                mStrideLength = Float.valueOf(val);
-                if (mStrideLength > 30) {
-                    mContinueButton.setEnabled(true);
-                }
-                break;
-        }
-        return false;
-    }
-
     private enum StrideLength {
-        MALE(.415f), FEMALE(.413f), OTHER(.414f);
+        MALE(.415f), FEMALE(.413f), INTERSEX(.414f);
 
         private float strideLength;
 
@@ -170,10 +134,43 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
             case R.id.male:
                 mStrideType = StrideLength.MALE;
                 break;
-            case R.id.other:
-                mStrideType = StrideLength.OTHER;
+            case R.id.intersex:
+                mStrideType = StrideLength.INTERSEX;
                 break;
         }
         calculateStride();
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        String val;
+        switch (v.getId()) {
+            // Update the view on each key press hopefully only once. unless the user is mean.
+            case R.id.info_height_feet:
+                val = mHeightFt.getText().toString();
+                if (val.length() == 0) break;
+                mHeightFtVal = Integer.valueOf(val);
+                if (mHeightFtVal > 3) {
+                    mContinueButton.setEnabled(true);
+                }
+                calculateStride();
+                break;
+            case R.id.info_height_inches:
+                val = mHeightIn.getText().toString();
+                if (val.length() == 0) break;
+                mHeightInVal = Integer.valueOf(val);
+                calculateStride();
+                break;
+            // Are we doing a manual override of the stride length
+            case R.id.calculated_stride_length_edit:
+                val = mStrideLengthEdit.getText().toString();
+                if (val.length() == 0) break;
+                mStrideLength = Float.valueOf(val);
+                if (mStrideLength > 30) {
+                    mContinueButton.setEnabled(true);
+                }
+                break;
+        }
+        return false;
     }
 }

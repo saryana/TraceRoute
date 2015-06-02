@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -120,8 +122,10 @@ public class OpenGLActivity extends BasicActivity
                         " and you can move your path around or save it.")
                 .setTarget(new ViewTarget(mFabStart))
                 .doNotBlockTouches()
+                .hideOnTouchOutside()
                 .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
                 .setShowcaseEventListener(this).build();
+        mSV.hideButton();
         n++;
     }
 
@@ -393,8 +397,11 @@ public class OpenGLActivity extends BasicActivity
                             "pan around the map.")
                     .setTarget(new ViewTarget(mPointer))
                     .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
+                    .hideOnTouchOutside()
+                    .doNotBlockTouches()
                     .setShowcaseEventListener(this)
                     .build();
+            mSV.hideButton();
         }
     }
 
