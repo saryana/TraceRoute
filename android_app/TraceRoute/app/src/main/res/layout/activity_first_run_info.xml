@@ -23,7 +23,7 @@
             android:text="Height In Feet"
             android:id="@+id/height_text"/>
 
-        <EditText
+        <EditText android:text="0"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -31,7 +31,6 @@
             android:selectAllOnFocus="true"
             android:id="@+id/info_height_feet"
             />
-
     </LinearLayout>
 
     <LinearLayout style="@style/InfoPage"
@@ -44,25 +43,17 @@
             android:text="Height Inches"
             android:labelFor="@+id/info_height_inches"
             android:id="@+id/height_inches_text"/>
-        <EditText
+        <EditText android:text="0"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="number"
             android:selectAllOnFocus="true"
+            android:focusable="true"
             android:id="@+id/info_height_inches"/>
     </LinearLayout>
 
 
-    <!--<Switch-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Gender"-->
-        <!--android:id="@+id/gender_switch"-->
-        <!--android:textOn="Male"-->
-        <!--android:textOff="Female"-->
-        <!--android:layout_marginTop="@dimen/activity_horizontal_margin"-->
-        <!--/>-->
     <TextView android:text="Gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,66 +73,61 @@
              android:layout_width="0dp"
              android:layout_weight="1"
              android:layout_height="wrap_content"
+             android:focusable="false"
              android:textIsSelectable="true"/>
         <RadioButton android:id="@+id/male"
              android:text="Male"
              android:layout_width="0dp"
              android:layout_weight="1"
              android:layout_height="wrap_content"
+             android:focusable="false"
              android:textIsSelectable="true"/>
         <RadioButton android:id="@+id/other"
              android:text="Other"
              android:layout_width="0dp"
              android:layout_weight="1"
              android:layout_height="wrap_content"
+             android:focusable="false"
              android:textIsSelectable="true"/>
     </RadioGroup>
-
-    <!--<Button-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Calculate"-->
-        <!--android:id="@+id/calculate_button"-->
-        <!--android:layout_marginTop="@dimen/activity_horizontal_margin" />-->
 
     <LinearLayout style="@style/InfoPage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/stride_length_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="Stride Length (inches)"
-            android:id="@+id/calculated_stride_length_text"
-            android:labelFor="@+id/calculated_stride_length"
+            android:labelFor="@+id/calculated_stride_length_edit"
             />
-        <TextView android:text="0"
+        <TextView android:id="@+id/calculated_stride_length_text"
+            android:text="0.0"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="visible"/>
         <EditText
+            android:text="0.0"
             android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:selectAllOnFocus="true"
-            android:id="@+id/calculated_stride_length"
+            android:id="@+id/calculated_stride_length_edit"
             />
     </LinearLayout>
-
-    <LinearLayout style="@style/InfoPage"
-        android:gravity="bottom"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Continue!"
-            android:id="@+id/continue_button"/>
-
+        android:layout_height="match_parent">
+        <Button android:layout_gravity="bottom"
+            android:enabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Continue!"
+                android:id="@+id/continue_button"/>
     </LinearLayout>
-
 </LinearLayout>
