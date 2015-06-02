@@ -9,7 +9,7 @@
 
 
         <TextView android:id="@+id/height_text"
-        android:text="@string/height_text"
+        android:text="@string/height_feet_text"
         android:layout_width="175dp"
         android:layout_height="wrap_content" />
 

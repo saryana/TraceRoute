@@ -1,11 +1,12 @@
 package com.gps.capstone.traceroute;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
@@ -17,16 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
+import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
 
 
-public class FirstRunInfo extends AppCompatActivity implements OnClickListener, OnCheckedChangeListener, OnKeyListener {
+public class UserInfoActivity extends BasicActivity implements
+                        OnClickListener,
+                        OnCheckedChangeListener,
+                        OnKeyListener {
 
     private TextView mStrideLengthText;
     private EditText mStrideLengthEdit;
     private EditText mHeightFt;
     private EditText mHeightIn;
     private Button mContinueButton;
-    private SharedPreferences mSharedPrefs;
     private RadioGroup mRadioGroup;
     private float mStrideLength;
     private int mHeightFtVal;
@@ -35,7 +39,7 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
     private StrideLength mStrideType;
 
     private enum StrideLength {
-        MALE(.415f), FEMALE(.413f), INTERSEX(.414f);
+        MALE(.415f), FEMALE(.413f), INTERSEX(.413f);
 
         private float strideLength;
 
@@ -52,21 +56,7 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!mSharedPrefs.getBoolean(getString(R.string.pref_key_first_run), true)) {
-            Intent i = new Intent(this, OpenGLActivity.class);
-            startActivity(i);
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_first_run_info);
-
-        mStrideLength = 0;
-        mHeightInVal = 0;
-        mHeightFtVal = 0;
-        mTotalHeightVal = 0;
-        mStrideType = StrideLength.FEMALE;
 
         mContinueButton = (Button) findViewById(R.id.continue_button);
         mHeightFt = (EditText) findViewById(R.id.info_height_feet);
@@ -75,6 +65,41 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
         mStrideLengthEdit = (EditText) findViewById(R.id.calculated_stride_length_edit);
         mStrideLengthText = (TextView) findViewById(R.id.calculated_stride_length_text);
 
+        boolean gotUserInfo = SharedPrefUtil.getBoolean(this, R.string.pref_key_got_user_info, false);
+
+        if (gotUserInfo) {
+            mStrideLength = SharedPrefUtil.getFloat(this, R.string.pref_key_stride_length, 0f);
+            mHeightFtVal = SharedPrefUtil.getInt(this, R.string.pref_key_height_ft, 0);
+            mHeightInVal = SharedPrefUtil.getInt(this, R.string.pref_key_height_in, 0);
+            mTotalHeightVal = SharedPrefUtil.getInt(this, R.string.pref_key_total_height_in, 0);
+            mStrideType = StrideLength.values()[SharedPrefUtil.getInt(this, R.string.pref_key_stride_type, 0)];
+            mContinueButton.setEnabled(true);
+
+            mHeightFt.setText(String.valueOf(mHeightFtVal));
+            mHeightIn.setText(String.valueOf(mHeightInVal));
+            mStrideLengthEdit.setText(String.valueOf(mStrideLength));
+            mStrideLengthText.setText(String.valueOf(mStrideLength));
+            int id = R.id.female;
+            if (mStrideType == StrideLength.INTERSEX) {
+                id = R.id.intersex;
+            } else if (mStrideType == StrideLength.MALE) {
+                id = R.id.male;
+            }
+            mRadioGroup.check(id);
+        } else {
+            mStrideLength = 0;
+            mHeightInVal = 0;
+            mHeightFtVal = 0;
+            mTotalHeightVal = 0;
+            mStrideType = StrideLength.FEMALE;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_user_info, menu);
+        return true;
     }
 
     @Override
@@ -87,6 +112,7 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
         mHeightFt.setOnKeyListener(this);
         mHeightIn.setOnKeyListener(this);
         mStrideLengthEdit.setOnKeyListener(this);
+        // ideally block out the up key when the user hasn't entered in the info
     }
 
     @Override
@@ -98,18 +124,35 @@ public class FirstRunInfo extends AppCompatActivity implements OnClickListener, 
                 break;
             case R.id.continue_button:
                 if (mStrideLength < 20) {
-                    Toast.makeText(FirstRunInfo.this, "Please enter a valid height", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserInfoActivity.this, R.string.error_text_height, Toast.LENGTH_SHORT).show();
                 } else {
-                    mSharedPrefs.edit()
-                            .putString(getString(R.string.pref_key_height_ft), "" + mHeightFtVal)
-                            .putString(getString(R.string.pref_key_height_in), "" + mHeightInVal)
-                            .putInt(getString(R.string.pref_key_total_height_in), mTotalHeightVal)
-                            .putFloat(getString(R.string.pref_key_stride_length), mStrideLength)
-                            .apply();
+                    saveValues();
                     Intent i = new Intent(this, OpenGLActivity.class);
                     startActivity(i);
                 }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            if (mStrideLength > 20) {
+                saveValues();
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Save all the values into the preferences
+     */
+    private void saveValues() {
+        SharedPrefUtil.putInt(this, R.string.pref_key_height_ft, mHeightFtVal);
+        SharedPrefUtil.putInt(this, R.string.pref_key_height_in, mHeightInVal);
+        SharedPrefUtil.putInt(this, R.string.pref_key_total_height_in, mHeightFtVal);
+        SharedPrefUtil.putFloat(this, R.string.pref_key_stride_length, mStrideLength);
+        SharedPrefUtil.putInt(this, R.string.pref_key_stride_type, mStrideType.ordinal());
+        SharedPrefUtil.putBoolean(this, R.string.pref_key_got_user_info, true);
     }
 
     /**

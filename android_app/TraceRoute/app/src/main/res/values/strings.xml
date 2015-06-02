@@ -28,9 +28,9 @@
     <string name="direction_vector">Direction Vectors</string>
     <string name="action_open_gl">OpenGL</string>
     <string name="action_user_setting">User Settings</string>
-    <string name="action_debug_console">Debug</string>
+    <string name="action_debug_console">Debug Console</string>
     <string name="title_activity_user_settings">UserSettings</string>
-    <string name="height_text">Height (Feet and Inches)</string>
+    <string name="height_feet_text">Height in Feet</string>
     <string name="feet">ft</string>
     <string name="inches">inches</string>
     <string name="title_user_settings">BasicActivity</string>
@@ -66,5 +66,27 @@
     <string name="pref_key_degree_filter">prefKeyDegreeFilter</string>
     <string name="successful_save">Successfully saved path %s</string>
     <string name="unsuccessful_save">Could not save file %s, try removing previous paths</string>
+    <string name="compass_description">Compass pointer</string>
+    <string name="zero_text">0</string>
+    <string name="height_inches_text">Height in Inches</string>
+    <string name="gender_text">Gender</string>
+    <string name="female_text">Female</string>
+    <string name="intersex_text">Intersex</string>
+    <string name="male_text">Male</string>
+    <string name="stride_length_text">Stride Length (inches)</string>
+    <string name="continue_text">Continue!</string>
 
+    <string name="showcase_path_start_text">Path Starter</string>
+    <string name="showcase_path_start_description">Tapping the start button wil start recording your path in 3D space! At the end press stop and you can move your path around or save it.</string>
+
+    <string name="path_complete_title">Path Complete! Save Path?</string>
+    <string name="positive_button_path">Save!</string>
+    <string name="negative_button_path">Cancel</string>
+    <string name="showcase_vr_mode">VR Mode</string>
+    <string name="showcase_vr_mode_description">VR Mode allows you to observe your path in 3D space. User mode will allow you to pan around the map.</string>
+    <string name="error_text_height">Please enter in a valid height.</string>
+    <string name="pref_key_stride_type">prefKeyStrideType</string>
+    <string name="pref_key_got_user_info">prefKeyGotUserInfo</string>
+    <string name="path_manager_text">Path Manager</string>
+    <string name="developer_settings_title">Dev Settings</string>
 </resources>

@@ -15,13 +15,13 @@
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   tools:layout="@layout/fragment_open_gl"/>
-        <ImageView android:id="@+id/pointer"
+        <ImageView android:id="@+id/compass"
                    android:layout_width="100dp"
                    android:layout_height="100dp"
                    android:scaleType="fitStart"
                    android:src="@drawable/compass"
                    android:layout_gravity="bottom"
-                   android:contentDescription="Compass pointer"/>
+                   android:contentDescription="@string/compass_description"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_start"

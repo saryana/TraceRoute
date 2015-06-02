@@ -16,7 +16,7 @@ import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.debugConsole.DebugConsole;
 
-public class Prefs1Frag extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+public class Prefs1Frag extends PreferenceFragment {
     // Tag for logging
     private final String TAG = getClass().getSimpleName();
 
@@ -45,16 +45,16 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
     public void onResume() {
         super.onResume();
         // Make it so when we change any preferences we can see it here
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .registerOnSharedPreferenceChangeListener(this);
+//        PreferenceManager.getDefaultSharedPreferences(getActivity())
+//                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         // Don't forget to unregister the listener when we are done
-        PreferenceManager.getDefaultSharedPreferences(getActivity())
-                .unregisterOnSharedPreferenceChangeListener(this);
+//        PreferenceManager.getDefaultSharedPreferences(getActivity())
+//                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -90,15 +90,5 @@ public class Prefs1Frag extends PreferenceFragment implements OnSharedPreference
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.pref_key_height_ft)) || key.equals(getString(R.string.pref_key_height_in))) {
-            int height = 12 * Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_ft), "" + 0));
-            height += Integer.valueOf(sharedPreferences.getString(getString(R.string.pref_key_height_in), "" + 0));
-            // Put the total height in the pref
-            sharedPreferences.edit().putInt(getString(R.string.pref_key_total_height_in), height).apply();
-        }
     }
 }

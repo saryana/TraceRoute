@@ -4,25 +4,29 @@
     <PreferenceCategory
         android:title="User Settings">
 
-        <EditTextPreference android:key="@string/pref_key_height_ft"
-            android:title="Height (Feet)"
-            android:defaultValue="0"
-            android:inputType="number"
-            android:summary="Height in feet"
-            android:dialogTitle="Height (ft)" />
+        <!--<EditTextPreference android:key="@string/pref_key_height_ft"-->
+            <!--android:title="Height (Feet)"-->
+            <!--android:defaultValue="0"-->
+            <!--android:inputType="number"-->
+            <!--android:summary="Height in feet"-->
+            <!--android:dialogTitle="Height (ft)" />-->
 
-        <EditTextPreference android:key="@string/pref_key_height_in"
-            android:title="Height (Inches)"
-            android:defaultValue="0"
-            android:inputType="number"
+        <!--<EditTextPreference android:key="@string/pref_key_height_in"-->
+            <!--android:title="Height (Inches)"-->
+            <!--android:defaultValue="0"-->
+            <!--android:inputType="number"-->
 
-            android:summary="Height in inches"
-            android:dialogTitle="Height (in)" />
+            <!--android:summary="Height in inches"-->
+            <!--android:dialogTitle="Height (in)" />-->
         <CheckBoxPreference android:key="@string/pref_key_first_run"
             android:title="First Run"
             android:summary="Simulate first run of the application"
             android:defaultValue="true"
             />
+        <CheckBoxPreference android:key="@string/pref_key_got_user_info"
+                android:title="Got User Info"
+                android:summary="Starts up the screen in the UserInfoActivity to get the user height"
+                android:defaultValue="false"/>
 
     </PreferenceCategory>
 

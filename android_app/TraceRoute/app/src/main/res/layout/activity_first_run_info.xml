@@ -7,7 +7,7 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:orientation="vertical"
-                tools:context="com.gps.capstone.traceroute.FirstRunInfo">
+                tools:context="com.gps.capstone.traceroute.UserInfoActivity">
 
     <LinearLayout style="@style/InfoPage"
         android:layout_width="match_parent"
@@ -20,10 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:labelFor="@+id/info_height_feet"
-            android:text="Height In Feet"
+            android:text="@string/height_feet_text"
             android:id="@+id/height_text"/>
 
-        <EditText android:text="0"
+        <EditText android:text="@string/zero_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -40,10 +40,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Height Inches"
+            android:text="@string/height_inches_text"
             android:labelFor="@+id/info_height_inches"
             android:id="@+id/height_inches_text"/>
-        <EditText android:text="0"
+        <EditText android:text="@string/zero_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -54,7 +54,7 @@
     </LinearLayout>
 
 
-    <TextView android:text="Gender"
+    <TextView android:text="@string/gender_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <RadioButton android:id="@+id/female"
-             android:text="Female"
+             android:text="@string/female_text"
              android:checked="true"
              android:layout_width="0dp"
              android:layout_weight="1"
@@ -76,14 +76,14 @@
              android:focusable="false"
              android:textIsSelectable="true"/>
         <RadioButton android:id="@+id/intersex"
-                     android:text="Intersex"
+                     android:text="@string/intersex_text"
                      android:layout_width="0dp"
                      android:layout_weight="1"
                      android:layout_height="wrap_content"
                      android:focusable="false"
                      android:textIsSelectable="true"/>
         <RadioButton android:id="@+id/male"
-             android:text="Male"
+             android:text="@string/male_text"
              android:layout_width="0dp"
              android:layout_weight="1"
              android:layout_height="wrap_content"
@@ -100,17 +100,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="Stride Length (inches)"
+            android:text="@string/stride_length_text"
             android:labelFor="@+id/calculated_stride_length_edit"
             />
         <TextView android:id="@+id/calculated_stride_length_text"
-            android:text="0.0"
+            android:text="@string/zero_text"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="visible"/>
         <EditText
-            android:text="0.0"
+            android:text="@string/zero_text"
             android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             android:enabled="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Continue!"
+                android:text="@string/continue_text"
                 android:id="@+id/continue_button"/>
     </LinearLayout>
 </LinearLayout>

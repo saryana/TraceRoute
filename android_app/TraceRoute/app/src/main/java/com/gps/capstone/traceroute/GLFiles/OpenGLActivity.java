@@ -3,12 +3,10 @@ package com.gps.capstone.traceroute.GLFiles;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +22,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +30,11 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.gps.capstone.traceroute.BasicActivity;
+import com.gps.capstone.traceroute.UserInfoActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
+import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
@@ -77,7 +76,7 @@ public class OpenGLActivity extends BasicActivity
         setContentView(R.layout.activity_open_gl);
         mStepCount = 0;
 
-        mPointer = (ImageView) findViewById(R.id.pointer);
+        mPointer = (ImageView) findViewById(R.id.compass);
         mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
         mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
         mFabSave = (FloatingActionButton) findViewById(R.id.fab_save);
@@ -91,7 +90,6 @@ public class OpenGLActivity extends BasicActivity
         super.onResume();
         getWindow().addFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         mFabStart.setOnClickListener(this);
         mFabStop.setOnClickListener(this);
         mFabSave.setOnClickListener(this);
@@ -107,9 +105,14 @@ public class OpenGLActivity extends BasicActivity
         mDataProvider.register();
         mDataProvider.rotateModeFromGyroscope(USE_GYROSCOPE);
 
-        if (sharedPreferences.getBoolean(getString(R.string.pref_key_first_run), true)) {
+        if (!SharedPrefUtil.getBoolean(this, R.string.pref_key_got_user_info, false)) {
+            Intent i = new Intent(this, UserInfoActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(i);
+            finish();
+        } else if (SharedPrefUtil.getBoolean(this, R.string.pref_key_first_run, true)) {
+            SharedPrefUtil.putBoolean(this, R.string.pref_key_first_run, false);
             firstRun();
-            sharedPreferences.edit().putBoolean(getString(R.string.pref_key_first_run), false).apply();
         }
 
         BusProvider.getInstance().register(this);
@@ -117,9 +120,8 @@ public class OpenGLActivity extends BasicActivity
 
     private void firstRun() {
         mSV = new ShowcaseView.Builder(this)
-                .setContentTitle("Path Starter")
-                .setContentText("Hit play to start recording your path in 3D space! At the end press stop" +
-                        " and you can move your path around or save it.")
+                .setContentTitle(R.string.showcase_path_start_text)
+                .setContentText(R.string.showcase_path_start_description)
                 .setTarget(new ViewTarget(mFabStart))
                 .doNotBlockTouches()
                 .hideOnTouchOutside()
@@ -140,15 +142,15 @@ public class OpenGLActivity extends BasicActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (!super.onOptionsItemSelected(item)) {
-            if (item.getItemId() == R.id.remove) {
-                for (String file : fileList()) {
-                    if (deleteFile(file)) {
-                        Log.d(TAG, "removed " + file);
-                    } else {
-                        Log.d(TAG, "Could not remove " + file);
-                    }
-                }
-            } else if(item.getItemId() == R.id.load_path) {
+//            if (item.getItemId() == R.id.remove) {
+//                for (String file : fileList()) {
+//                    if (deleteFile(file)) {
+//                        Log.d(TAG, "removed " + file);
+//                    } else {
+//                        Log.d(TAG, "Could not remove " + file);
+//                    }
+//                }
+            /*} else */if(item.getItemId() == R.id.load_path) {
                 loadAction();
             }
         }
@@ -182,22 +184,22 @@ public class OpenGLActivity extends BasicActivity
             stopPath();
         } else if (id == R.id.fab_save) {
             // This is where we would alert them if they want to save the path
-            AlertDialog.Builder builder = new Builder(this);
-            builder.setTitle("Path Complete! Save Path?");
-            builder.setPositiveButton("Save!!!", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    saveAction();
-                    dialog.dismiss();
-                }
-            }).setNegativeButton("NO!", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
+            AlertDialog.Builder builder = new Builder(this)
+                    .setTitle(R.string.path_complete_title)
+                    .setPositiveButton(R.string.positive_button_path, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAction();
+                            dialog.dismiss();
+                        }
+                    }).setNegativeButton(R.string.negative_button_path, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
             builder.show();
-        } else if (id == R.id.pointer) {
+        } else if (id == R.id.compass) {
             // Switch using the gyroscope
             USE_GYROSCOPE = !USE_GYROSCOPE;
             USER_CONTROL = !USER_CONTROL;
@@ -392,9 +394,8 @@ public class OpenGLActivity extends BasicActivity
         if (n == 1) {
             n = 0;
             mSV = new ShowcaseView.Builder(this)
-                    .setContentTitle("VR Mode")
-                    .setContentText("VR Mode allows you to observe your path in 3D space. User mode will allow you to " +
-                            "pan around the map.")
+                    .setContentTitle(R.string.showcase_vr_mode)
+                    .setContentText(R.string.showcase_vr_mode_description)
                     .setTarget(new ViewTarget(mPointer))
                     .setStyle(com.github.amlcurran.showcaseview.R.style.ShowcaseButton)
                     .hideOnTouchOutside()
@@ -407,9 +408,11 @@ public class OpenGLActivity extends BasicActivity
 
     @Override
     public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+        // Currently not used
     }
 
     @Override
     public void onShowcaseViewShow(ShowcaseView showcaseView) {
+        // Currently not used
     }
 }

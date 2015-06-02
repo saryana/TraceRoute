@@ -3,27 +3,25 @@ package com.gps.capstone.traceroute;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.debugConsole.DebugConsole;
 import com.gps.capstone.traceroute.settings.UserSettings;
-import com.gps.capstone.traceroute.R;
 
 
 /**
  * This will hopefully help with code reduction and make it so we can
  * have common code for activities here
  */
-public abstract class BasicActivity extends ActionBarActivity {
+public abstract class BasicActivity extends AppCompatActivity {
     // Tag for debugging
     private final String TAG = getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get status bar color somehow
-//        getWindow().addFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
     }
 
     /**
@@ -46,6 +44,9 @@ public abstract class BasicActivity extends ActionBarActivity {
                 i = new Intent(this, DebugConsole.class);
                 break;
             case R.id.user_settings:
+                i = new Intent(this, UserInfoActivity.class);
+                break;
+            case R.id.developer_settings:
                 i = new Intent(this, UserSettings.class);
                 break;
         }
