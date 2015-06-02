@@ -301,7 +301,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
             count += result[i];
         }
         if (count != 0.0f) {
-            Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], ratio*result[2]);
+            Matrix.translateM(mModelMatrix, 0, -ratio*result[0], -ratio*result[1], -ratio*result[2]);
         }
     }
 
