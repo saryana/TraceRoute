@@ -20,7 +20,7 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
     // The thickness of the rectangular prism. I made this an internal object
     // field because it's not going to change very often.
 
-    private static final float SIZE = 0.1f;
+    private static final float SIZE = 0.025f;
 
     // colors for the face.
     private float[] colors = {
