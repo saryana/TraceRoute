@@ -89,4 +89,5 @@
     <string name="pref_key_got_user_info">prefKeyGotUserInfo</string>
     <string name="path_manager_text">Path Manager</string>
     <string name="developer_settings_title">Dev Settings</string>
+    <string name="title_activity_path_manager">Path Manager</string>
 </resources>

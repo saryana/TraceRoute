@@ -109,6 +109,7 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
     // other than the default.
     public SmartRectangularPrism(float size) {
         SIZE = size;
+        setColors(toStraightArray(colors, 4));
     }
 
 

@@ -11,14 +11,12 @@ import com.gps.capstone.traceroute.GLFiles.GLPrimitives.DrawableObject;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.PrismPath;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.SmartRectangularPrism;
 import com.gps.capstone.traceroute.GLFiles.GLPrimitives.TronGrid;
-import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.math.Matrix4;
+import com.gps.capstone.traceroute.GLFiles.math.Quaternion;
 import com.gps.capstone.traceroute.GLFiles.util.ProgramManager;
 import com.gps.capstone.traceroute.GLFiles.util.VectorLibrary;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.Utils.SensorUtil;
-
-import java.util.Arrays;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -106,7 +104,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         if (dt < 25) {
             try {
                 Thread.sleep(25 - dt);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
         }
         startTime = System.currentTimeMillis();
 
@@ -220,7 +220,10 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     }
     public void clearPath() {
-        mPath.clear();
+        // Null Pointer exception?
+        if (mPath != null) {
+            mPath.clear();
+        }
         mPath = new PrismPath();
         mPrevStepLocation = new float[3];
         mPrevStepDirection = new float[3];

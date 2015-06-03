@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.debugConsole.DebugConsole;
+import com.gps.capstone.traceroute.settings.PathManagerActivity;
 import com.gps.capstone.traceroute.settings.UserSettings;
 
 
@@ -48,6 +49,9 @@ public abstract class BasicActivity extends AppCompatActivity {
                 break;
             case R.id.developer_settings:
                 i = new Intent(this, UserSettings.class);
+                break;
+            case R.id.path_manager_action:
+                i = new Intent(this, PathManagerActivity.class);
                 break;
         }
 
