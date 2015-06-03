@@ -1,47 +1,68 @@
 package com.gps.capstone.traceroute.settings;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Switch;
+import android.widget.TextView;
 
+import com.gps.capstone.traceroute.AdaptingAdapter;
+import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 
-public class PathManagerActivity extends AppCompatActivity implements OnCheckedChangeListener {
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
+public class PathManagerActivity extends AppCompatActivity implements OnItemClickListener, OnCheckedChangeListener, OnClickListener {
 
     // Do we remember list views?
     private ListView mListView;
-    private ArrayAdapter<String> mArraySingle;
-    private ArrayAdapter<String> mArrayMulti;
-    private RadioGroup mRadioGroup;
-    private boolean mIsLoadSelected;
-
+    private AdaptingAdapter mArrayMulti;
+    private Switch mManageModeSwitch;
+    private Button mLoadButton;
+    private Button mDeleteButton;
+    private boolean mIsMulti;
+    private int lastSelected;
+    private ArrayList<String> mFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_path_manager);
         mListView = ((ListView) findViewById(R.id.saved_paths_list));
-        mRadioGroup = (RadioGroup) findViewById(R.id.list_view_action);
+        mManageModeSwitch = (Switch) findViewById(R.id.manage_paths);
+        mLoadButton = (Button) findViewById(R.id.load_path_button);
+        mDeleteButton = (Button) findViewById(R.id.delete_path_button);
+        lastSelected = -1;
+        mFiles = new ArrayList<>();
+        Collections.addAll(mFiles, fileList());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mRadioGroup.setOnCheckedChangeListener(this);
-        mIsLoadSelected = true;
-
-        mArrayMulti = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice, fileList());
-        mArraySingle = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, fileList());
-        if (mIsLoadSelected) {
-            mListView.setAdapter(mArraySingle);
-        } else {
-            mListView.setAdapter(mArrayMulti);
-        }
+        mManageModeSwitch.setOnCheckedChangeListener(this);
+        mArrayMulti = new AdaptingAdapter(this, R.layout.saved_path, mFiles, mIsMulti);
+        mListView.setAdapter(mArrayMulti);
+        mListView.setOnItemClickListener(this);
+        mLoadButton.setOnClickListener(this);
+        mDeleteButton.setOnClickListener(this);
+        mIsMulti = mManageModeSwitch.isChecked();
+        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -52,27 +73,83 @@ public class PathManagerActivity extends AppCompatActivity implements OnCheckedC
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        CheckBox checkBox = (CheckBox) view.findViewById(R.id.delete_check_mark);
+        if (mIsMulti) {
+            if (checkBox.isChecked()) {
+                view.setBackgroundColor(Color.TRANSPARENT);
+            } else {
+                view.setBackgroundColor(getResources().getColor(R.color.secondaryText));
+            }
+            checkBox.setChecked(!checkBox.isChecked());
+        } else {
+            checkBox.setChecked(true);
+            view.setBackgroundColor(getResources().getColor(R.color.secondaryText));
+            if (lastSelected != -1 && lastSelected != position) {
+                View v = parent.getChildAt(lastSelected);
+                if (v == null) return;
+                v.setBackgroundColor(Color.TRANSPARENT);
+                ((CheckBox) v.findViewById(R.id.delete_check_mark)).setChecked(false);
+            }
+            lastSelected = position;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        mIsLoadSelected = checkedId == R.id.load_path;
-        if (mIsLoadSelected) {
-            mListView.setAdapter(mArraySingle);
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        mArrayMulti.setMultiSelect(isChecked);
+        mIsMulti = isChecked;
+        Log.d("CHECK", isChecked + "");
+        if (mIsMulti) {
+            mDeleteButton.setVisibility(View.VISIBLE);
+            mLoadButton.setVisibility(View.GONE);
         } else {
-            mListView.setAdapter(mArrayMulti);
+            clearChecks();
+            lastSelected = -1;
+            mLoadButton.setVisibility(View.VISIBLE);
+            mDeleteButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void clearChecks() {
+        for (int i = 0; i < mListView.getChildCount(); i++) {
+            View v = mListView.getChildAt(i);
+            if (v == null){
+                continue;
+            }
+            v.setBackgroundColor(Color.TRANSPARENT);
+            ((CheckBox) v.findViewById(R.id.delete_check_mark)).setChecked(false);
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.load_path_button) {
+            Intent intent = new Intent(this, OpenGLActivity.class);
+            intent.putExtra("PATH_POS", mFiles.get(lastSelected));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+            finish();
+        } else if (v.getId() == R.id.delete_path_button) {
+            int size = mFiles.size();
+            for (int i = 0; i < size; i++) {
+                View view = mListView.getChildAt(i);
+                if (view == null){
+                    continue;
+                }
+                view.setBackgroundColor(Color.TRANSPARENT);
+                if (((CheckBox) view.findViewById(R.id.delete_check_mark)).isChecked()) {
+                    if (deleteFile(mFiles.get(i))) {
+                        mFiles.remove(i);
+                        i--;
+                        size--;
+                        Log.d("IT WORKED", "YES");
+                    } else {
+                        Log.d("WE FUCKED", "NO");
+                    }
+                }
+            }
+            mArrayMulti.notifyDataSetChanged();
         }
     }
 }

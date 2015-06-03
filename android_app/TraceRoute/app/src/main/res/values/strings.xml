@@ -90,4 +90,7 @@
     <string name="path_manager_text">Path Manager</string>
     <string name="developer_settings_title">Dev Settings</string>
     <string name="title_activity_path_manager">Path Manager</string>
+    <string name="path_name_header">Path Name:</string>
+    <string name="delete_path_button_text">Delete Paths</string>
+    <string name="manage_path_text">Manage Paths</string>
 </resources>

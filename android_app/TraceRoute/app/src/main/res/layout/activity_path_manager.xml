@@ -8,47 +8,48 @@
                 android:paddingBottom="@dimen/activity_vertical_margin"
                 android:orientation="vertical"
                 tools:context="com.gps.capstone.traceroute.settings.PathManagerActivity">
-
-    <TextView
-        android:text="@string/path_manager_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:textSize="20sp"/>
-    <TextView android:text="Pick action"
-        android:focusable="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <View android:layout_marginBottom="5dp"
-          android:layout_marginTop="5dp"
-        android:background="@color/divider"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp" />
-    <RadioGroup android:id="@+id/list_view_action"
-        android:layout_marginBottom="10dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
+        android:layout_weight="1">
+        <TextView
+            android:text="@string/manage_path_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:textSize="17sp"/>
+        <Switch android:id="@+id/manage_paths"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:checked="false"/>
+    </LinearLayout>
+    <TextView android:text="By managing paths you can select multiple paths and delte them"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <RadioButton
-            android:id="@+id/load_path"
-            android:text="Load"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textIsSelectable="true"
-            android:focusable="false"
-            android:checked="true"/>
-        <RadioButton android:id="@+id/delete_path"
-            android:text="Delete"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:textIsSelectable="true"
-            android:focusable="false"/>
-    </RadioGroup>
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
 
     <ListView android:id="@+id/saved_paths_list"
        android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:divider="@color/divider"
+        android:dividerHeight="1dp"></ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <Button android:id="@+id/load_path_button"
+            android:text="@string/load_path_button_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <Button android:id="@+id/delete_path_button"
+            android:visibility="gone"
+            android:text="@string/delete_path_button_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
 </LinearLayout>

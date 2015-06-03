@@ -67,7 +67,6 @@ public class GyroscopeListener extends MySensorListener implements SensorEventLi
      */
     public GyroscopeListener(Context context) {
         super(context);
-        Log.i(TAG, "IN GYRO");
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mRotationVector = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         mRotationVectorValues = new float[4];

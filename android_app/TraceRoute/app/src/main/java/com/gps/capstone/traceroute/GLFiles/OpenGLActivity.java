@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -75,7 +77,10 @@ public class OpenGLActivity extends BasicActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_gl);
         mStepCount = 0;
-
+        SensorManager sensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
+        for (Sensor sensor : sensorManager.getSensorList(Sensor.TYPE_ALL)) {
+            Log.d("SENSOR INFO", String.format("name %s, vendor %s,\n type %d, version %d", sensor.getName(), sensor.getVendor(), sensor.getType(), sensor.getVersion()));
+        }
         mPointer = (ImageView) findViewById(R.id.compass);
         mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
         mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
@@ -104,6 +109,7 @@ public class OpenGLActivity extends BasicActivity
 
         mDataProvider.register();
         mDataProvider.rotateModeFromGyroscope(USE_GYROSCOPE);
+        BusProvider.getInstance().register(this);
 
         if (!SharedPrefUtil.getBoolean(this, R.string.pref_key_got_user_info, false)) {
             Intent i = new Intent(this, UserInfoActivity.class);
@@ -113,9 +119,28 @@ public class OpenGLActivity extends BasicActivity
         } else if (SharedPrefUtil.getBoolean(this, R.string.pref_key_first_run, true)) {
             SharedPrefUtil.putBoolean(this, R.string.pref_key_first_run, false);
             firstRun();
+        } else if (getIntent().hasExtra("PATH_POS")) {
+            String fileName = getIntent().getStringExtra("PATH_POS");
+//            FOLLOW_PATH = true;
+            USE_SHAPE = false;
+            USE_GYROSCOPE = false;
+            USER_CONTROL = false;
+            mDataProvider.rotateModeFromGyroscope(false);
+            Toast.makeText(this, "Loading path " + fileName, Toast.LENGTH_SHORT).show();
+            FileInputStream fis;
+            try {
+                fis = openFileInput(fileName);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                // Not sure how to get rid of such warning
+                ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
+                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
+                BusProvider.getInstance().post(new NewPathFromFile(path));
+                ois.close();
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        BusProvider.getInstance().register(this);
     }
 
     private void firstRun() {
