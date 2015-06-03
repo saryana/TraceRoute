@@ -5,15 +5,29 @@ Be conservative with the technical details, focus on what we learned.
 
 FOCAL POINTS:
 
-I - NAVIGATION WITHOUT GPS
-The focus of TraceRoute is for interior navigation. We want to produce an app
-that gives clear and reliable navigation data inside of buildings, where GPS can't be used.
-We're striving to get the navigational system to be as accurate or more accurate than GPS.
-
-The GPS uses lots of power, so this can provide a lower power alternative to GPS navigation as well.
+I - 
 
 II - ENHANCED NAVIGATION WITH BEACONS
 Although pedestrian dead reckoning with just the device can be unreliable, there's
 a huge potential to enhance the capabilities by using wifi or other wireless signals
 to correct for compounding navigational errors.
+
+
+Presentation:
+
+I - Motiviation
+- (Funny Video)
+
+- NAVIGATION WITHOUT GPS
+The focus of TraceRoute is for interior navigation. We want to produce an app
+that gives clear and reliable navigation data inside of buildings, where GPS can't be used.
+We're striving to get the navigational system to be as accurate or more accurate than GPS.
+The GPS uses lots of power, so this can provide a lower power alternative to GPS navigation as well.
+
+II - What we did
+- We made an application that fufills the basic requirement. 
+
+- Problems still present with the application.
+
+- (In class demo)
 
