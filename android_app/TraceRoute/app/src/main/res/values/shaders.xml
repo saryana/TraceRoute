@@ -75,6 +75,11 @@
 
             <!-- Set the final vertex color to be the raw color times the
             lambert factor. -->
+
+            <!-- Ambient light threshold -->
+            if (diffuse &lt; 0.4) {
+                diffuse = diffuse + min((0.5 - diffuse), diffuse + 0.2);
+            }
             v_Color = a_Color * diffuse;
 
             gl_PointSize = uThickness;
