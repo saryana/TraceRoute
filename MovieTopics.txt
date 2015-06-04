@@ -49,17 +49,23 @@ capable of drawing a 3-dimensional object.
 
 Here's a summary of what I learned about graphics:
 In a digital world, all objects are made up of a mesh of triangles. Even round things, such as spheres
-and cyliders are approximated using a polyhdedron of triangles.
+and cyliders are approximated using a polyhdedrons composed entirely of triangles. The more triangles you have,
+the more detailed your models are.
 
-The verticies of every triangle in the world is represented by an array of 9 floating-point numbers.
-There's an X, Y, and Z coordinate for each vertex. Complex objects are just arrays of coordinates
-that define each vertex of each triangle that makes up the object.
+Take a look at the stones along this pathway. When you limit the amount of triangles used to draw this scene,
+you get a flat, lifeless, geometric surfaces. As you increase the triangle count, you can see how the 
+path comes to life. Every facet of each stone is carefully detailed, and you can see chips and cracks 
+in the stonework. 
+
+The verticies of every triangle in the world are represented by an array of 9 floating-point numbers.
+There's an X, Y, and Z coordinate for each vertex. Complex objects are just arrays of triangular
+verticies that combine to form the object.
 
 
-In order to move objects around in the 3d world, you take the array of their 
+In order to move objects around in the 3d world, you take their 
 vertex coordinates and 'combine' them with a matrix, which is another array.
-Depending on the type of operation you do, the verticies in the original array 
-can be translated to another location, rotated, or both. 
+Depending on the type of operation you do, the verticies for the object 
+can be translated, rotated, or both. 
 
 - Discuss the shaders and diffuse lighting.
 A 3d model is no good without basic lighting effects. I had to learn 
@@ -70,7 +76,7 @@ source. The steeper the angle between the light source and the face, the less li
 
 
 - Talk about panning and scrolling
-In order to make the 3d model more useful, we decided to add 
+In order to make the 3d model more useful, we decided to try and add 
 panning, rotation, and zooming capabilities. The user can use a single
 finger gesture to rotate the model, and can use two fingers to 
 pan and zoom the camera. Although this seems simple to implement, 
@@ -83,12 +89,16 @@ On most devices, our application worked as we expected. However,
 on my model of the Samsung Galaxy S5, there's severe graphical artifacts
 that make the application unusable. The lines wildly flicker and
 produce bizarre patterns across the screen. We tried it on a different model of the
-Galaxy S5, and there was no artifact. We suspect this is a hardware
+Galaxy S5, and there was no artifacting. We suspect this is a hardware
 issue.
+
+To add insult to injury, my galaxy S5 also drew erratic, inconsistent paths and the
+gyroscope didn't work well for model rotation. The application was barely useable
+on my phone.
 
 ------------IV Interface Design------------
 An application is only as good as its user interface. If your interface is weak,
-it's not going to be  A good deal of work was put into 
+it's not going to be a good experience for the user. A good deal of work was put into 
 the interface to ensure smooth operation.
 
 - Talk about the difficulties of designing for a small screen.
@@ -113,7 +123,16 @@ The primary screen consists of an interactive 3d model, a menu bar, and a "play"
 button. There's a compass in the lower left corner for orientation.
 When the play button is pressed, the application begins recording the user's path.
 A 'save' bubble also appears, which allows the user to save their path to the phone for
-later viewing. 
+later viewing.
+
+If you tap the compass after finishing a path, you enter 'free mode', where you can
+move the camera around the world and examine your path. 
+
+A user settings menu is accesable via a button on the top menu bar. When clicked, 
+the user can modify their height and gender, and re-compute their stide length.
+
+Also on the top bar is a path management button. When pressed, the user is brought
+to a path management screen where they can view old paths and delete them.
 
 
 One of the primary features we implemented for the sake of usability are floating icons:
