@@ -16,9 +16,6 @@
         android:icon="@drawable/ic_action_settings"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
-    <item android:id="@+id/load_path"
-          android:title="Load Path"
-          app:showAsAction="never"/>
     <item android:id="@+id/developer_settings"
           android:title="@string/developer_settings_title"
           app:showAsAction="never"/>

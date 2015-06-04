@@ -119,35 +119,6 @@ public class OpenGLActivity extends BasicActivity
         } else if (SharedPrefUtil.getBoolean(this, R.string.pref_key_first_run, true)) {
             SharedPrefUtil.putBoolean(this, R.string.pref_key_first_run, false);
             firstRun();
-        } else if (getIntent().hasExtra("PATH_POS")) {
-//            String fileName = getIntent().getStringExtra("PATH_POS");
-//            FOLLOW_PATH = true;
-            // Currently doesn't work need to go to the overflow menu
-            USE_SHAPE = false;
-            USE_GYROSCOPE = false;
-            USER_CONTROL = true;
-            mDataProvider.rotateModeFromGyroscope(false);
-            ArrayList<float[]> path = (ArrayList<float[]>) getIntent().getSerializableExtra("PATH_POS");
-//            Toast.makeText(this, "Loading path " + fileName, Toast.LENGTH_SHORT).show();
-//            FileInputStream fis;
-//            try {
-//                fis = openFileInput(fileName);
-//                ObjectInputStream ois = new ObjectInputStream(fis);
-//                // Not sure how to get rid of such warning
-//                ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
-//                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
-                int z = 0;
-                // Draws the path slowly by doing things on the main thread
-                for (int j = 0; j< 90_099_999; j++) {
-                    z *= j * 9;
-                }
-                BusProvider.getInstance().post(new NewLocationEvent(null, null));
-                BusProvider.getInstance().post(new NewPathFromFile(path, true));
-//                ois.close();
-//                fis.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
         }
     }
 
@@ -170,16 +141,6 @@ public class OpenGLActivity extends BasicActivity
         mDataProvider.unregister();
         BusProvider.getInstance().unregister(this);
         getWindow().clearFlags(LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (!super.onOptionsItemSelected(item) &&
-                item.getItemId() == R.id.load_path) {
-                loadAction();
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -253,47 +214,6 @@ public class OpenGLActivity extends BasicActivity
     }
 
     /**
-     * Dialog box that will look through our filesystem and find a previously saved path
-     */
-    private void loadAction() {
-        AlertDialog.Builder builder = new Builder(this);
-        builder.setTitle("Load Path from file:");
-        final ArrayAdapter<String> files = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice);
-        files.addAll(fileList());
-        builder.setAdapter(files, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                USE_SHAPE = false;
-                USE_GYROSCOPE = false;
-                USER_CONTROL = true;
-                mDataProvider.rotateModeFromGyroscope(false);
-                String pathName = files.getItem(which);
-                Log.d(TAG, "Loading path " + pathName);
-                FileInputStream fis;
-                try {
-                    fis = openFileInput(pathName);
-                    ObjectInputStream ois = new ObjectInputStream(fis);
-                    // Not sure how to get rid of such warning
-                    ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
-                    BusProvider.getInstance().post(new NewPathFromFile(path, true));
-                    ois.close();
-                    fis.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
-
-    /**
      * Dialog interface that will get the path name and save it to file
      */
     private void saveAction() {
@@ -329,7 +249,7 @@ public class OpenGLActivity extends BasicActivity
 
     /* Data change listeners */
 
-    private float mHeading = 0;
+        private float mHeading = 0;
     private float mAltitude;
 
     @Subscribe

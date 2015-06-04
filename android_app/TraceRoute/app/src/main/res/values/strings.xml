@@ -77,7 +77,7 @@
     <string name="continue_text">Continue!</string>
 
     <string name="showcase_path_start_text">Path Starter</string>
-    <string name="showcase_path_start_description">Tapping the start button wil start recording your path in 3D space! At the end press stop and you can move your path around or save it.</string>
+    <string name="showcase_path_start_description">Tapping the start button will start recording your path in 3D space! At the end press stop and you can move your path around or save it.</string>
 
     <string name="path_complete_title">Path Complete! Save Path?</string>
     <string name="positive_button_path">Save!</string>
