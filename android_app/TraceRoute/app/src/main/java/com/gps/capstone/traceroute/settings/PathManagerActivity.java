@@ -21,6 +21,8 @@ import android.widget.Toast;
 import com.gps.capstone.traceroute.AdaptingAdapter;
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.Utils.BusProvider;
+import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -38,7 +40,7 @@ public class PathManagerActivity extends AppCompatActivity implements OnItemClic
     private boolean mIsMulti;
     private int lastSelected;
     private ArrayList<String> mFiles;
-
+    boolean response;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,31 @@ public class PathManagerActivity extends AppCompatActivity implements OnItemClic
         lastSelected = -1;
         mFiles = new ArrayList<>();
         Collections.addAll(mFiles, fileList());
+        response = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (!response) return;
+        FileInputStream fis;
+        ArrayList<float[]> path = null;
+        try {
+            String fileName = mFiles.get(lastSelected);
+            fis = openFileInput(fileName);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            // Not sure how to get rid of such warning
+            path = (ArrayList<float[]>) ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        OpenGLActivity.USE_SHAPE = false;
+        OpenGLActivity.USE_GYROSCOPE = false;
+        OpenGLActivity.USER_CONTROL = true;
+
+        BusProvider.getInstance().post(new NewPathFromFile(path, true));
     }
 
     @Override
@@ -125,26 +152,8 @@ public class PathManagerActivity extends AppCompatActivity implements OnItemClic
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.load_path_button) {
-            Intent intent = new Intent(this, OpenGLActivity.class);
-            FileInputStream fis;
-            ArrayList<float[]> path = null;
-            try {
-                String fileName = mFiles.get(lastSelected);
-                fis = openFileInput(fileName);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                // Not sure how to get rid of such warning
-                path = (ArrayList<float[]>) ois.readObject();
-                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
-                Log.d("PATHMANAGER", "Path " + fileName + " " + path.size() + " elements");
-                ois.close();
-                fis.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            intent.putExtra("PATH_POS", path);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(intent);
-//            finish();
+            response = true;
+            finish();
         } else if (v.getId() == R.id.delete_path_button) {
             int size = mFiles.size();
             for (int i = 0; i < size; i++) {
