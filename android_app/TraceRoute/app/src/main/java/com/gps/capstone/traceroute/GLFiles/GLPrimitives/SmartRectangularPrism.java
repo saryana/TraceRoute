@@ -85,9 +85,9 @@ public class SmartRectangularPrism extends DiffuseLightingObject {
             0, 0, -1,
 
             // BACK
-            0, 0, 0,
-            0, 0, 0,
-            0, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
+            1, 0, 0,
 
             1, 0, 0,
             1, 0, 0,
