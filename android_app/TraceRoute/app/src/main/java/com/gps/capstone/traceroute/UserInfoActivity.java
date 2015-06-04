@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +25,7 @@ import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
 public class UserInfoActivity extends BasicActivity implements
                         OnClickListener,
                         OnCheckedChangeListener,
-                        OnKeyListener {
+                        OnKeyListener, OnFocusChangeListener {
 
     private TextView mStrideLengthText;
     private EditText mStrideLengthEdit;
@@ -111,6 +112,10 @@ public class UserInfoActivity extends BasicActivity implements
         // Lets update the value as they are pressing the key
         mHeightFt.setOnKeyListener(this);
         mHeightIn.setOnKeyListener(this);
+        // The reason for this is that lollipop won't always
+        // register the key presses like it does on sdk < 21
+        mHeightIn.setOnFocusChangeListener(this);
+        mHeightFt.setOnFocusChangeListener(this);
         mStrideLengthEdit.setOnKeyListener(this);
         // ideally block out the up key when the user hasn't entered in the info
     }
@@ -216,4 +221,30 @@ public class UserInfoActivity extends BasicActivity implements
         }
         return false;
     }
+
+
+    // Only needed because of lollipop fault
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        String val;
+        switch (v.getId()) {
+            // Update the view on each key press hopefully only once. unless the user is mean.
+            case R.id.info_height_feet:
+                val = mHeightFt.getText().toString();
+                if (val.length() == 0) break;
+                mHeightFtVal = Integer.valueOf(val);
+                if (mHeightFtVal > 3) {
+                    mContinueButton.setEnabled(true);
+                }
+                calculateStride();
+                break;
+            case R.id.info_height_inches:
+                val = mHeightIn.getText().toString();
+                if (val.length() == 0) break;
+                mHeightInVal = Integer.valueOf(val);
+                calculateStride();
+                break;
+        }
+    }
+
 }
