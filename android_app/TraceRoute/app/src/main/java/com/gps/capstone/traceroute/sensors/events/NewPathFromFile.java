@@ -7,8 +7,10 @@ import java.util.ArrayList;
  */
 public class NewPathFromFile {
     public ArrayList<float[]> path;
+    public boolean wait;
 
-    public NewPathFromFile(ArrayList<float[]> path) {
+    public NewPathFromFile(ArrayList<float[]> path, boolean wait) {
         this.path = path;
+        this.wait = wait;
     }
 }

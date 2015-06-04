@@ -15,4 +15,13 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
+    <style name="CustomCard" parent="CardView.Dark">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>

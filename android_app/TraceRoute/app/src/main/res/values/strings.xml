@@ -93,4 +93,12 @@
     <string name="path_name_header">Path Name:</string>
     <string name="delete_path_button_text">Delete Paths</string>
     <string name="manage_path_text">Manage Paths</string>
+    <string name="save_path_positive_button">Save Path!</string>
+    <string name="save_path_dialog_title">What is the name of this path?</string>
+    <string name="end_altitude_card">End Altitude:</string>
+    <string name="start_altitude_card">Start Altitude:</string>
+    <string name="change_altitude_card">Change in Altitude</string>
+    <string name="card_title">Path Statistics</string>
+    <string name="step_card">Steps:</string>
+    <string name="distance_card">Distance:</string>
 </resources>

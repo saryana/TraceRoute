@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.Sensor;
+import android.graphics.PorterDuff.Mode;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.InputType;
@@ -12,9 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
@@ -32,8 +35,8 @@ import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
 import com.gps.capstone.traceroute.BasicActivity;
-import com.gps.capstone.traceroute.UserInfoActivity;
 import com.gps.capstone.traceroute.R;
+import com.gps.capstone.traceroute.UserInfoActivity;
 import com.gps.capstone.traceroute.Utils.BusProvider;
 import com.gps.capstone.traceroute.Utils.SensorUtil.EventType;
 import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
@@ -78,9 +81,6 @@ public class OpenGLActivity extends BasicActivity
         setContentView(R.layout.activity_open_gl);
         mStepCount = 0;
         SensorManager sensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
-        for (Sensor sensor : sensorManager.getSensorList(Sensor.TYPE_ALL)) {
-            Log.d("SENSOR INFO", String.format("name %s, vendor %s,\n type %d, version %d", sensor.getName(), sensor.getVendor(), sensor.getType(), sensor.getVersion()));
-        }
         mPointer = (ImageView) findViewById(R.id.compass);
         mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
         mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
@@ -120,26 +120,34 @@ public class OpenGLActivity extends BasicActivity
             SharedPrefUtil.putBoolean(this, R.string.pref_key_first_run, false);
             firstRun();
         } else if (getIntent().hasExtra("PATH_POS")) {
-            String fileName = getIntent().getStringExtra("PATH_POS");
+//            String fileName = getIntent().getStringExtra("PATH_POS");
 //            FOLLOW_PATH = true;
+            // Currently doesn't work need to go to the overflow menu
             USE_SHAPE = false;
             USE_GYROSCOPE = false;
-            USER_CONTROL = false;
+            USER_CONTROL = true;
             mDataProvider.rotateModeFromGyroscope(false);
-            Toast.makeText(this, "Loading path " + fileName, Toast.LENGTH_SHORT).show();
-            FileInputStream fis;
-            try {
-                fis = openFileInput(fileName);
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                // Not sure how to get rid of such warning
-                ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
-                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
-                BusProvider.getInstance().post(new NewPathFromFile(path));
-                ois.close();
-                fis.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ArrayList<float[]> path = (ArrayList<float[]>) getIntent().getSerializableExtra("PATH_POS");
+//            Toast.makeText(this, "Loading path " + fileName, Toast.LENGTH_SHORT).show();
+//            FileInputStream fis;
+//            try {
+//                fis = openFileInput(fileName);
+//                ObjectInputStream ois = new ObjectInputStream(fis);
+//                // Not sure how to get rid of such warning
+//                ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
+//                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
+                int z = 0;
+                // Draws the path slowly by doing things on the main thread
+                for (int j = 0; j< 90_099_999; j++) {
+                    z *= j * 9;
+                }
+                BusProvider.getInstance().post(new NewLocationEvent(null, null));
+                BusProvider.getInstance().post(new NewPathFromFile(path, true));
+//                ois.close();
+//                fis.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
@@ -166,20 +174,12 @@ public class OpenGLActivity extends BasicActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (!super.onOptionsItemSelected(item)) {
-//            if (item.getItemId() == R.id.remove) {
-//                for (String file : fileList()) {
-//                    if (deleteFile(file)) {
-//                        Log.d(TAG, "removed " + file);
-//                    } else {
-//                        Log.d(TAG, "Could not remove " + file);
-//                    }
-//                }
-            /*} else */if(item.getItemId() == R.id.load_path) {
+        if (!super.onOptionsItemSelected(item) &&
+                item.getItemId() == R.id.load_path) {
                 loadAction();
-            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -208,22 +208,23 @@ public class OpenGLActivity extends BasicActivity
             mFabStop.hide(true);
             stopPath();
         } else if (id == R.id.fab_save) {
-            // This is where we would alert them if they want to save the path
-            AlertDialog.Builder builder = new Builder(this)
-                    .setTitle(R.string.path_complete_title)
-                    .setPositiveButton(R.string.positive_button_path, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            saveAction();
-                            dialog.dismiss();
-                        }
-                    }).setNegativeButton(R.string.negative_button_path, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            builder.show();
+            saveAction();
+//            // This is where we would alert them if they want to save the path
+//            AlertDialog.Builder builder = new Builder(this)
+//                    .setTitle(R.string.path_complete_title)
+//                    .setPositiveButton(R.string.positive_button_path, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            saveAction();
+//                            dialog.dismiss();
+//                        }
+//                    }).setNegativeButton(R.string.negative_button_path, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//            builder.show();
         } else if (id == R.id.compass) {
             // Switch using the gyroscope
             USE_GYROSCOPE = !USE_GYROSCOPE;
@@ -270,6 +271,10 @@ public class OpenGLActivity extends BasicActivity
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                USE_SHAPE = false;
+                USE_GYROSCOPE = false;
+                USER_CONTROL = true;
+                mDataProvider.rotateModeFromGyroscope(false);
                 String pathName = files.getItem(which);
                 Log.d(TAG, "Loading path " + pathName);
                 FileInputStream fis;
@@ -278,7 +283,7 @@ public class OpenGLActivity extends BasicActivity
                     ObjectInputStream ois = new ObjectInputStream(fis);
                     // Not sure how to get rid of such warning
                     ArrayList<float[]> path = (ArrayList<float[]>) ois.readObject();
-                    BusProvider.getInstance().post(new NewPathFromFile(path));
+                    BusProvider.getInstance().post(new NewPathFromFile(path, true));
                     ois.close();
                     fis.close();
                 } catch (Exception e) {
@@ -300,11 +305,11 @@ public class OpenGLActivity extends BasicActivity
      */
     private void saveAction() {
         AlertDialog.Builder builder = new Builder(this);
-        builder.setTitle("Save Path to File Name:");
+        builder.setTitle(R.string.save_path_dialog_title);
         final EditText editText = new EditText(this);
         editText.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(editText);
-        builder.setPositiveButton("Save Path!", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.save_path_positive_button, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String pathName = editText.getText().toString();
@@ -322,7 +327,11 @@ public class OpenGLActivity extends BasicActivity
                 dialog.dismiss();
             }
         });
-        builder.show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+                                        WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+        dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        dialog.show();
     }
 
     /* Data change listeners */
@@ -336,34 +345,21 @@ public class OpenGLActivity extends BasicActivity
             float heading = ((float) (Math.round(Math.toDegrees(newDataEvent.values[0]) + 360) %360));
             if (Math.abs(heading - mHeading) > 1) {
                 RotateAnimation ra;
+                float end = heading;
+                // Special case for when it is switching from greater to smaller
                 if (heading < 20 && mHeading > 340) {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading + 360,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f
-                    );
+                    end = heading + 360;
                 } else if (heading > 340 && mHeading < 20) {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading - 360,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f
-                    );
-                } else {
-                    ra = new RotateAnimation(
-                            mHeading,
-                            heading,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f,
-                            Animation.RELATIVE_TO_SELF,
-                            0.5f
-                    );
+                    end = heading - 360;
                 }
+                ra = new RotateAnimation(
+                        mHeading,
+                        end,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f,
+                        Animation.RELATIVE_TO_SELF,
+                        0.5f
+                );
                 ra.setInterpolator(new AccelerateDecelerateInterpolator());
                 ra.setDuration(250);
                 ra.setFillAfter(true);
@@ -379,23 +375,54 @@ public class OpenGLActivity extends BasicActivity
     @Subscribe
     public void onPathEnd(PathCompletion path) {
         mCard = LayoutInflater.from(this).inflate(R.layout.card, null);
+        View.OnTouchListener touchListener = new OnTouchListener() {
+            float startX = 0;
+            float deltaX = 0;
+            float originalX = 0;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getActionMasked()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getRawX();
+                        originalX = v.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        deltaX = startX - event.getRawX();
+                        v.setX(originalX - deltaX);
+                        deltaX = Math.abs(deltaX);
+                        v.setAlpha(1 - (deltaX / (v.getWidth()/2)));
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (deltaX > ((View)v.getParent()).getWidth() / 3) {
+                            ((FrameLayout) findViewById(R.id.frame)).removeView(v);
+                        } else {
+                            v.setX(originalX);
+                            v.setAlpha(1);
+                        }
+                        break;
+                }
+                float y = event.getRawY();
+                float height = v.getHeight()/2;
+                float viewY = v.getY();
+                return y >= viewY && y <= viewY + height;
+            }
+        };
+        mCard.setOnTouchListener(touchListener);
         ((TextView) mCard.findViewById(R.id.total_steps)).setText(String.valueOf(path.steps));
-        ((TextView) mCard.findViewById(R.id.total_distance)).setText(String.valueOf(Math.round(path.distance)));
+        double distanceFT = Math.round(path.distance) / 12;
+        double distanceIN = Math.round(path.distance) % 12;
+        ((TextView) mCard.findViewById(R.id.total_distance)).setText(distanceFT + " feet " + distanceIN + " inches");
         int roundedInitialAlt = Math.round(path.initialAltitude);
         int roundedFinalAlt = Math.round(path.finalAltitude);
-        ((TextView) mCard.findViewById(R.id.init_alt)).setText(String.valueOf(roundedInitialAlt));
-        ((TextView) mCard.findViewById(R.id.final_alt)).setText(String.valueOf(roundedFinalAlt));
-        ((TextView) mCard.findViewById(R.id.alt_change)).setText(String.valueOf(roundedFinalAlt-roundedInitialAlt));
-        mCard.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((FrameLayout) findViewById(R.id.frame)).removeView(v);
-            }
-        });
+        ((TextView) mCard.findViewById(R.id.init_alt)).setText(roundedInitialAlt + " feet");
+        ((TextView) mCard.findViewById(R.id.final_alt)).setText(roundedFinalAlt + " feet");
+        ((TextView) mCard.findViewById(R.id.alt_change)).setText(roundedFinalAlt-roundedInitialAlt + " feet");
         ((ViewGroup) findViewById(R.id.frame)).addView(mCard);
-
     }
 
+    /**
+     * This was used for debugging and can probably be removed...
+     */
     @Subscribe
     public void onData(NewLocationEvent locationEvent) {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.prev_step_values);

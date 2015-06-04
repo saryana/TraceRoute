@@ -109,10 +109,12 @@ public class MySurfaceView extends GLSurfaceView {
         mRenderer.clearPath();
         ArrayList<float[]> path = pathEvent.path;
         OpenGLActivity.FOLLOW_PATH = true;
-        // TODO THIS IS AWFUL
+        Thread.yield();
+        // TODO THIS IS AWFUL - THIS ISN'T NECESSARY IF WE DON'T WANT TO ANIMATE THE STEPS
         for (int i = 0; i < path.size(); i++) {
-            mRenderer.addNewFace(path.get(i).clone());
+            mRenderer.addNewFace(path.get(i));
             requestRender();
+            if (!pathEvent.wait) continue;
             int z = 0;
             // Draws the path slowly by doing things on the main thread
             for (int j = 0; j< 90_099_999; j++) {

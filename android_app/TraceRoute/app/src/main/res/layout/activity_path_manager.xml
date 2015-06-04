@@ -33,9 +33,10 @@
     <ListView android:id="@+id/saved_paths_list"
        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:animateLayoutChanges="true"
         android:layout_weight="9"
         android:divider="@color/divider"
-        android:dividerHeight="1dp"></ListView>
+        android:dividerHeight="1dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

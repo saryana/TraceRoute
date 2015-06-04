@@ -16,15 +16,15 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gps.capstone.traceroute.AdaptingAdapter;
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
 import com.gps.capstone.traceroute.R;
 
-import java.lang.reflect.Array;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class PathManagerActivity extends AppCompatActivity implements OnItemClickListener, OnCheckedChangeListener, OnClickListener {
@@ -126,10 +126,25 @@ public class PathManagerActivity extends AppCompatActivity implements OnItemClic
     public void onClick(View v) {
         if (v.getId() == R.id.load_path_button) {
             Intent intent = new Intent(this, OpenGLActivity.class);
-            intent.putExtra("PATH_POS", mFiles.get(lastSelected));
+            FileInputStream fis;
+            ArrayList<float[]> path = null;
+            try {
+                String fileName = mFiles.get(lastSelected);
+                fis = openFileInput(fileName);
+                ObjectInputStream ois = new ObjectInputStream(fis);
+                // Not sure how to get rid of such warning
+                path = (ArrayList<float[]>) ois.readObject();
+                Toast.makeText(this, "Loading path " + fileName + " " + path.size(), Toast.LENGTH_SHORT).show();
+                Log.d("PATHMANAGER", "Path " + fileName + " " + path.size() + " elements");
+                ois.close();
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            intent.putExtra("PATH_POS", path);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
-            finish();
+//            finish();
         } else if (v.getId() == R.id.delete_path_button) {
             int size = mFiles.size();
             for (int i = 0; i < size; i++) {
