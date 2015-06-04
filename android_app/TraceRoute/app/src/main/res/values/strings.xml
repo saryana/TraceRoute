@@ -101,4 +101,6 @@
     <string name="card_title">Path Statistics</string>
     <string name="step_card">Steps:</string>
     <string name="distance_card">Distance:</string>
+    <string name="about_action">About And Third Party</string>
+    <string name="title_activity_about">AboutActivity</string>
 </resources>

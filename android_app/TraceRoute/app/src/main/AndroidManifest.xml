@@ -7,7 +7,7 @@
         android:glEsVersion="0x00020000"
         android:required="true" />
     <!-- Permissions we are asking -->
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- Require the senors exist -->
     <uses-feature
@@ -67,6 +67,13 @@
         <activity
             android:name=".settings.PathManagerActivity"
             android:label="@string/title_activity_path_manager" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".GLFiles.OpenGLActivity" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/title_activity_about" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".GLFiles.OpenGLActivity" />

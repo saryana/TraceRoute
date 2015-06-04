@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -21,7 +20,6 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -33,6 +31,7 @@ import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.clans.fab.FloatingActionButton;
+import com.gps.capstone.traceroute.AboutActivity;
 import com.gps.capstone.traceroute.BasicActivity;
 import com.gps.capstone.traceroute.R;
 import com.gps.capstone.traceroute.UserInfoActivity;
@@ -42,13 +41,8 @@ import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
 import com.gps.capstone.traceroute.sensors.SensorDataProvider;
 import com.gps.capstone.traceroute.sensors.events.NewDataEvent;
 import com.gps.capstone.traceroute.sensors.events.NewLocationEvent;
-import com.gps.capstone.traceroute.sensors.events.NewPathFromFile;
 import com.gps.capstone.traceroute.sensors.events.PathCompletion;
 import com.squareup.otto.Subscribe;
-
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
-import java.util.ArrayList;
 
 
 public class OpenGLActivity extends BasicActivity
@@ -120,6 +114,20 @@ public class OpenGLActivity extends BasicActivity
             SharedPrefUtil.putBoolean(this, R.string.pref_key_first_run, false);
             firstRun();
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!super.onOptionsItemSelected(item) &&
+                item.getItemId() == R.id.about) {
+            about();
+            return true;
+        }
+        return false;
+    }
+
+    private void about() {
+        Intent i = new Intent(this, AboutActivity.class);
+        startActivity(i);
     }
 
     private void firstRun() {

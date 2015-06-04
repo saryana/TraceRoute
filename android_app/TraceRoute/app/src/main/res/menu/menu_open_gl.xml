@@ -14,9 +14,13 @@
     <item android:id="@+id/user_settings"
         android:title="@string/action_user_setting"
         android:icon="@drawable/ic_action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="1"
         app:showAsAction="ifRoom" />
     <item android:id="@+id/developer_settings"
           android:title="@string/developer_settings_title"
           app:showAsAction="never"/>
+    <item android:id="@+id/about"
+          android:title="@string/about_action"
+          app:showAsAction="never"
+        android:orderInCategory="3"/>
 </menu>
