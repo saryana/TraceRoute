@@ -89,7 +89,7 @@ On most devices, our application worked as we expected. However,
 on my model of the Samsung Galaxy S5, there's severe graphical artifacts
 that make the application unusable. The lines wildly flicker and
 produce bizarre patterns across the screen. We tried it on a different model of the
-Galaxy S5, and there was no artifact. We suspect this is a hardware
+Galaxy S5, and there was no artifacting. We suspect this is a hardware
 issue.
 
 To add insult to injury, my galaxy S5 also drew erratic, inconsistent paths and the
