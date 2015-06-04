@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.PorterDuff.Mode;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.text.InputType;
@@ -73,6 +72,7 @@ public class OpenGLActivity extends BasicActivity
     private FloatingActionButton mFabStop;
     private FloatingActionButton mFabSave;
     private View mCard;
+    private FrameLayout mFrame;
     int n;
 
     @Override
@@ -80,7 +80,7 @@ public class OpenGLActivity extends BasicActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_gl);
         mStepCount = 0;
-        SensorManager sensorManager = ((SensorManager) getSystemService(SENSOR_SERVICE));
+        mFrame = (FrameLayout) findViewById(R.id.frame);
         mPointer = (ImageView) findViewById(R.id.compass);
         mFabStart = (FloatingActionButton) findViewById(R.id.fab_start);
         mFabStop = (FloatingActionButton) findViewById(R.id.fab_stop);
@@ -198,6 +198,9 @@ public class OpenGLActivity extends BasicActivity
         }
         int id = v.getId();
         if (id == R.id.fab_start) {
+            if (mCard != null && mCard.isShown()) {
+                mFrame.removeView(mCard);
+            }
             mFabStart.hide(true);
             mFabSave.hide(true);
             mFabStop.show(true);
@@ -208,24 +211,14 @@ public class OpenGLActivity extends BasicActivity
             mFabStop.hide(true);
             stopPath();
         } else if (id == R.id.fab_save) {
+            if (mCard != null && mCard.isShown()) {
+                mFrame.removeView(mCard);
+            }
             saveAction();
-//            // This is where we would alert them if they want to save the path
-//            AlertDialog.Builder builder = new Builder(this)
-//                    .setTitle(R.string.path_complete_title)
-//                    .setPositiveButton(R.string.positive_button_path, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            saveAction();
-//                            dialog.dismiss();
-//                        }
-//                    }).setNegativeButton(R.string.negative_button_path, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//            builder.show();
         } else if (id == R.id.compass) {
+            if (mCard != null && mCard.isShown()) {
+                mFrame.removeView(mCard);
+            }
             // Switch using the gyroscope
             USE_GYROSCOPE = !USE_GYROSCOPE;
             USER_CONTROL = !USER_CONTROL;
