@@ -1,0 +1,35 @@
+SEAN - MATERIALS TO GET
+
+FOR EACH VIDEO, RECORD 25-30 SECONDS OF VIDEO
+
+SCREENSHOT: Height and weight page with data entered in
+
+SCREENSHOT: Developer options menu
+
+SCREENSHOT: Main Page
+
+SCREENSHOT: Path management menu
+
+PNG: High quality, high resolution image of our app logo.
+
+VIDEO: Record a path walking in a straight line.
+
+VIDEO: Record another path walking in a staight line.
+
+VIDEO: Walk in a straight line, and walk back to the same starting point.
+
+VIDEO: Walk a large path that confuses the phone and try to arrive at the same spot.
+
+VIDEO: Footage of the sensor fusion demo with cube rotation
+
+VIDEO: Footage of our main screen, rotating the cube
+
+VIDEO: Footage of a path being viewed in VR mode, with gyroscope rotation
+
+VIDEO: Footage of a path being view in free mode, with some random panning and zooming
+
+
+
+
+
+
