@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.View.OnKeyListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,8 +25,9 @@ import com.gps.capstone.traceroute.Utils.SharedPrefUtil;
 public class UserInfoActivity extends BasicActivity implements
                         OnClickListener,
                         OnCheckedChangeListener,
-                        OnKeyListener {
+                        OnKeyListener, OnFocusChangeListener {
 
+    private static final float STRIDE_LENGTH_MIN = 20f;
     private TextView mStrideLengthText;
     private EditText mStrideLengthEdit;
     private EditText mHeightFt;
@@ -111,6 +113,10 @@ public class UserInfoActivity extends BasicActivity implements
         // Lets update the value as they are pressing the key
         mHeightFt.setOnKeyListener(this);
         mHeightIn.setOnKeyListener(this);
+        // The reason for this is that lollipop won't always
+        // register the key presses like it does on sdk < 21
+        mHeightIn.setOnFocusChangeListener(this);
+        mHeightFt.setOnFocusChangeListener(this);
         mStrideLengthEdit.setOnKeyListener(this);
         // ideally block out the up key when the user hasn't entered in the info
     }
@@ -123,7 +129,7 @@ public class UserInfoActivity extends BasicActivity implements
                 mStrideLengthText.setVisibility(View.GONE);
                 break;
             case R.id.continue_button:
-                if (mStrideLength < 20) {
+                if (mStrideLength < STRIDE_LENGTH_MIN) {
                     Toast.makeText(UserInfoActivity.this, R.string.error_text_height, Toast.LENGTH_SHORT).show();
                 } else {
                     saveValues();
@@ -136,7 +142,7 @@ public class UserInfoActivity extends BasicActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mStrideLength > 20) {
+            if (mStrideLength > STRIDE_LENGTH_MIN) {
                 saveValues();
             }
         }
@@ -162,10 +168,18 @@ public class UserInfoActivity extends BasicActivity implements
      * Men ~ .415 Women ~.413 => this only really matters if we want to display distance traveled
      */
     private void calculateStride() {
+        mHeightInVal = Integer.valueOf(mHeightIn.getText().toString());
+        mHeightFtVal = Integer.valueOf(mHeightFt.getText().toString());
+
         mTotalHeightVal = mHeightFtVal * 12 + mHeightInVal;
         mStrideLength = mTotalHeightVal * mStrideType.getStrideLength();
         mStrideLengthText.setText(String.valueOf(mStrideLength));
         mStrideLengthEdit.setText(String.valueOf(mStrideLength));
+        if (mStrideLength > STRIDE_LENGTH_MIN) {
+            mContinueButton.setEnabled(true);
+        } else {
+            mContinueButton.setEnabled(false);
+        }
     }
 
     @Override
@@ -191,29 +205,51 @@ public class UserInfoActivity extends BasicActivity implements
             // Update the view on each key press hopefully only once. unless the user is mean.
             case R.id.info_height_feet:
                 val = mHeightFt.getText().toString();
-                if (val.length() == 0) break;
-                mHeightFtVal = Integer.valueOf(val);
-                if (mHeightFtVal > 3) {
-                    mContinueButton.setEnabled(true);
+                // Did we get input?
+                if (val.length() != 0) {
+                    calculateStride();
                 }
-                calculateStride();
                 break;
             case R.id.info_height_inches:
                 val = mHeightIn.getText().toString();
-                if (val.length() == 0) break;
-                mHeightInVal = Integer.valueOf(val);
-                calculateStride();
+                if (val.length() != 0) {
+                    calculateStride();
+                }
                 break;
             // Are we doing a manual override of the stride length
             case R.id.calculated_stride_length_edit:
                 val = mStrideLengthEdit.getText().toString();
                 if (val.length() == 0) break;
                 mStrideLength = Float.valueOf(val);
-                if (mStrideLength > 30) {
+                if (mStrideLength > STRIDE_LENGTH_MIN) {
                     mContinueButton.setEnabled(true);
                 }
                 break;
         }
         return false;
     }
+
+
+    // Only needed because of lollipop fault
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        String val;
+        switch (v.getId()) {
+            // Update the view on each key press hopefully only once. unless the user is mean.
+            case R.id.info_height_feet:
+                val = mHeightFt.getText().toString();
+                // Did we get input?
+                if (val.length() != 0) {
+                    calculateStride();
+                }
+                break;
+            case R.id.info_height_inches:
+                val = mHeightIn.getText().toString();
+                if (val.length() != 0) {
+                    calculateStride();
+                }
+                break;
+        }
+    }
+
 }
