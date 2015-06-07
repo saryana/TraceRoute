@@ -259,7 +259,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
      */
     public void translate(float x, float y) {
         x *= TRANSLATION_FACTOR;
-        y *= TRANSLATION_FACTOR;
+        y *= -TRANSLATION_FACTOR;
         translateX = x;
         translateY = y;
         if (translateX == Float.NaN || translateY == Float.NaN) {
