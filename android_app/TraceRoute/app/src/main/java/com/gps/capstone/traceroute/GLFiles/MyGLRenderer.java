@@ -240,7 +240,7 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private float zoomAmount;
     private boolean zoomed;
 
-    private static final float TRANSLATION_FACTOR = 0.001f;
+    private static final float TRANSLATION_FACTOR = 0.005f;
     private static final float ZOOM_FACTOR = 0.005f;
 
     /**
