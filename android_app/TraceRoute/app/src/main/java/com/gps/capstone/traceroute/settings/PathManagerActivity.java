@@ -1,6 +1,5 @@
 package com.gps.capstone.traceroute.settings;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Switch;
-import android.widget.Toast;
 
 import com.gps.capstone.traceroute.AdaptingAdapter;
 import com.gps.capstone.traceroute.GLFiles.OpenGLActivity;
@@ -126,7 +124,6 @@ public class PathManagerActivity extends AppCompatActivity implements OnItemClic
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         mArrayMulti.setMultiSelect(isChecked);
         mIsMulti = isChecked;
-        Log.d("CHECK", isChecked + "");
         if (mIsMulti) {
             mDeleteButton.setVisibility(View.VISIBLE);
             mLoadButton.setVisibility(View.GONE);

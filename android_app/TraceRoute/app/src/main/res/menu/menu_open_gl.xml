@@ -6,7 +6,7 @@
           android:title="@string/path_manager_text"
           android:orderInCategory="1"
           app:showAsAction="always"
-          android:icon="@drawable/ic_action_computer" />
+          android:icon="@drawable/ic_action_manager" />
     <item android:id="@+id/debug_console"
         android:title="@string/action_debug_console"
         android:orderInCategory="2"
