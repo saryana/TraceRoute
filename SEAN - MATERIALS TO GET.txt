@@ -28,8 +28,3 @@ VIDEO: Footage of a path being viewed in VR mode, with gyroscope rotation
 
 VIDEO: Footage of a path being view in free mode, with some random panning and zooming
 
-
-
-
-
-
