@@ -1,12 +1,18 @@
 # TraceRoute
 Sean Aryana, Andrew Gammon, and Hao-Lin (Keith) Yang
 
+This is our capstone project at the University of Washignton where we built an indoor navigation Android application. This consisted of a lot of research in the field of pedestrian dead reckoning and leveraged the sensors on the phone while showing a 3D model of the route. A video explaing what we used and learned can be found here??? link it. A presentation that we presented can be found in presentation/TraceRoute.pptx.
+
+## File structure
+android_app/ - Contains that Android application that can be imported in Android Studio
+research/ - Early research and notes when we first started researching this topic.
+presentation/ - Pictures and the powerpoint used for our presentation
 
 ### License
 
 The MIT License (MIT)
 
-Copyright (c) 2015 Sean Aryana, Andrew Gammon, and Hao-Lin (Kieth) Yang
+Copyright (c) 2015 Sean Aryana, Andrew Gammon, and Hao-Lin (Keith) Yang
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
