@@ -5,7 +5,9 @@ This is our capstone project at the University of Washignton where we built an i
 
 ## File structure
 android_app/ - Contains that Android application that can be imported in Android Studio
+
 research/ - Early research and notes when we first started researching this topic.
+
 presentation/ - Pictures and the powerpoint used for our presentation
 
 ### License
