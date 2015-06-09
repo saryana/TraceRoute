@@ -4,7 +4,7 @@
 
 Sean Aryana, Andrew Gammon, and Hao-Lin (Keith) Yang
 
-This is our capstone project at the University of Washignton where we built an indoor navigation Android application. This consisted of a lot of research in the field of pedestrian dead reckoning and leveraged the sensors on the phone while showing a 3D model of the route. A video explaing what we used and learned can be [found here](https://www.youtube.com/watch?v=4LEQh_zvMzM&feature=youtu.be). A presentation that we presented can be found in presentation/TraceRoute.pptx.
+This is our capstone project at the University of Washignton where we built an indoor navigation Android application. This consisted of a lot of research in the field of pedestrian dead reckoning and leveraged the sensors on the phone while showing a 3D model of the route. A video explaing what we used and learned can be [found here](https://www.youtube.com/watch?v=4LEQh_zvMzM&feature=youtu.be). A presentation that we presented can be found in presentation/TraceRoute.pptx. The latest build of the application can be [found here](presentation/debug.apk).
 
 ## File structure
 android_app/ - Contains that Android application that can be imported in Android Studio
