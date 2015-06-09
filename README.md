@@ -1,4 +1,4 @@
-# TraceRoute
+# TraceRoute ![alt text](https://raw.githubusercontent.com/saryana/TraceRoute/master/presentation/pics/icon.png "TraceRoute Icon")
 Sean Aryana, Andrew Gammon, and Hao-Lin (Keith) Yang
 
 This is our capstone project at the University of Washignton where we built an indoor navigation Android application. This consisted of a lot of research in the field of pedestrian dead reckoning and leveraged the sensors on the phone while showing a 3D model of the route. A video explaing what we used and learned can be [found here](https://www.youtube.com/watch?v=4LEQh_zvMzM&feature=youtu.be). A presentation that we presented can be found in presentation/TraceRoute.pptx.
