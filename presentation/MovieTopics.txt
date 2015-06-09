@@ -1,9 +1,31 @@
 TECH TOPICS FOR THE VIDEO
 
-This will serve as a narrative script for our video.
+
+This video provides a detailed summary of our experiences while developing TraceRoute, an application designed
+for 3D navigation without the use of GPS. We've broken the summary down into 3 sections -
+
+Sensors and Navigation
+Graphics
+Application Design
 
 ------------I - Sensors-------------
-- Discuss the drawbacks of each sensor.
+
+The motivation behind this idea was to get an understanding of where the user is without using GPS or WiFi. We're using a collection of sensors in lieu of GPS. We researched the capabilities of each sensor extensively. For interior navigation, we needed to do detect a three things: distance, direction, and altitude. 
+
+We were quick to learn that the 3 dimensional accelerometer was prone to error, so we decided to avoid using it. With more research, we found out that most Android phones have reasonably accurate step detector. If we are able to get the height and gender of the user we can accurately get their stride length. As we all know, when we're walking, not every step is created equal. Unfortunately our program doesn't differentiate between small and large steps. This leads to some navigational errors. We thought about how we could correct for this, but we couldn't come up with an elegant solution.
+
+Determining the direction of the step was another obstacle. We were convinced that we could use the accelerometer to detect movement direction, but this was quickly shot down when the accelerometer would give incredibly noisy data, which would often point us in erratic directions. We considered using the Gyroscope to detect phone orientation, but that doesn't give us a good indicator of where the user is moving. We settled on using the compass to get a fairly accurate reading. Unfortunately, this puts a strict use condition on the user - they have to hold the phone flat because any changes in the rotation of the phone throws off the compass. 
+
+Once we managed to harness the sensors we wanted, we were able to walk in a straight line, turn around, walk back, and we would arrive at the same location. When we started walking more complicated routes, we noticed that slight changes in the reading from the compass would produce steps in incorrect directions, which would lead to large compounding errors. This is still a huge problem - to produce the best results we need an accurate direction measure, and the compass isn't capable of that. 
+
+We wanted our application to also detect changes in altitude, which is something we haven't seen implemented in other applications. Recent Android phones have included barometers from which you can derive altitude. We included this because it would allow us to walk up flights of stairs and use elevators. However, the sensor is very sporadic - if we stood still, the phone could detect up to a meter of vertical movement. Even with this issue, we still found the sensor to be reasonably accurate.
+
+
+
+
+
+
+
  - Accelerometer - Gives decent readings, but can't take too much with acceleration alone. First off we have to negate the affect from gravity which Android does for us, but we really care about is position which requires double integration which is an absolute disaster and we never went very down this path other than trying to find phone position from it which was very 'glitchy' and no longer used anywhere.
  - Gyroscope - Gives ok readings for change in rotation, but over time it accumulates drift which is a research topic in its own that we were able to use an existing project. This is used for the VR mode.
  - Rotation Vector - This will give raw position in a quaternion that can correct for drift that the gyroscope accumulates. This is used for the VR mode.
@@ -16,38 +38,32 @@ This will serve as a narrative script for our video.
  - Drift Detector - We used another thesis which was able to detect significant phone drift over time which it would apply the the rotation vector and use that as the base.
  - Kalman filter - We will see if we can implement this.
  
-- Talk about what role each sensor plays in helping us navigate
- - Step, compass, barometer. Discussed above really.
+
+
 
 ------------II Navigation------------
-- Introduce the concept of pedestrian dead reckoning
- - PDR is the attempt to get the relative position of the user without GPS. Other projects have other units attached to the foot to help with detecting pedestrian movement and many don't keep track of elevation difference which we have indeed attempted to do.
+As we were researching the capabilities of sensors we kept coming across the term Pedestrian Dead Reckoning, which is navigation without GPS. We started looking for this keyword in our research, and we came across some helpful papers and applications. These resources provided some insight into the limitations of our sensors, and some even had corrective algorithms to increase sensor accuracy. One such algorithm is a low pass filter. A low pass filter takes in multiple sensor readings, and returns weighted average of the readings. This makes it so a rouge piece of sensor data doesn't throw off our navigational system. The primary screen of our application uses the gyroscope to rotate a rectangular prism. As we experimented with this, we quickly discovered that gyroscope sensors suffer from compounding error known as 'drift'. Over time the gyroscope data becomes increasingly inaccurate. In order to fix this, we have to occasionally recalibrate the sensor on the fly.
 
-- Talk about the major problems present with our
-current application. 
- - The accuracy is very variable. We have been able to do loops and detect full circles. Steps aren't fully functional although we are able to indeed detect movement in the Z direction just fine.
+Like I said earlier, our direction detection with the compass was error-prone. There's a corrective algorithm known as a Kalman filter which uses previous step data along with the current heading to do path prediction with decent accuracy. Like the low pass filter, the the kalman filter will correct for erratic step directions. Unfortunately due to time constrains we were unable to implement this.
 
-- Discuss the different methods of navigation that we pondered 
-(integrating acceleration vector vs. step counting. Compass vs. Gyroscope, etc.)
- - For distance we can get it two ways, double integrating acceleration which gets a large amount of uncorrectable error or step counting which is a set length based off of the user height that we assume is moving in a given direction. However, with close detection we will be able to do some correction that wouldn't have been able to do before.
+With the body of research and development that we've done into this issue, it's clear that sensors alone aren't good enough for reliable navigation. We need an external source of information to assist us. A possible area of research is wireless beacons. If you have a set of beacons at known location inside of a building, you can use their signal strength and positions to locate yourself amongst them. If you use these in tandem with our navigational system, we believe our application would be accurate. 
 
-- Discuss future developments (bluetooth beacons, wifi backscatter, etc.)
- - Future iterations of the application would need to have some outside source that it could use to better triangulate the position of the user. The work done with the sensors will still be necessary since it will allow for the beacons or backscatter to not necessary have 100% coverage of the floor plan, supplement the phone in any compounding error. The ideal use case would be that when a user enters a place with limited GPS (mall) they can make a request to the server that has the knowledge of where the beacons are and then from there we will detect the direction and steps as before but use the beacons to push data and help the phone know the positioning when we drift.
 
 ------------III OpenGL ES------------
 - Quick introduction to OpenGL ES.
+
+
 OpenGL ES is a special flavor of openGL for mobile devices.
-This is what powers 3d graphics on the Andriod platform.
+It's what powers 3d graphics on the Andriod platform.
 I found interfacing with the API to be cumbersome and unfriendly. 
-OpenGL was designed around C++, so this Java 
+OpenGL was designed around C++, so Andriod's Java 
 port was clumsy at best. I had no previous experience 
 with graphics, so this was a painful, but rewarding learning experience.
 
 Graphics programming requires a rich mix of low-level programming, matrix algebra, 3 dimensional
-reasoning, and physics. It takes a lot of knowledge, and many errors before I was
-capable of drawing a 3-dimensional object.
+reasoning, and physics. It a long time before I was capable of drawing a 3-dimensional object.
 
-Here's a summary of what I learned about graphics:
+Here's a summary of what I learned:
 In a digital world, all objects are made up of a mesh of triangles. Even round things, such as spheres
 and cyliders are approximated using a polyhdedrons composed entirely of triangles. The more triangles you have,
 the more detailed your models are.
@@ -67,8 +83,8 @@ vertex coordinates and 'combine' them with a matrix, which is another array.
 Depending on the type of operation you do, the verticies for the object 
 can be translated, rotated, or both. 
 
-- Discuss the shaders and diffuse lighting.
-A 3d model is no good without basic lighting effects. I had to learn 
+
+A 3d world is no good without basic lighting effects. I had to learn 
 how to program basic lighting through OpenGL shaders to give our
 path some depth. The graphical effect that I implemented is called diffuse lighting. 
 It shades faces of objects based on how much light they receive from a light
@@ -76,18 +92,18 @@ source. The steeper the angle between the light source and the face, the less li
 
 
 - Talk about panning and scrolling
-In order to make the 3d model more useful, we decided to try and add 
-panning, rotation, and zooming capabilities. The user can use a single
-finger gesture to rotate the model, and can use two fingers to 
-pan and zoom the camera. Although this seems simple to implement, 
-it was very difficult to implement correctly. There's a surprising 
-amount of math involved to get the camera to move in an intuitive manner. 
-This feature took a long time to implement.  
+In order to make path visualization more interactive, we decided to try adding 
+panning, rotation, and zoom capabilities. The user can use a single
+finger gesture to pan the model, and can use two fingers to move the camera
+forwards and backwards. Although this scheme is intuitive from the user's perspective 
+it's very difficult to implement correctly. There's a surprising 
+amount of math involved to get the camera to move the way you want it to. 
+We didn't manage to get this feature fully working.  
 
-- Talk about difficulties
-On most devices, our application worked as we expected. However, 
-on my model of the Samsung Galaxy S5, there's severe graphical artifacts
-that make the application unusable. The lines wildly flicker and
+
+On most devices, our application's 3d interface worked as we expected. However, 
+on my model of the Samsung Galaxy S5, there's severe graphical artifacts. 
+The grid lines flicker and
 produce bizarre patterns across the screen. We tried it on a different model of the
 Galaxy S5, and there was no artifacting. We suspect this is a hardware
 issue.
@@ -99,13 +115,7 @@ on my phone.
 ------------IV Interface Design------------
 An application is only as good as its user interface. If your interface is weak,
 it's not going to be a good experience for the user. A good deal of work was put into 
-the interface to ensure smooth operation.
-
-- Talk about the difficulties of designing for a small screen.
-
-Designing for a mobile screen is difficult - a typical 24" desktop display offers
-plenty of room for an interface. Phones don't have that luxury. Every centimeter counts - 
-We needed maximum functionality with minimal clutter.  
+the interface to ensure smooth operation. 
 
 - Design mock-up
 
@@ -124,19 +134,15 @@ button. There's a compass in the lower left corner for orientation.
 When the play button is pressed, the application begins recording the user's path.
 A 'save' bubble also appears, which allows the user to save their path to the phone for
 later viewing.
+If you tap the compass after finishing a path, you enter 'VR mode', where you can
+move the camera around the world and examine your path.
 
-If you tap the compass after finishing a path, you enter 'free mode', where you can
-move the camera around the world and examine your path. 
-
-A user settings menu is accesable via a button on the top menu bar. When clicked, 
+A user settings menu is accessable via a button on the top menu bar. When clicked, 
 the user can modify their height and gender, and re-compute their stide length.
-
+This is the screen the user sees on their first run of the application.
 Also on the top bar is a path management button. When pressed, the user is brought
 to a path management screen where they can view old paths and delete them.
 
-
-One of the primary features we implemented for the sake of usability are floating icons:
-- Using a library for floating icons
 
 
 ----------------V Conclusion-----------------
